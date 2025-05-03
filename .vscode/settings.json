@@ -1,0 +1,21 @@
+{
+	"files.exclude": {
+		"**/.DS_Store": true,
+		"**/.git": false,
+		"**/.github": false,
+		"**/.gitp*": true,
+		"**/.hg": true,
+		"**/.svn": true,
+		"**/.vscode": false,
+		"**/core.Microsoft*": true,
+		"**/core.mongo*": true,
+		"**/core.python*": true,
+		"**/CVS": true,
+		"**/._*": true
+	},
+	"files.autoSave": "off",
+	"workbench.colorTheme": "Ayu Mirage Bordered",
+	"terminal.integrated.gpuAcceleration": "auto",
+	"typescript.disableAutomaticTypeAcquisition": true,
+	"editor.fontFamily": "SF Mono"
+}

@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"workbench.colorTheme": "Ayu Mirage Bordered",
+		"terminal.integrated.gpuAcceleration": "auto",
+		"typescript.disableAutomaticTypeAcquisition": true,
+		"editor.fontFamily": "SF Mono"
+	}
+}

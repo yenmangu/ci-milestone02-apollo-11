@@ -13,3 +13,6 @@ cloudinary_python.txt
 .dev/
 # api
 # api/*
+**/.env
+
+*.sh

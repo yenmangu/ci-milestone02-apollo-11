@@ -10,19 +10,6 @@
 		<h1>Apollo 11 simulation</h1>
 		<h2>Response:</h2>
 		<div id="response"></div>
-		<script>
-			let responseData;
-			fetch('https://www.api.yenmangu.me/apollo/audio').then((response) => {
-				response.json().then((data) => {
-					responseData = data
-					if (responseData) {
-						const responseDiv = document.getElementById('response');
-						if (responseDiv) {
-							responseDiv.innerText = JSON.stringify(responseData)
-						}
-					}
-				})
-			})
-		</script>
+		<script src="./assets/js/response.js"></script>
 	</body>
 </html>

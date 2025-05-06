@@ -14,5 +14,5 @@ cloudinary_python.txt
 # api
 # api/*
 **/.env
-
 *.sh
+ecosystem.config.*js

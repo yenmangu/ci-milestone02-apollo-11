@@ -1,4 +1,4 @@
-const { parseUrlObject } = require('../origin.js');
+const { parseUrlObject, stripWwwSubdomain } = require('../origin.js');
 const { TRUSTED_ORIGINS } = require('../origin.js');
 const dotenv = require('dotenv').config();
 
@@ -33,5 +33,32 @@ describe('parseUrlObject function works correctly', () => {
 		const origin = 'https://www.example.com';
 		const urlObject = parseUrlObject(origin);
 		expect(urlObject).toBeInstanceOf(URL);
+	});
+});
+
+describe('stripWwwSubdomain to function correctly', () => {
+	const origin = 'https://www.example.com';
+	const testUrl = new URL(origin);
+
+	it('should exist', () => {
+		expect(stripWwwSubdomain).toBeDefined();
+	});
+	it('should preserve http/s protocol', () => {
+		const result = stripWwwSubdomain(testUrl);
+		expect(result.startsWith('https://')).toBe(true);
+	});
+	it('should strip www subdomain from hostname', () => {
+		const result = stripWwwSubdomain(testUrl);
+		const url = new URL(result);
+		expect(url.host.startsWith('www')).toBe(false);
+	});
+	it('should handle edge case if provided with url string, not instance of URL', () => {
+		const result = stripWwwSubdomain(origin);
+		const url = new URL(result);
+		expect(result).toBeDefined();
+		expect(() => stripWwwSubdomain(origin)).not.toThrow(
+			'Failed to strip www. subdomain'
+		);
+		expect(url.host.startsWith('www')).toBe(false);
 	});
 });

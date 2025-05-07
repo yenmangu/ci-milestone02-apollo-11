@@ -1,4 +1,11 @@
-export const GITHUB_PAGES = process.env.GITHUB_PAGES;
-export const YENMANGU_ME = process.env.YENMANGU_ME;
-export const LOCAL = process.env.LOCAL;
-export const LOCALHOST = process.env.LOCALHOST;
+const path = require('path');
+const dotenv = require('dotenv').config({
+	path: path.join(__dirname, '..', '.env')
+});
+
+const GITHUB_PAGES = process.env.GITHUB_PAGES;
+const YENMANGU_ME = process.env.YENMANGU_ME;
+const LOCAL = process.env.LOCAL;
+const LOCALHOST = process.env.LOCALHOST;
+
+module.exports = { GITHUB_PAGES, YENMANGU_ME, LOCAL, LOCALHOST };

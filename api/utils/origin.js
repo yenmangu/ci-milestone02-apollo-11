@@ -11,14 +11,11 @@ function parseUrlObject(origin) {
 	}
 }
 
-function stripWwwSubdomain(urlObject) {
+function stripWwwSubdomain(urlInput) {
 	try {
-		if (!(urlObject instanceof URL)) {
-			// convert to urlObject
-			urlObject = new URL(urlObject);
-		}
-		const hostname = urlObject.host.replace(/^www\./, '');
-		return `${urlObject.protocol}//${hostname}`;
+		const url = urlInput instanceof URL ? urlInput : new URL(urlInput);
+		const hostname = url.host.replace(/^www\./, '');
+		return `${url.protocol}//${hostname}`;
 	} catch (error) {
 		throw new Error('Failed to strip www. subdomain');
 	}

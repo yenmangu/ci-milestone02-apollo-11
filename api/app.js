@@ -13,7 +13,7 @@ import { isTrustedOrigin, processOrigin, TRUSTED_ORIGINS } from './utils/origin.
 function checkOrigin(origin, callback) {
 	console.log('Checking origin...');
 	const cleanedOrigin = processOrigin(origin);
-	if (isTrustedOrigin(origin)) {
+	if (isTrustedOrigin(origin) || !origin) {
 		console.log(`Allowed origin: ${cleanedOrigin}`);
 
 		callback(null, true);

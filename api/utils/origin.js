@@ -33,5 +33,6 @@ module.exports = {
 	TRUSTED_ORIGINS,
 	parseUrlObject,
 	stripWwwSubdomain,
+	processOrigin,
 	isTrustedOrigin
 };

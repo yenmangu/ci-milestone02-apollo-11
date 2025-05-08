@@ -1,4 +1,5 @@
-const { LOCAL, LOCALHOST, YENMANGU_ME, GITHUB_PAGES } = require('./env.js');
+// const { LOCAL, LOCALHOST, YENMANGU_ME, GITHUB_PAGES } = require('./env.js');
+import { LOCAL, LOCALHOST, YENMANGU_ME, GITHUB_PAGES } from './env.js';
 
 const TRUSTED_ORIGINS = [LOCAL, LOCALHOST, YENMANGU_ME, GITHUB_PAGES];
 
@@ -22,6 +23,8 @@ function stripWwwSubdomain(urlInput) {
 }
 
 function processOrigin(origin) {
+	console.log('origin: ', origin);
+
 	const urlObject = parseUrlObject(origin);
 	return stripWwwSubdomain(urlObject);
 }
@@ -29,7 +32,14 @@ function processOrigin(origin) {
 function isTrustedOrigin(processedOrigin) {
 	return TRUSTED_ORIGINS.includes(processedOrigin);
 }
-module.exports = {
+// module.exports = {
+// 	TRUSTED_ORIGINS,
+// 	parseUrlObject,
+// 	stripWwwSubdomain,
+// 	processOrigin,
+// 	isTrustedOrigin
+// };
+export {
 	TRUSTED_ORIGINS,
 	parseUrlObject,
 	stripWwwSubdomain,

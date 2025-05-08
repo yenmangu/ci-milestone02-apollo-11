@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import { apiRouter } from './routes/route.js';
 const app = express();
-import { isTrustedOrigin, processOrigin } from './utils/origin.js';
-
+// const { isTrustedOrigin, processOrigin } = require('./utils/origin.js');
+import { isTrustedOrigin, processOrigin, TRUSTED_ORIGINS } from './utils/origin.js';
 /**
  * Custom CORS origin check function
  *
@@ -19,6 +19,7 @@ function checkOrigin(origin, callback) {
 		callback(null, true);
 	} else {
 		console.error(`Error! Origin: ${origin} is not trusted.`);
+		console.log(`Allowed origins: ${TRUSTED_ORIGINS}`);
 		callback(new Error('unauthorized origin'));
 	}
 }

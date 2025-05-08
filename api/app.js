@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { apiRouter } from './routes/route.js';
 const app = express();
-import { stripWwwSubdomain, isTrustedOrigin } from './utils/origin.js';
+import { isTrustedOrigin, processOrigin } from './utils/origin.js';
 
 /**
  * Custom CORS origin check function
@@ -12,8 +12,8 @@ import { stripWwwSubdomain, isTrustedOrigin } from './utils/origin.js';
  */
 function checkOrigin(origin, callback) {
 	console.log('Checking origin...');
-	const cleanedOrigin = stripWwwSubdomain(origin);
-	if (isTrustedOrigin(cleanedOrigin) || !origin) {
+	const cleanedOrigin = processOrigin(origin);
+	if (isTrustedOrigin(origin)) {
 		console.log(`Allowed origin: ${cleanedOrigin}`);
 
 		callback(null, true);

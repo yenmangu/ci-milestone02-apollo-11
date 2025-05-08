@@ -21,4 +21,17 @@ function stripWwwSubdomain(urlInput) {
 	}
 }
 
-module.exports = { TRUSTED_ORIGINS, parseUrlObject, stripWwwSubdomain };
+function processOrigin(origin) {
+	const urlObject = parseUrlObject(origin);
+	return stripWwwSubdomain(urlObject);
+}
+
+function isTrustedOrigin(processedOrigin) {
+	return TRUSTED_ORIGINS.includes(processedOrigin);
+}
+module.exports = {
+	TRUSTED_ORIGINS,
+	parseUrlObject,
+	stripWwwSubdomain,
+	isTrustedOrigin
+};

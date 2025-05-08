@@ -14,7 +14,7 @@ function parseUrlObject(origin) {
 function stripWwwSubdomain(urlInput) {
 	try {
 		const url = urlInput instanceof URL ? urlInput : new URL(urlInput);
-		const hostname = url.host.replace(/^www\./, '');
+		const hostname = url.hostname.replace(/^www\./, '');
 		return `${url.protocol}//${hostname}`;
 	} catch (error) {
 		throw new Error('Failed to strip www. subdomain');

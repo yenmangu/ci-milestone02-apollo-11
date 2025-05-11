@@ -2,15 +2,16 @@
 
 /* CSS Variables */
 
-:root{
-	--dsky-yellow-values:248,230,130
-	--dsky-button-values: 26,26,26
-	--dsky-button-text: 238,238,238
+:root {
+	--dsky-yellow-values: 248, 230, 130;
+	--dsky-button-values: 26, 26, 26;
+	--dsky-button-text-values: 238, 238, 238;
 
-	--dsky-yellow-off: rgba(var(--dsky-yellow-values),0.1)
-	--dsky-yellow-on:rgba(var(--dsky-yellow-values),0.8)
-	--dsky-button: rgba(var(--dsky-button-values),1)
-	--dsky-button-hover: rgba(var(--dsky-button-values),0.6)
+	--dsky-yellow-off: rgba(var(--dsky-yellow-values), 0.1);
+	--dsky-yellow-on: rgba(var(--dsky-yellow-values), 0.8);
+	--dsky-button: rgba(var(--dsky-button-values), 1);
+	--dsky-button-hover: rgba(var(--dsky-button-values), 0.6);
+	--dsky-button-text: rgba(var(--dsky-button-text-values), 1);
 }
 
 /* Global styles */
@@ -22,7 +23,7 @@
 	box-sizing: border-box;
 }
 
-body{
+body {
 	min-height: 100vh;
 	width: 100%;
 	display: flex;
@@ -38,15 +39,27 @@ main {
 /* Dev Styles */
 
 .container {
-	border: 1px solid red
+	border: 1px solid red;
 }
 
 .row {
-	border: 1px solid lightgreen
+	border: 1px solid lightgreen;
 }
 
-.col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
-	border: 1px solid lightskyblue
+.col,
+.col-1,
+.col-2,
+.col-3,
+.col-4,
+.col-5,
+.col-6,
+.col-7,
+.col-8,
+.col-9,
+.col-10,
+.col-11,
+.col-12 {
+	border: 1px solid lightskyblue;
 }
 
 /* Bootstrap Overides */
@@ -81,14 +94,14 @@ header {
 }
 
 .light.yellow {
-	background-color: rgba(248,230,130,0.1);
+	background-color: rgba(248, 230, 130, 0.1);
 }
 
 /* Push-buttons UI styles */
 
 .push-buttons {
 	display: flex;
-	flex-direction:row;
+	flex-direction: row;
 	justify-content: center;
 	align-items: top;
 	flex-wrap: nowrap;
@@ -101,37 +114,37 @@ header {
 	justify-content: center;
 	align-items: center;
 	flex-wrap: nowrap;
-	gap: 0.4em
+	gap: 0.4em;
 }
 
-.push-button.btn-primary {
+.push-button.btn {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	width: 50px;
 	height: 50px;
+	border: none;
 	border-radius: 10%;
-	border: 1px solid var(--dsky-button);
 	padding: 50%;
 	font-size: 0.9em;
-	background-color:var(--dsky-button);
-	color: #eeeeee;
-;
+	background-color: var(--dsky-button);
+	color: var(--dsky-button-text);
 }
 
-.push-button.btn-primary:hover {
-background-color: 	rgba(26,26,26,0.6);
-border: 1px solid var(--dsky-button-hover);
+.push-button.btn:hover,
+.push-button.btn:active,
+.push-button.btn:first-child:active,
+.push-button.btn:not(.btn-check)+.btn:active {
+	background-color: var(--dsky-button-hover);
 }
 
 .verb-noun {
 	justify-content: center;
 }
-.push-row{
+
+.push-row {
 	display: flex;
 	flex-direction: column;
 }
-
-
 
 /* Media Queries */

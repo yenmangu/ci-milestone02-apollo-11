@@ -24,3 +24,11 @@ export function testDskyPushButtons() {
 		});
 	});
 }
+
+export function setDskyStateZero() {
+	/** @type {NodeListOf<HTMLElement>} */
+	const segmentDisplays = document.querySelectorAll('.seven-segment');
+	segmentDisplays.forEach((display, key) => {
+		display.textContent = key === 0 || key === 1 || key === 2 ? '00' : '00000';
+	});
+}

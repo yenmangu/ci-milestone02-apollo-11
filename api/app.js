@@ -12,15 +12,19 @@ import { isTrustedOrigin, processOrigin, TRUSTED_ORIGINS } from './utils/origin.
  */
 function checkOrigin(origin, callback) {
 	console.log('Checking origin...');
+	if (!origin) {
+		console.log('No origin, allowing all origins');
+		callback(null, true);
+		return;
+	}
 	const cleanedOrigin = processOrigin(origin);
-	if (isTrustedOrigin(origin) || !origin) {
-		console.log(`Allowed origin: ${cleanedOrigin}`);
 
+	if (isTrustedOrigin(cleanedOrigin)) {
+		console.log('Origin is trusted:', cleanedOrigin);
 		callback(null, true);
 	} else {
-		console.error(`Error! Origin: ${origin} is not trusted.`);
-		console.log(`Allowed origins: ${TRUSTED_ORIGINS}`);
-		callback(new Error('unauthorized origin'));
+		console.log('Origin is not trusted:', cleanedOrigin);
+		callback(new Error('Not allowed by CORS'), false);
 	}
 }
 

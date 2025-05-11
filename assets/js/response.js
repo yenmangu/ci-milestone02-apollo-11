@@ -1,5 +1,16 @@
-const apiUrl = 'https://www.api.yenmangu.me/apollo/';
+const remoteApiUrl = 'https://www.api.yenmangu.me/apollo/';
+// local dev
+const localApi = 'http://127.0.01:3000/apollo/';
 const audioPath = 'audio';
+
+let apiUrl;
+if (
+	window.location.hostname === 'localhost' ||
+	window.location.hostname === '127.0.0.1'
+) {
+	// local dev
+	apiUrl = localApi;
+}
 
 // async needed here to ensure try/catch and await works correctly
 document.addEventListener('DOMContentLoaded', async () => {
@@ -7,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const audioApi = apiUrl + audioPath;
 
 	try {
-		console.log('audioApi: ', audioApi);
+		console.log('response.js audioApi: ', audioApi);
 
 		const response = await fetch(audioApi);
 		const data = await response.json();

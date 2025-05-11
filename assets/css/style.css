@@ -38,7 +38,79 @@ main {
 	border: 1px solid lightskyblue
 }
 
-
 /* Bootstrap Overides */
+
+/* Nav */
+nav.navbar {
+	/* Keep navbar fixed to top of screen, and above all other elements */
+	position: fixed;
+	width: 100%;
+	top: 0;
+
+	z-index: 10;
+}
+
+/* Header */
+header {
+	/* To accomodate fixed nav */
+	margin-top: 65px;
+}
+
+/* DSKY styles */
+
+/* Display lights stles */
+
+.lights {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: nowrap;
+	gap: 0.5em;
+}
+
+/* Push-buttons UI styles */
+
+.push-buttons {
+	display: flex;
+	flex-direction:row;
+	justify-content: center;
+	align-items: top;
+	flex-wrap: nowrap;
+	gap: 0.4em;
+}
+
+.column {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: nowrap;
+	gap: 0.5em
+}
+
+.push-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 50px;
+	height: 50px;
+	border: 1px solid black;
+	border-radius: 15%;
+	padding: 50%;
+	font-size: 0.8em;
+	background-color: #1a1a1a;
+	color: #eeeeee;
+}
+
+.verb-noun {
+	justify-content: center;
+}
+.push-row{
+	display: flex;
+	flex-direction: column;
+}
+
+
 
 /* Media Queries */

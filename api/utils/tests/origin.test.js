@@ -1,3 +1,6 @@
+// These tests will not pass unless the files are reverted back to using
+// 'require' syntax
+
 const { parseUrlObject, stripWwwSubdomain } = require('../origin.js');
 const { TRUSTED_ORIGINS } = require('../origin.js');
 const dotenv = require('dotenv').config();

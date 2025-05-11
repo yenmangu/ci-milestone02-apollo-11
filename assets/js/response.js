@@ -22,7 +22,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 		const response = await fetch(audioApi);
 		const data = await response.json();
-		responseDiv ? (responseDiv.innerText = JSON.stringify(data)) : '';
+		const divText = `LOCAL API: ${JSON.stringify(data)}`;
+		console.log('Div text: ', divText);
+
+		responseDiv ? (responseDiv.innerText = 'divText') : '';
 	} catch (error) {
 		console.error('Error fetching API data: ', error);
 		responseDiv ? (responseDiv.innerText = error) : '';

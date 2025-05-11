@@ -1,5 +1,6 @@
 import { API_URL, LOCAL_API_URL, AUDIO_PATH, LOCALHOST, LOCAL_IP } from './env.js';
 let apiUrl;
+// For accessing Local API
 if (
 	window.location.hostname === LOCALHOST ||
 	window.location.hostname === LOCAL_IP
@@ -10,7 +11,11 @@ if (
 	// remote dev
 	apiUrl = API_URL;
 }
-const audioApi = apiUrl + AUDIO_PATH;
+
+// Uncomment this line to use the remote API
+const audioApi = API_URL + AUDIO_PATH;
+
+// const audioApi = apiUrl + AUDIO_PATH;
 
 export const getTestResponse = async () => {
 	try {

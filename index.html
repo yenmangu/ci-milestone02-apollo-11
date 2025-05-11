@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<!-- No cache during dev -->
+		<meta http-equiv="Cache-Control"
+					content="no-cache, no-store, must-revalidate">
+		<meta http-equiv="Pragma"
+					content="no-cache" />
+		<meta http-equiv="Expires"
+					content="0" />
+		<!-- End dev headers -->
 		<meta charset="UTF-8">
 		<meta name="viewport"
 					content="width=device-width, initial-scale=1.0">
@@ -79,7 +87,6 @@
 		<h1>Apollo 11 simulation</h1>
 		<h2>Response:</h2>
 		<div id="response"></div>
-		<script src="./assets/js/response.js"></script>
 		<script type="module"
 						src="./assets/js/main.js?v=1.01"></script>
 		<!-- bootstrap script -->

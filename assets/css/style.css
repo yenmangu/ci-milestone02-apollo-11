@@ -1,4 +1,10 @@
 /* Fonts import */
+@font-face {
+	font-family: 'dseg7';
+	src: url('/assets/fonts/DSEG7Classic-Regular.woff2') format('woff2')
+		url('/assets/fonts/DSEG7Classic-Regular.woff') format('woff')
+		url('/assets/fonts/DSEG7Classic-Regular.ttf') format('truetype');
+}
 
 /* CSS Variables */
 
@@ -36,6 +42,10 @@ main {
 	flex-grow: 1;
 }
 
+.seven-segment {
+	font-family: 'dseg7', sans-serif !important;
+	font-size: 50px;
+}
 /* Dev Styles */
 
 .container {
@@ -134,7 +144,7 @@ header {
 .push-button.btn:hover,
 .push-button.btn:active,
 .push-button.btn:first-child:active,
-.push-button.btn:not(.btn-check)+.btn:active {
+.push-button.btn:not(.btn-check) + .btn:active {
 	background-color: var(--dsky-button-hover);
 }
 

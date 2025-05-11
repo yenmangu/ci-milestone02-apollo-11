@@ -12,3 +12,16 @@ export function renderResponseData(responseData) {
 		}
 	}
 }
+
+export function testDskyPushButtons() {
+	const buttons = document.getElementsByClassName('push-button');
+	Array.from(buttons).forEach(button => {
+		button.addEventListener('click', e => {
+			e.preventDefault();
+			if (button instanceof HTMLElement) {
+				const dskyData = button.dataset.dsky;
+				console.log(`Button pressed: ${dskyData}`);
+			}
+		});
+	});
+}

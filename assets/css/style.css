@@ -224,6 +224,7 @@ span[id^='polarity'] {
 	color: var(--dsky-button-text);
 }
 
+.push-button[dsky-state='active'],
 .btn.active,
 .push-button.btn:hover,
 .push-button.btn:active,

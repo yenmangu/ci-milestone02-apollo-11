@@ -1,3 +1,6 @@
+import { setButtonState } from '../renderUI.js';
+import EventEmitter from '../eventEmitter.js';
+
 /**
  *
  * @param {import('../util/types.js').SevenSegmentDisplay} display - controller -
@@ -23,6 +26,10 @@ const createKeypadStateManager = display => {
 		if (state.mode) {
 			display.write(state.mode, state.buffer);
 		}
+	};
+
+	const updateButtonState = activeState => {
+		setButtonState;
 	};
 
 	return {

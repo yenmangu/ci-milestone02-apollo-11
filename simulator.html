@@ -80,8 +80,9 @@
 			<!-- dsky section -->
 			<section id="dsky">
 				<div class="container">
-					<div class="row">
-						<div class="col-6">Indicator Lights<div class="container">
+					<div class="row lights-displays">
+						<div class="col-6 indicator-lights">
+							<div class="container">
 								<div class="row">
 									<div class="col-6 light white">UPLINK ACTY</div>
 									<div class="col-6 light yellow">TEMP</div>
@@ -112,38 +113,57 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-6">Display<div class="container">
-								<div class="row">
+						<div class="col-6 numerical-displays">
+							<div class="container">
+								<div class="row static-display">
 									<div id="compActy"
-											 class="col">COMP ACTY</div>
-									<div class="col">PROG</div>
+											 data-dsky="inactive"
+											 class="col comp-acty active">COMP ACTY</div>
+									<div class="col dsky-highlight">PROG</div>
 								</div>
 								<div class="row">
 									<div class="col"></div>
-									<div id="prog"
-											 class="col seven-segment">7</div>
+									<div class="col seven-segment">
+										<span id="prog"></span>
+									</div>
+								</div>
+								<div class="row static-display">
+									<div class="col-6 dsky-highlight">VERB</div>
+									<div class="col-6 dsky-highlight">NOUN</div>
 								</div>
 								<div class="row">
-									<div class="col-6 seven-segment">VERB</div>
-									<div class="col-6 seven-segment">NOUN</div>
+									<div class="col-6 seven-segment">
+										<span id="verb"></span>
+									</div>
+									<div id="nounSegment"
+											 class="col-6 seven-segment">
+										<span id="noun"></span>
+									</div>
 								</div>
-								<div class="row">
-									<div id="verbNum"
-											 class="col-6 seven-segment">7 segment display</div>
-									<div id="nounNum"
-											 class="col-6 seven-segment">7 segment display</div>
+								<div class="row data-register">
+									<div id="polarity1Segment"
+											 class="col-2 polarity">
+										<span id="polarity_1">+</span>
+									</div>
+									<div class="col-10 seven-segment">
+										<span id="register_1"></span>
+									</div>
 								</div>
-								<div class="row">
-									<div id="dataRegister1"
-											 class="col-12 seven-segment">7 segment display</div>
+								<div class="row data-register">
+									<div class="col-2 polarity">
+										<span id="polarity_2">+</span>
+									</div>
+									<div class="col-10 seven-segment">
+										<span id="register_2"></span>
+									</div>
 								</div>
-								<div class="row">
-									<div id="dataRegister2"
-											 class="col-12 seven-segment">7 segment display</div>
-								</div>
-								<div class="row">
-									<div id="dataRegister3"
-											 class="col-12 seven-segment">7 segment display</div>
+								<div class="row data-register">
+									<div class="col-2 polarity">
+										<span id="polarity_3">+</span>
+									</div>
+									<div class="col-10 seven-segment">
+										<span id="register_3"></span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -152,55 +172,74 @@
 						<div class="col py-2">
 							<div class="push-buttons">
 								<div class="column verb-noun">
-									<button data-dsky="verb"
+									<button data-state=""
+													data-dsky="verb"
 													class="push-button btn">VERB</button>
-									<button data-dsky="noun"
-													class="push-button btn btn-primary">NOUN</button>
+									<button data-state=""
+													data-dsky="noun"
+													class="push-button btn">NOUN</button>
 								</div>
 								<div class="column numerical-one">
-									<button data-dsky="plus"
+									<button data-state=""
+													data-dsky="plus"
 													class="push-button btn">+</button>
-									<button data-dsky="minus"
+									<button data-state=""
+													data-dsky="minus"
 													class="push-button btn">-</button>
-									<button data-dsky="0"
+									<button data-state=""
+													data-dsky="0"
 													class="push-button btn">0</button>
 								</div>
 								<div class="column numerical-two">
-									<button data-dsky="7"
+									<button data-state=""
+													data-dsky="7"
 													class="push-button btn">7</button>
-									<button data-dsky="4"
+									<button data-state=""
+													data-dsky="4"
 													class="push-button btn">4</button>
-									<button data-dsky="1"
+									<button data-state=""
+													data-dsky="1"
 													class="push-button btn">1</button>
 								</div>
 								<div class="column numerical-three">
-									<button data-dsky="8"
+									<button data-state=""
+													data-dsky="8"
 													class="push-button btn">8</button>
-									<button data-dsky="5"
+									<button data-state=""
+													data-dsky="5"
 													class="push-button btn">5</button>
-									<button data-dsky="2"
+									<button data-state=""
+													data-dsky="2"
 													class="push-button btn">2</button>
 								</div>
 								<div class="column numerical-four">
-									<button data-dsky="9"
+									<button data-state=""
+													data-dsky="9"
 													class="push-button btn">9</button>
-									<button data-dsky="6"
+									<button data-state=""
+													data-dsky="6"
 													class="push-button btn">6</button>
-									<button data-dsky="3"
+									<button data-state=""
+													data-dsky="3"
 													class="push-button btn">3</button>
 								</div>
 								<div class="column actions-one">
-									<button data-dsky="clr"
+									<button data-state=""
+													data-dsky="clr"
 													class="push-button btn">CLR</button>
-									<button data-dsky="pro"
+									<button data-state=""
+													data-dsky="pro"
 													class="push-button btn">PRO</button>
-									<button data-dsky="key-rel"
+									<button data-state=""
+													data-dsky="key-rel"
 													class="push-button btn">KEY <br> REL</button>
 								</div>
 								<div class="column actions-two">
-									<button data-dsky="entr"
+									<button data-state=""
+													data-dsky="entr"
 													class="push-button btn">ENTR</button>
-									<button data-dsky="rset"
+									<button data-state=""
+													data-dsky="rset"
 													class="push-button btn">RSET</button>
 								</div>
 							</div>

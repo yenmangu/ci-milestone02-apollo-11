@@ -1,3 +1,30 @@
+import { cast } from './util/cast.js';
+
+export function setDskyStateZero() {
+	/** @type {NodeListOf<HTMLElement>} */
+	const segmentDisplays = document.querySelectorAll('.seven-segment span[id]');
+	segmentDisplays.forEach((display, key) => {
+		display.textContent = key === 0 || key === 1 || key === 2 ? '00' : '00000';
+	});
+}
+
+/**
+ *
+ * @param {String} dskyData
+ * @param {String} state
+ */
+export function setButtonState(dskyData, state) {
+	const button = document.querySelector(`[data-dsky=${dskyData}]`);
+	if (!button) {
+		throw new TypeError(`Button ${dskyData} not found`);
+	}
+	/** @type {HTMLElement} */
+	const el = cast(button);
+	el.dataset.state = state;
+}
+
+// Start dev testing
+
 export function renderResponseData(responseData) {
 	const errorMessage = 'no response data';
 	const responseDiv = document.getElementById('response');
@@ -22,13 +49,5 @@ export function testDskyPushButtons() {
 			const dskyData = button.dataset.dsky;
 			console.log(`Button pressed: ${dskyData}`);
 		});
-	});
-}
-
-export function setDskyStateZero() {
-	/** @type {NodeListOf<HTMLElement>} */
-	const segmentDisplays = document.querySelectorAll('.seven-segment');
-	segmentDisplays.forEach((display, key) => {
-		display.textContent = key === 0 || key === 1 || key === 2 ? '00' : '00000';
 	});
 }

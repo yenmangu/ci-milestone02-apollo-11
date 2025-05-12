@@ -1,9 +1,23 @@
 /* Fonts import */
 @font-face {
 	font-family: 'dseg7';
-	src: url('/assets/fonts/DSEG7Classic-Regular.woff2') format('woff2')
-		url('/assets/fonts/DSEG7Classic-Regular.woff') format('woff')
-		url('/assets/fonts/DSEG7Classic-Regular.ttf') format('truetype');
+	src: url('/assets/fonts/DSEG7Classic-BoldItalic.woff2') format('woff2');
+	/* url('/assets/fonts/DSEG7Classic-BoldItalic.woff') format('woff') */
+	/* url('/assets/fonts/DSEG7Classic-BoldItalic.ttf') format('truetype'); */
+	font-weight: normal;
+	font-style: normal;
+	/* Ensure text remains visible if loading times are apparent */
+	font-display: swap;
+}
+@font-face {
+	font-family: 'dseg7-mini';
+	src: url('/assets/fonts/DSEG7ClassicMini-BoldItalic.woff2') format('woff2');
+	/* url('/assets/fonts/DSEG7Classic-BoldItalic.woff') format('woff') */
+	/* url('/assets/fonts/DSEG7Classic-BoldItalic.ttf') format('truetype'); */
+	font-weight: normal;
+	font-style: normal;
+	/* Ensure text remains visible if loading times are apparent */
+	font-display: swap;
 }
 
 /* CSS Variables */
@@ -12,12 +26,16 @@
 	--dsky-yellow-values: 248, 230, 130;
 	--dsky-button-values: 26, 26, 26;
 	--dsky-button-text-values: 238, 238, 238;
+	--dsky-display-bg-values: 92, 92, 92;
+	--dsky-display-blue-values: 0, 255, 255;
 
 	--dsky-yellow-off: rgba(var(--dsky-yellow-values), 0.1);
 	--dsky-yellow-on: rgba(var(--dsky-yellow-values), 0.8);
 	--dsky-button: rgba(var(--dsky-button-values), 1);
 	--dsky-button-hover: rgba(var(--dsky-button-values), 0.6);
 	--dsky-button-text: rgba(var(--dsky-button-text-values), 1);
+	--dsky-display-bg: rgba(var(--dsky-display-bg-values), 1);
+	--dsky-display-blue: rgba(var(--dsky-display-blue-values), 1);
 }
 
 /* Global styles */
@@ -43,17 +61,22 @@ main {
 }
 
 .seven-segment {
-	font-family: 'dseg7', sans-serif !important;
-	font-size: 50px;
+	font-family: 'dseg7-mini', sans-serif;
+	font-size: 1.4rem;
+	font-weight: bold;
+	font-style: normal;
+	text-align: center;
+	letter-spacing: 2px;
+	color: var(--dsky-display-blue);
 }
 /* Dev Styles */
 
 .container {
-	border: 1px solid red;
+	/* border: 1px solid red; */
 }
 
 .row {
-	border: 1px solid lightgreen;
+	/* border: 1px solid lightgreen; */
 }
 
 .col,
@@ -92,6 +115,15 @@ header {
 
 /* DSKY styles */
 
+.row.lights-displays {
+	justify-content: center;
+}
+
+.col-6.indicator-lights,
+.col-6.numerical-displays {
+	width: 200px;
+}
+
 /* Display lights stles */
 
 .light {
@@ -107,13 +139,64 @@ header {
 	background-color: rgba(248, 230, 130, 0.1);
 }
 
+/* Numerical displays styles */
+
+.col-6.numerical-displays {
+	max-width: 200px;
+	width: 160px;
+	color: var(--dsky-display-bg);
+	text-align: center;
+	padding: 0;
+}
+
+.static-display {
+	font-size: 0.8rem;
+}
+
+.numerical-displays .row {
+	background-color: var(--dsky-display-bg);
+	flex-wrap: nowrap;
+}
+
+.comp-acty.active {
+	color: var(--dsky-display-blue);
+}
+
+.dsky-highlight {
+	background-color: var(--dsky-display-blue);
+}
+
+[class^='col-'].polarity {
+	display: flex;
+
+	color: var(--dsky-display-blue);
+	padding: 0;
+	/* line-height: normal; */
+	font-size: 1.6rem;
+	/* padding-left: 6px; */
+	justify-content: center;
+	align-items: center;
+}
+
+span[id^='polarity'] {
+	position: relative;
+	bottom: 2px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
+.data-register .seven-segment {
+	padding: 0;
+}
+
 /* Push-buttons UI styles */
 
 .push-buttons {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	align-items: top;
 	flex-wrap: nowrap;
 	gap: 0.4em;
 }
@@ -141,6 +224,7 @@ header {
 	color: var(--dsky-button-text);
 }
 
+.btn.active,
 .push-button.btn:hover,
 .push-button.btn:active,
 .push-button.btn:first-child:active,

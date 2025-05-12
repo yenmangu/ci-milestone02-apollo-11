@@ -4,6 +4,7 @@ import {
 	setDskyStateZero,
 	testDskyPushButtons
 } from './renderUI.js';
+import { initKeypadUI } from './userInput.js';
 document.addEventListener('DOMContentLoaded', async () => {
 	const testResponseData = await getTestResponse();
 
@@ -11,4 +12,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 	renderResponseData(testResponseData);
 	testDskyPushButtons();
 	setDskyStateZero();
+	initKeypadUI();
 });

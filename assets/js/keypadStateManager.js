@@ -10,6 +10,8 @@
  */
 
 const createKeypadStateManager = () => {
+	console.log('Creating keyboard state manager: ');
+
 	/**@type {KeypadState} */
 	const state = {
 		mode: null,
@@ -18,15 +20,21 @@ const createKeypadStateManager = () => {
 		buffer: ''
 	};
 
+	const logState = () => {
+		console.log('Current keypad state: ', { ...state });
+	};
+
 	return {
 		setMode(mode) {
 			state.mode = mode;
 			state.buffer = '';
+			logState();
 		},
 		appendDigit(digit) {
 			if (state.mode) {
 				state.buffer += digit;
 			}
+			logState();
 		},
 		finalise() {
 			if (state.mode === 'verb') {
@@ -36,6 +44,7 @@ const createKeypadStateManager = () => {
 			}
 			state.mode = null;
 			state.buffer = '';
+			logState();
 		},
 		reset() {
 			state.mode = null;

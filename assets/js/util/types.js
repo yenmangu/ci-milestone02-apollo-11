@@ -26,5 +26,18 @@ export const ModeTypes = {
  * @property {string | null} noun
  * @property {string} buffer
  *
+ *
+ * @typedef {Object} keypadStateManager
+ * @property {(mode: 'verb' | 'noun'  )=> void} setMode
+ * @property {(digit: string) => void} appendDigit
+ * @property {() =>  void} finalise
+ * @property {() =>  void} reset
+ * @property {() =>  KeypadState} getState
+ *
+ *
  * @typedef {ReturnType<import("../keypad/keypadStateManager.js").default>} KeypadManager
+ *
+ * @typedef {import('../seven-segment/sevenSegment.js').SevenSegmentDisplay} SevenSegmentDisplay
+ *
+ *
  */

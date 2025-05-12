@@ -1,16 +1,20 @@
 import { getTestResponse } from './api.js';
+import { initProgram } from './init.js';
 import {
 	renderResponseData,
 	setDskyStateZero,
 	testDskyPushButtons
 } from './renderUI.js';
-import { initKeypadUI } from './userInput.js';
 document.addEventListener('DOMContentLoaded', async () => {
 	const testResponseData = await getTestResponse();
-
-	console.log('testing modules "test response data": ', testResponseData);
-	renderResponseData(testResponseData);
-	testDskyPushButtons();
+	// Start dev testing methods
+	// console.log('testing modules "test response data": ', testResponseData);
+	// renderResponseData(testResponseData);
+	// testDskyPushButtons();
 	setDskyStateZero();
-	initKeypadUI();
+	// End dev testing methods
+
+	initProgram();
 });
+
+// NEXT : UPDATE UI TO SHOW VERBS / NOUNS

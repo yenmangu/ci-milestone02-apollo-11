@@ -3,16 +3,16 @@
 /**
  * @template T
  * @param {unknown} el
- * @param {'element' | 'nodelist'} expectedType
+ * @param {'element' | 'nodeList'} [expectedType='element']
  * @returns {T}
  * @throws {TypeError}
  */
-export function cast(el, expectedType) {
+export function cast(el, expectedType = 'element') {
 	if (expectedType === 'element') {
 		if (!(el instanceof HTMLElement)) {
 			throw new TypeError('Expected an HTMLElement');
 		}
-	} else if (expectedType === 'nodelist') {
+	} else if (expectedType === 'nodeList') {
 		if (!(el instanceof NodeList)) {
 			throw new TypeError('Expected a NodeList');
 		}
@@ -22,7 +22,7 @@ export function cast(el, expectedType) {
 			}
 		}
 	} else {
-		throw new TypeError('Invalid expecedType. Use "element" or "nodeList"');
+		throw new TypeError('Invalid expectedType. Use "element" or "nodeList"');
 	}
 
 	return /** @type {T} */ (el);

@@ -1,6 +1,7 @@
 /**
  * A simple event emitter, inspired by the Angular EventEmitter
  * @template {string} EventMap
+ * @implements {EventEmitterInstance<EventMap>}
  */
 export default class EventEmitter {
 	/**
@@ -42,7 +43,7 @@ export default class EventEmitter {
 	 *
 	 * @param {EventMap} event
 	 * @param {(data?:any)=> void} listener
-	 * @returns {{unsubscribe: () => void, log: () => {unsubscribe: () => void, log: () => void }}} unsubscribe function
+	 * @returns {import('../util/types.js').Subscription} unsubscribe function
 	 */
 	subscribe(event, listener) {
 		this.on(event, listener);

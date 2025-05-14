@@ -1,5 +1,6 @@
 import { cast } from './util/cast.js';
 import { pushButtonEmitter } from './event/eventBus.js';
+import {} from '@types';
 
 export function setDskyStateZero() {
 	/** @type {NodeListOf<HTMLElement>} */
@@ -51,4 +52,25 @@ export function testDskyPushButtons() {
 			console.log(`Button pressed: ${dskyData}`);
 		});
 	});
+}
+
+export function initListeners() {
+	pushButtonEmitter.subscribe(e => {
+		if ((e.type === 'verb' || e.type === 'noun') && e.action) {
+			setButtonState(e.type, e.action);
+		}
+	});
+}
+
+export class RenderUI {
+	constructor() {
+		this.initListeners();
+	}
+	initListeners() {
+		pushButtonEmitter.subscribe(e => {
+			if ((e.type === 'verb' || e.type === 'noun') && e.action) {
+				setButtonState(e.type, e.action);
+			}
+		});
+	}
 }

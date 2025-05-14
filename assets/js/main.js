@@ -4,15 +4,9 @@ import {
 	renderResponseData,
 	setDskyStateZero,
 	testDskyPushButtons
-} from './renderUI.js';
+} from './view/dskyRender.js';
 document.addEventListener('DOMContentLoaded', async () => {
 	const testResponseData = await getTestResponse();
-	// Start dev testing methods
-	// console.log('testing modules "test response data": ', testResponseData);
-	// renderResponseData(testResponseData);
-	// testDskyPushButtons();
-	setDskyStateZero();
-	// End dev testing methods
 
 	initProgram();
 });

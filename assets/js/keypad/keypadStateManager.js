@@ -1,4 +1,4 @@
-import { setButtonState } from '../renderDsky.js';
+import { setButtonState } from '../view/dskyRender.js';
 import { pushButtonEmitter } from '../event/eventBus.js';
 
 /**

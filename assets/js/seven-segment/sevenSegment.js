@@ -33,7 +33,7 @@ export class SevenSegmentDisplay {
 	}
 
 	clearVerbNoun() {
-		this.write('verb', '');
-		this.write('noun', '');
+		this.write('verb', '00');
+		this.write('noun', '00');
 	}
 }

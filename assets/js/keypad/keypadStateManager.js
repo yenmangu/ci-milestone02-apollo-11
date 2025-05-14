@@ -1,10 +1,9 @@
-import { setButtonState } from '../renderUI.js';
+import { setButtonState } from '../renderDsky.js';
 import { pushButtonEmitter } from '../event/eventBus.js';
 
 /**
  *
- * @param {import('../util/types.js').SevenSegmentDisplay} display - controller -
- * for writing to the seven segment display
+ * @param {import('../util/types.js').DisplayInterface} display
  * @returns {import('../util/types.js').keypadStateManager}
  */
 const createKeypadStateManager = display => {
@@ -23,29 +22,18 @@ const createKeypadStateManager = display => {
 		console.log(invoker, ': Current keypad state: ', { ...state });
 	};
 
-	const updateDisplay = () => {
-		if (state.mode) {
-			display.write(state.mode, state.buffer);
-		}
-	};
-
-	const updateButtonState = activeState => {
-		setButtonState;
-	};
-
-	return {
+	const manager = {
 		setMode(mode) {
 			state.mode = mode;
 			state.buffer = '';
 			logState('setMode');
 			pushButtonEmitter.emit({ type: mode, action: 'enable' });
 		},
+
 		appendDigit(digit) {
 			if (state.mode) {
 				state.buffer += digit;
 			}
-			logState('appendDigit');
-			pushButtonEmitter.emit({ type: 'digit', digit: digit });
 		},
 
 		setPolarity(polarity) {
@@ -54,25 +42,22 @@ const createKeypadStateManager = display => {
 		},
 
 		finalise() {
-			console.log('finalising..');
-			console.log('State before finalising: ', state);
-
 			if (state.mode === 'verb') {
 				state.verb = state.buffer;
-				updateDisplay();
 			} else if (state.mode === 'noun') {
 				state.noun = state.buffer;
-				updateDisplay();
 			}
-			pushButtonEmitter.emit({ type: state.mode, action: 'disable' });
+			display.bulkWrite({
+				verb: state.verb ?? '00',
+				noun: state.noun ?? '00'
+			});
 			state.mode = null;
 			state.buffer = '';
-			logState('finalise');
 		},
 		reset() {
 			console.log('From keypadStateManager: reset selected');
 
-			state.mode = 'clr';
+			state.mode = null;
 			state.verb = null;
 			state.noun = null;
 			state.buffer = '';
@@ -80,10 +65,12 @@ const createKeypadStateManager = display => {
 			display.clearVerbNoun();
 			pushButtonEmitter.emit({ type: 'reset' });
 		},
+
 		getState() {
 			return { ...state };
 		}
 	};
+	return manager;
 };
 
 export default createKeypadStateManager;

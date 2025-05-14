@@ -6,6 +6,12 @@
 /**
  * Centralised types declaration file for JSDOC and enums
  */
+
+/**
+ * Display map for the seven-segment displays
+ * @typedef {Record<string,HTMLElement>} displayMap
+ */
+
 /**
  * @enum {string}
  */
@@ -23,6 +29,19 @@ export const ModeTypes = {
 
 /**
  * @typedef {'verb' | 'noun' | 'rset' | 'plus' | 'minus' | 'key-rel' | 'pro' | 'clr'} Mode
+ */
+
+/**
+ * @typedef {{
+ * 		write: (
+ * 			id: string, value:string
+ * 			) => void,
+ * 		bulkWrite: (
+ * 			values: Record<string, string>
+ * 			) => void,
+ * 		clearVerbNoun: () => void
+ * }} DisplayInterface
+ *
  */
 
 /**

@@ -58,15 +58,29 @@ export const ModeTypes = {
  */
 
 /**
- *
- * @template {string} EventMap
- * @typedef {Object} EventEmitterInstance
- * @property {(event: EventMap, listener:
- * (data?: any) => void) => void} on - Registers an event listener
- *
- * @property {(event: EventMap, data?: any) => void } emit - Emits an event
- * @property {(event: EventMap, listener: (data?: any) => void) => Subscription } subscribe - Subscribes to an event
- * and returns a Subscription object
+ * @template {string} EventType
+ * @typedef {{
+ * 	on:
+ * 		(event: EventType | '*', listener:
+ * 			(event: {
+ * 				type: EventType | '*'
+ * 				} & Record<string,any>
+ * 			) => void
+ * 		) => void,
+ * 	emit:
+ * 		(eventObj: {
+ * 			type: EventType | '*'
+ * 			} & Record <string, any>
+ * 		) => void,
+ * 	subscribe:
+ * 		(event: EventType | '*',
+ * 		listener:
+ * 			(event: {
+ * 				type: EventType | '*'
+ * 				} & Record<string, any>
+ * 			) => void
+ * 		) => Subscription
+ * }} EventEmitterInstance
  *
  */
 export {};

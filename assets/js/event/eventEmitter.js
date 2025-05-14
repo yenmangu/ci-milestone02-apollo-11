@@ -2,27 +2,27 @@ import {} from '@types';
 
 /**
  * A simple event emitter, inspired by the Angular EventEmitter
- * @template {string} EventMap
- * @typedef {import('@types').EventEmitterInstance<EventMap>} EventEmitterInstance
+ * @template {string} EventType
+ * @typedef {import('@types').EventEmitterInstance<EventType>} EventEmitterInstance
  */
 
 /**
- * @template {string} EventMap
- * @implements {EventEmitterInstance<EventMap>}
+ * @template {string} EventType
+ * @implements {EventEmitterInstance<EventType>}
  */
 export default class EventEmitter {
 	/**
-	 * @type {Record<EventMap, Function[]>}
+	 * @type {Record<string | '*', Function[]>}
 	 */
 	events;
 	constructor() {
-		this.events = /** @type {Record<EventMap, Function[]>} */ ({});
+		this.events = /** @type {Record<string | '*', Function[]>} */ ({});
 		this.debug = false; // Set to true for debug
 	}
 
 	/**
-	 * @param {EventMap} event
-	 * @param {(data?: any) => void} listener
+	 * @param {EventType | '*' } event
+	 * @param {(event: {type: EventType | '*', data?: any} & Record<string, any>) => void} listener
 	 */
 	on(event, listener) {
 		if (!this.events[event]) {
@@ -32,20 +32,25 @@ export default class EventEmitter {
 	}
 
 	/**
-	 *
-	 * @param {EventMap} event
-	 * @param {any} [data]
+	 * Emits an event object with a mandatory `type` property.
+	 * @param {{ type: string } & Record<string, any>} eventObj
 	 */
-	emit(event, data) {
-		if (this.events[event]) {
-			this.events[event].forEach(listener => listener(data));
-			console.log(this.events);
+	emit(eventObj) {
+		const eventType = eventObj.type;
+
+		// Emit to specific
+		if (this.events[eventType]) {
+			this.events[eventType].forEach(listener => listener(eventObj));
+		}
+		// Emit to wildcard listeners
+		if (this.events['*']) {
+			this.events['*'].forEach(listener => listener(eventObj));
 		}
 	}
 
 	/**
-	 * @param {EventMap} event
-	 * @param {(data?: any) => void} listener
+	 * @param {EventType | '*'} event
+	 * @param {(event:{type: EventType | '*' } & Record <string, any>) => void} listener
 	 * @returns {({ unsubscribe: () => void, log: () => import('@types').Subscription })}
 	 */
 	subscribe(event, listener) {
@@ -69,6 +74,4 @@ export default class EventEmitter {
 		};
 		return subscription;
 	}
-
-	log() {}
 }

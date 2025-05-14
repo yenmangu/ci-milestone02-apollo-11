@@ -1,6 +1,6 @@
 import { cast } from './util/cast.js';
 import { pushButtonEmitter } from './event/eventBus.js';
-import {} from '@types';
+import {} from './util/types.js';
 
 export function setDskyStateZero() {
 	/** @type {NodeListOf<HTMLElement>} */
@@ -64,13 +64,89 @@ export function initListeners() {
 
 export class RenderUI {
 	constructor() {
+		this.cacheElements();
 		this.initListeners();
 	}
+
+	cacheElements() {
+		// Seven-segment displays
+		this.progDisplay = document.getElementById('prog');
+		this.verbDisplay = document.getElementById('verb');
+		this.nounDisplay = document.getElementById('noun');
+		this.regDisplay_1 = document.getElementById('register_1');
+		this.regDisplay_2 = document.getElementById('register_2');
+		this.regDisplay_3 = document.getElementById('register_3');
+		// Polarity displays
+		this.polarityDisplay_1 = document.getElementById('polarity_1');
+		this.polarityDisplay_2 = document.getElementById('polarity_2');
+		this.polarityDisplay_3 = document.getElementById('polarity_3');
+		// Indicator lights
+		this.compActivityIndicator = document.getElementById('compActy');
+		// add more
+
+		// Push buttons
+		const pushButtons = document.querySelectorAll('button.push-button');
+
+		const sevenSegmentArray = [
+			this.progDisplay,
+			this.verbDisplay,
+			this.nounDisplay,
+			this.regDisplay_1,
+			this.regDisplay_2,
+			this.regDisplay_3
+		];
+		const polarityDisplays = [
+			this.polarityDisplay_1,
+			this.polarityDisplay_2,
+			this.polarityDisplay_3
+		];
+
+		try {
+			let errors = [];
+
+			sevenSegmentArray.forEach(display => {
+				if (!display) {
+					errors.push(new Error(`Error: ${display} not found!`));
+				}
+			});
+			polarityDisplays.forEach(display => {
+				if (!display) {
+					errors.push(new Error(`Error: ${display} not found!`));
+				}
+			});
+
+			pushButtons.forEach(btn => {
+				if (!btn) {
+					errors.push(new Error(`Error: ${btn} not found!`));
+				}
+			});
+			if (errors.length > 0) {
+				throw errors;
+			}
+		} catch (error) {
+			console.error(`Errors found with display initialisation: `, error);
+		}
+	}
+
 	initListeners() {
 		pushButtonEmitter.subscribe(e => {
 			if ((e.type === 'verb' || e.type === 'noun') && e.action) {
 				setButtonState(e.type, e.action);
 			}
 		});
+	}
+
+	/**
+	 * @param {String} dskyData
+	 * @param {String} state
+	 */
+	setButtonState(dskyData, state) {
+		const button = document.querySelector(`[data-dsky=${dskyData}]`);
+		if (!button) {
+			throw new TypeError(`Button ${dskyData} not found`);
+		}
+		/** @type {HTMLElement} */
+		const el = cast(button);
+		el.dataset.state = state;
 	}
 }

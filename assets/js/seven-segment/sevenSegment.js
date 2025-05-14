@@ -13,7 +13,7 @@ export class SevenSegmentDisplay {
 	 * @param {string} value - The value to display
 	 */
 	write(id, value) {
-		console.log('Map: ', this.displayMap);
+		// console.log('Map: ', this.displayMap);
 		const el = this.displayMap[id];
 		if (!el) {
 			console.warn(`Seven segment display: no element found for ID '${id}'`);
@@ -30,5 +30,10 @@ export class SevenSegmentDisplay {
 		for (const [id, value] of Object.entries(values)) {
 			this.write(id, value);
 		}
+	}
+
+	clearVerbNoun() {
+		this.write('verb', '');
+		this.write('noun', '');
 	}
 }

@@ -15,13 +15,14 @@ function handleDskyInput(e, keypadStateManager) {
 	}
 
 	if (Object.values(ModeTypes).includes(type)) {
-		console.log('Found type in enum');
+		// console.log('Found type in enum');
 
 		switch (type) {
 			//control entry
 			case 'verb':
 			case 'noun':
 				setMode(type, keypadStateManager);
+
 				break;
 			case 'entr':
 				keypadStateManager.finalise();
@@ -31,11 +32,13 @@ function handleDskyInput(e, keypadStateManager) {
 				keypadStateManager.reset();
 				updateActiveButtons(null);
 				break;
-			// numerical entry
-
-			case 'rset':
 			case 'plus':
 			case 'minus':
+				keypadStateManager.setPolarity(type);
+				// numerical entry
+				break;
+			case 'rset':
+
 			case 'key-rel':
 			case 'pro':
 				console.log(`${type} selected`);

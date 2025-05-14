@@ -1,9 +1,9 @@
-import {} from '@types';
+import {} from '../util/types.js';
 
 /**
  * A simple event emitter, inspired by the Angular EventEmitter
  * @template {string} EventType
- * @typedef {import('@types').EventEmitterInstance<EventType>} EventEmitterInstance
+ * @typedef {import('../util/types.js').EventEmitterInstance<EventType>} EventEmitterInstance
  */
 
 /**
@@ -21,8 +21,8 @@ export default class EventEmitter {
 	}
 
 	/**
-	 * @param {EventType | '*' } event
-	 * @param {(event: {type: EventType | '*', data?: any} & Record<string, any>) => void} listener
+	 * @param {string | '*' } event
+	 * @param {(event: {type: string | '*', action?:any} & Record<string, any>) => void} listener
 	 */
 	on(event, listener) {
 		if (!this.events[event]) {
@@ -33,7 +33,7 @@ export default class EventEmitter {
 
 	/**
 	 * Emits an event object with a mandatory `type` property.
-	 * @param {{ type: string } & Record<string, any>} eventObj
+	 * @param {{ type: string, action?:any } & Record<string, any>} eventObj
 	 */
 	emit(eventObj) {
 		const eventType = eventObj.type;
@@ -49,11 +49,11 @@ export default class EventEmitter {
 	}
 
 	/**
-	 * @param {EventType | '*'} event
-	 * @param {(event:{type: EventType | '*' } & Record <string, any>) => void} listener
-	 * @returns {({ unsubscribe: () => void, log: () => import('@types').Subscription })}
+	 * @param {(event:{type: string | '*', action?:any } & Record <string, any>) => void} listener
+	 * @returns {({ unsubscribe: () => void, log: () => import('../util/types.js').Subscription })}
 	 */
-	subscribe(event, listener) {
+	subscribe(listener) {
+		const event = '*';
 		this.on(event, listener);
 
 		const subscription = {

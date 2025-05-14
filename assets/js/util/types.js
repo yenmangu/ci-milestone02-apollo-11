@@ -17,11 +17,12 @@ export const ModeTypes = {
 	MINUS: 'minus',
 	KEYREL: 'key-rel',
 	PRO: 'pro',
-	ENTR: 'entr'
+	ENTR: 'entr',
+	CLR: 'clr'
 };
 
 /**
- * @typedef {'verb' | 'noun' | 'rset' | 'plus' | 'minus' | 'key-rel' | 'pro'} Mode
+ * @typedef {'verb' | 'noun' | 'rset' | 'plus' | 'minus' | 'key-rel' | 'pro' | 'clr'} Mode
  */
 
 /**
@@ -30,14 +31,18 @@ export const ModeTypes = {
  * @property {string | null} verb
  * @property {string | null} noun
  * @property {string} buffer
+ * @property {string} polarity
  *
  *
  * @typedef {Object} keypadStateManager
- * @property {(mode: 'verb' | 'noun'  )=> void} setMode
+ * @property {(mode: 'verb' | 'noun' | 'clr' )=> void} setMode
  * @property {(digit: string) => void} appendDigit
+ * @property {(polarity: string) => void} setPolarity
  * @property {() =>  void} finalise
+ *
  * @property {() =>  void} reset
  * @property {() =>  KeypadState} getState
+ *
  *
  *
  * @typedef {ReturnType<import("../keypad/keypadStateManager.js").default>} KeypadManager
@@ -58,25 +63,35 @@ export const ModeTypes = {
  */
 
 /**
+ * @typedef {Object} EventObjectType
+ * @property {string} type
+ * @property {any} data
+ */
+
+/**
  * @template {string} EventType
+
  * @typedef {{
  * 	on:
- * 		(event: EventType | '*', listener:
- * 			(event: {
- * 				type: EventType | '*'
+ * 		(event: string | '*',
+ * 			listener:
+ * 				(event: {
+ * 					type: string | '*',
+ * 					action?: any
  * 				} & Record<string,any>
  * 			) => void
  * 		) => void,
  * 	emit:
  * 		(eventObj: {
- * 			type: EventType | '*'
+ * 			type: string | '*',
+ * 			action?:any
  * 			} & Record <string, any>
  * 		) => void,
  * 	subscribe:
- * 		(event: EventType | '*',
- * 		listener:
+ * 		(listener:
  * 			(event: {
- * 				type: EventType | '*'
+ * 				type: string | '*',
+ * 				action?:any
  * 				} & Record<string, any>
  * 			) => void
  * 		) => Subscription

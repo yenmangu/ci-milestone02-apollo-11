@@ -15,11 +15,12 @@ const createKeypadStateManager = display => {
 		mode: null,
 		verb: null,
 		noun: null,
-		buffer: ''
+		buffer: '',
+		polarity: null
 	};
 
-	const logState = () => {
-		console.log('Current keypad state: ', { ...state });
+	const logState = invoker => {
+		console.log(invoker, ': Current keypad state: ', { ...state });
 	};
 
 	const updateDisplay = () => {
@@ -36,14 +37,20 @@ const createKeypadStateManager = display => {
 		setMode(mode) {
 			state.mode = mode;
 			state.buffer = '';
-			logState();
+			logState('setMode');
+			pushButtonEmitter.emit({ type: mode, action: 'enable' });
 		},
 		appendDigit(digit) {
 			if (state.mode) {
 				state.buffer += digit;
 			}
-			logState();
-			pushButtonEmitter.emit('inactive');
+			logState('appendDigit');
+			pushButtonEmitter.emit({ type: 'digit', digit: digit });
+		},
+
+		setPolarity(polarity) {
+			polarity === 'plus' ? (state.polarity = '+') : (state.polarity = '-');
+			logState('polarity');
 		},
 
 		finalise() {
@@ -53,23 +60,25 @@ const createKeypadStateManager = display => {
 			if (state.mode === 'verb') {
 				state.verb = state.buffer;
 				updateDisplay();
-				pushButtonEmitter.emit('verb', { action: 'disable' });
 			} else if (state.mode === 'noun') {
 				state.noun = state.buffer;
 				updateDisplay();
 			}
+			pushButtonEmitter.emit({ type: state.mode, action: 'disable' });
 			state.mode = null;
 			state.buffer = '';
-			logState();
+			logState('finalise');
 		},
 		reset() {
 			console.log('From keypadStateManager: reset selected');
 
-			state.mode = null;
+			state.mode = 'clr';
 			state.verb = null;
 			state.noun = null;
 			state.buffer = '';
-			pushButtonEmitter.emit('reset');
+			state.polarity = null;
+			display.clearVerbNoun();
+			pushButtonEmitter.emit({ type: 'reset' });
 		},
 		getState() {
 			return { ...state };

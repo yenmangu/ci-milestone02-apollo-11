@@ -70,10 +70,22 @@
 			<section id="landingUi">
 				<div class="container">
 					<div class="row">
-						<div class="col-3">Altitude Placeholder</div>
-						<div class="col-3">Velocity Placeholder</div>
-						<div class="col-3">Fuel Indicator Placeholder</div>
-						<div class="col-3">Extra UI Placeholder</div>
+						<div class="col-3">
+							<div class="col landing-ui"> Altitude<span id="altitude"></span>
+							</div>
+						</div>
+						<div class="col-3">
+							<div class="col landing-ui"> Velocity<span id="velocity"></span>
+							</div>
+						</div>
+						<div class="col-3">
+							<div class="col landing-ui"> Fuel<span id="fuel"></span>
+							</div>
+						</div>
+						<div class="col-3">
+							<div class="col  landing-ui"> Extras<span id="extras"></span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -84,44 +96,58 @@
 						<div class="col-6 indicator-lights">
 							<div class="container">
 								<div class="row">
-									<div class="col-6 light white">UPLINK ACTY</div>
-									<div class="col-6 light yellow">TEMP</div>
+									<div id="uplinkLight"
+											 class="col-6 light white">UPLINK ACTY</div>
+									<div id="tempLight"
+											 class="col-6 light yellow">TEMP</div>
 								</div>
 								<div class="row">
-									<div class="col-6 light white">NO ATT</div>
-									<div class="col-6 light yellow">GIMBALL LOCK</div>
+									<div id="noAttLight"
+											 class="col-6 light white">NO ATT</div>
+									<div id="gimbalLockLight"
+											 class="col-6 light yellow">GIMBALL LOCK</div>
 								</div>
 								<div class="row">
-									<div class="col-6 light white">STBY</div>
-									<div class="col-6 light yellow">PROG</div>
+									<div id="stbyLight"
+											 class="col-6 light white">STBY</div>
+									<div id="progLight"
+											 class="col-6 light yellow">PROG</div>
 								</div>
 								<div class="row">
-									<div class="col-6 light white">KEY REL</div>
-									<div class="col-6 light yellow">RESTART</div>
+									<div id="keyReleaseLight"
+											 class="col-6 light white">KEY REL</div>
+									<div id="restartLight"
+											 class="col-6 light yellow">RESTART</div>
 								</div>
 								<div class="row">
-									<div class="col-6 light white">OPR ERR</div>
-									<div class="col-6 light yellow">TRACKER</div>
+									<div id="opErrLight"
+											 class="col-6 light white">OPR ERR</div>
+									<div id="trackerLight"
+											 class="col-6 light yellow">TRACKER</div>
 								</div>
 								<div class="row">
-									<div class="col-6"></div>
-									<div class="col-6 light yellow">ALT</div>
+									<div id="priorityDisp"
+											 class="col-6">PRO <br>DISP</div>
+									<div id="altitudeLight"
+											 class="col-6 light yellow">ALT</div>
 								</div>
 								<div class="row">
-									<div class="col-6"></div>
-									<div class="col-6 light yellow">VEL</div>
+									<div id="noDapLight"
+											 class="col-6">NO DAP</div>
+									<div id="velocitLight"
+											 class="col-6 light yellow">VEL</div>
 								</div>
 							</div>
 						</div>
 						<div class="col-6 numerical-displays">
 							<div class="container">
-								<div class="row static-display">
+								<div class="row static-display prog">
 									<div id="compActy"
 											 data-dsky="inactive"
 											 class="col comp-acty active">COMP ACTY</div>
-									<div class="col dsky-highlight">PROG</div>
+									<div class="col dsky-highlight">PROG </div>
 								</div>
-								<div class="row">
+								<div class="row prog">
 									<div class="col"></div>
 									<div class="col seven-segment">
 										<span id="prog"></span>
@@ -131,7 +157,7 @@
 									<div class="col-6 dsky-highlight">VERB</div>
 									<div class="col-6 dsky-highlight">NOUN</div>
 								</div>
-								<div class="row">
+								<div class="row verb-noun">
 									<div class="col-6 seven-segment">
 										<span id="verb"></span>
 									</div>

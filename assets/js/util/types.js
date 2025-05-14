@@ -39,5 +39,29 @@ export const ModeTypes = {
  *
  * @typedef {import('../seven-segment/sevenSegment.js').SevenSegmentDisplay} SevenSegmentDisplay
  *
+ */
+
+/**
+ * EventEmitter & Subscription Types
+ */
+
+/**
+ * @typedef {Object} Subscription
+ * @property {() => void} unsubscribe - Removes the current listener
+ * @property {() => Subscription} log - Logs current listener and
+ * returns subscription for chaining
+ */
+
+/**
+ *
+ * @template {string} EventMap
+ * @typedef {Object} EventEmitterInstance
+ * @property {(event: EventMap, listener:
+ * (data?: any) => void) => void} on - registers an event listener
+ *
+ * @property {(event: EventMap, data?: any) => void } emit - Emits an event
+ * @property {(event: EventMap, listener:
+ * (data?: any) => void) => Subscription } subsscribe - Subscribes to an event
+ * and returns a Subscription object
  *
  */

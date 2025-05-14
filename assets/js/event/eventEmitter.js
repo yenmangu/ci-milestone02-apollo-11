@@ -12,6 +12,7 @@ export default class EventEmitter {
 		 * @type {Object.<EventMap,Function[]>}
 		 */
 		this.events = {};
+		this.debug = false; // Set to true for debug
 	}
 	/**
 	 * Registers a listener function for a specific event.
@@ -37,4 +38,27 @@ export default class EventEmitter {
 			console.log(this.events);
 		}
 	}
+	/**
+	 *
+	 * @param {EventMap} event
+	 * @param {(data?:any)=> void} listener
+	 * @returns {{unsubscribe: () => void, log: () => {unsubscribe: () => void, log: () => void }}} unsubscribe function
+	 */
+	subscribe(event, listener) {
+		this.on(event, listener);
+
+		const unsubscribe = () => {
+			this.events[event] = this.events[event]?.filter(fn => fn !== listener) || [];
+			if (this.debug) {
+				console.debug(`[EventEmitter] Unsubscribed from "${event}"`);
+			}
+		};
+		const log = () => {
+			console.log(`[EventEmitter] Listeners for "${event}": `, this.events[event]);
+			return { unsubscribe, log };
+		};
+		return { unsubscribe, log };
+	}
+
+	log() {}
 }

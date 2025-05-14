@@ -1,3 +1,6 @@
+// @ts-check
+/// <reference path='./util/types.js' />
+
 import { getTestResponse } from './api.js';
 import { initProgram } from './init.js';
 import {

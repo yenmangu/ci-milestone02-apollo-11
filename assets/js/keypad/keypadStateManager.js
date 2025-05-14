@@ -1,5 +1,5 @@
 import { setButtonState } from '../renderUI.js';
-import EventEmitter from '../eventEmitter.js';
+import { pushButtonEmitter } from '../event/eventBus.js';
 
 /**
  *
@@ -43,6 +43,7 @@ const createKeypadStateManager = display => {
 				state.buffer += digit;
 			}
 			logState();
+			pushButtonEmitter.emit('inactive');
 		},
 
 		finalise() {
@@ -52,6 +53,7 @@ const createKeypadStateManager = display => {
 			if (state.mode === 'verb') {
 				state.verb = state.buffer;
 				updateDisplay();
+				pushButtonEmitter.emit('verb', { action: 'disable' });
 			} else if (state.mode === 'noun') {
 				state.noun = state.buffer;
 				updateDisplay();
@@ -67,6 +69,7 @@ const createKeypadStateManager = display => {
 			state.verb = null;
 			state.noun = null;
 			state.buffer = '';
+			pushButtonEmitter.emit('reset');
 		},
 		getState() {
 			return { ...state };

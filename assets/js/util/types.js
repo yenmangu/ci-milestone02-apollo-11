@@ -62,7 +62,7 @@ export const ModeTypes = {
  * @template {string} EventMap
  * @typedef {Object} EventEmitterInstance
  * @property {(event: EventMap, listener:
- * (data?: any) => void) => void} on - registers an event listener
+ * (data?: any) => void) => void} on - Registers an event listener
  *
  * @property {(event: EventMap, data?: any) => void } emit - Emits an event
  * @property {(event: EventMap, listener:

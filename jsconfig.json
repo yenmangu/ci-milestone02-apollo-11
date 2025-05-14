@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"checkJs": true,
+		"baseUrl": "assets/js",
+		"paths": {
+			"@types": ["./util/types.js"]
+		},
+		"typeRoots": ["./util/types.js"],
+		"lib": ["ES2020", "DOM"],
+		"target": "ES2020"
+	},
+	"include": ["assets/js/**/*"]
+}

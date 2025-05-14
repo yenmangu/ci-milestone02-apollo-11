@@ -1,4 +1,9 @@
 /**
+ * @fileoverview Global type definitions for the Apollo 11 project.
+ * Use via JSDoc or import path alias `@types`
+ */
+
+/**
  * Centralised types declaration file for JSDOC and enums
  */
 /**
@@ -61,7 +66,8 @@ export const ModeTypes = {
  *
  * @property {(event: EventMap, data?: any) => void } emit - Emits an event
  * @property {(event: EventMap, listener:
- * (data?: any) => void) => Subscription } subsscribe - Subscribes to an event
+ * (data?: any) => void) => Subscription } subscribe - Subscribes to an event
  * and returns a Subscription object
  *
  */
+export {};

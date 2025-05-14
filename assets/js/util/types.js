@@ -32,6 +32,7 @@ export const ModeTypes = {
  */
 
 /**
+ * Stripped back version of the display interface
  * @typedef {{
  * 		write: (
  * 			id: string, value:string
@@ -45,6 +46,8 @@ export const ModeTypes = {
  */
 
 /**
+ * OLD
+ *
  * @typedef {Object} KeypadState
  * @property {Mode | null} mode
  * @property {string | null} verb
@@ -53,8 +56,9 @@ export const ModeTypes = {
  * @property {string} polarity
  *
  *
+ /**
  * @typedef {Object} keypadStateManager
- * @property {(mode: 'verb' | 'noun' | 'clr' )=> void} setMode
+ * @property {(string )=> void} setMode
  * @property {(digit: string) => void} appendDigit
  * @property {(polarity: string) => void} setPolarity
  * @property {() =>  void} finalise

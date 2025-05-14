@@ -11,11 +11,19 @@ import {} from '@types';
  * @implements {EventEmitterInstance<EventMap>}
  */
 export default class EventEmitter {
+	/**
+	 * @type {Record<EventMap, Function[]>}
+	 */
+	events;
 	constructor() {
-		this.events = {};
+		this.events = /** @type {Record<EventMap, Function[]>} */ ({});
 		this.debug = false; // Set to true for debug
 	}
 
+	/**
+	 * @param {EventMap} event
+	 * @param {(data?: any) => void} listener
+	 */
 	on(event, listener) {
 		if (!this.events[event]) {
 			this.events[event] = [];
@@ -23,6 +31,11 @@ export default class EventEmitter {
 		this.events[event].push(listener);
 	}
 
+	/**
+	 *
+	 * @param {EventMap} event
+	 * @param {any} [data]
+	 */
 	emit(event, data) {
 		if (this.events[event]) {
 			this.events[event].forEach(listener => listener(data));
@@ -30,20 +43,31 @@ export default class EventEmitter {
 		}
 	}
 
+	/**
+	 * @param {EventMap} event
+	 * @param {(data?: any) => void} listener
+	 * @returns {({ unsubscribe: () => void, log: () => import('@types').Subscription })}
+	 */
 	subscribe(event, listener) {
 		this.on(event, listener);
 
-		const unsubscribe = () => {
-			this.events[event] = this.events[event]?.filter(fn => fn !== listener) || [];
-			if (this.debug) {
-				console.debug(`[EventEmitter] Unsubscribed from "${event}"`);
+		const subscription = {
+			unsubscribe: () => {
+				this.events[event] =
+					this.events[event]?.filter(fn => fn !== listener) || [];
+				if (this.debug) {
+					console.debug(`[EventEmitter] Unsubscribed from "${event}"`);
+				}
+			},
+			log: () => {
+				console.log(
+					`[EventEmitter] Listeners for "${event}": `,
+					this.events[event]
+				);
+				return subscription;
 			}
 		};
-		const log = () => {
-			console.log(`[EventEmitter] Listeners for "${event}": `, this.events[event]);
-			return { unsubscribe, log };
-		};
-		return { unsubscribe, log };
+		return subscription;
 	}
 
 	log() {}

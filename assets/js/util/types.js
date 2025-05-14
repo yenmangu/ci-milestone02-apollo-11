@@ -65,8 +65,7 @@ export const ModeTypes = {
  * (data?: any) => void) => void} on - Registers an event listener
  *
  * @property {(event: EventMap, data?: any) => void } emit - Emits an event
- * @property {(event: EventMap, listener:
- * (data?: any) => void) => Subscription } subscribe - Subscribes to an event
+ * @property {(event: EventMap, listener: (data?: any) => void) => Subscription } subscribe - Subscribes to an event
  * and returns a Subscription object
  *
  */

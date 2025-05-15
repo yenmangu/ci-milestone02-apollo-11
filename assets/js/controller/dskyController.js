@@ -70,6 +70,7 @@ export class DskeyController {
 					break;
 				case ModeTypes.ENTR:
 					this.keypad.finalise();
+					// this.programController.setProgram()
 					break;
 				case ModeTypes.PLUS:
 				case ModeTypes.MINUS:

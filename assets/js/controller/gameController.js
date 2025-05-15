@@ -43,12 +43,24 @@ export class GameController {
 		const realElapsed = (now - this.startTime) / 1000;
 
 		// Check phase transitions
+		this.checkPhases();
 
 		// Update game state
+		this.updateState();
 
 		// Check failures
+		this.checkFailures();
 
 		// Request animation frame
 		requestAnimationFrame(() => this.gameLoop());
+	}
+	checkFailures() {
+		throw new Error('Method not implemented.');
+	}
+	updateState() {
+		throw new Error('Method not implemented.');
+	}
+	checkPhases() {
+		throw new Error('Method not implemented.');
 	}
 }

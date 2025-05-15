@@ -133,10 +133,19 @@ header {
 	align-items: center;
 	flex-wrap: nowrap;
 	gap: 0.5em;
+	background-color: rgba(var(--dsky-display-bg-values), 1);
 }
 
 .light.yellow {
 	background-color: rgba(248, 230, 130, 0.1);
+}
+
+.light.active {
+	background-color: rgba(var(--dsky-yellow-values), 0.8);
+}
+
+button.btn.pressed {
+	border: 2px solid blueviolet;
 }
 
 /* Numerical displays styles */
@@ -153,6 +162,10 @@ header {
 	font-size: 0.8rem;
 }
 
+.row.prog {
+	height: 2.8rem;
+}
+
 .numerical-displays .row {
 	background-color: var(--dsky-display-bg);
 	flex-wrap: nowrap;
@@ -164,6 +177,14 @@ header {
 
 .dsky-highlight {
 	background-color: var(--dsky-display-blue);
+}
+
+.row.verb-noun {
+	height: 2.2rem;
+}
+
+span[id^='register_'] {
+	height: 1.6rem;
 }
 
 [class^='col-'].polarity {

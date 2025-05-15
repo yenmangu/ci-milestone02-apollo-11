@@ -3,7 +3,7 @@
 /**
  * @template T
  * @param {Element | NodeListOf<Element> | Element[] } el
- * @param {'element' | 'nodeList'} [expectedType='element']
+ * @param {'element' | 'nodeList' | ''} [expectedType='element']
  * @returns {T}
  * @throws {TypeError}
  */

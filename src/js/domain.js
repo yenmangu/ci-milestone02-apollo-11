@@ -1,4 +1,4 @@
-(function () {
+export default (function () {
 	const pathname = window.location.pathname;
 	const pageLinks = document.querySelectorAll('a.nav-link');
 	pageLinks.forEach(a => {
@@ -10,4 +10,5 @@
 			anchor.classList.remove('active');
 		}
 	});
+	return pathname;
 })();

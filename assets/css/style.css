@@ -1,7 +1,7 @@
 /* Fonts import */
 @font-face {
 	font-family: 'dseg7';
-	src: url('/assets/fonts/DSEG7Classic-BoldItalic.woff2') format('woff2');
+	src: url('./fonts/DSEG7Classic-BoldItalic.woff2') format('woff2');
 	/* url('/assets/fonts/DSEG7Classic-BoldItalic.woff') format('woff') */
 	/* url('/assets/fonts/DSEG7Classic-BoldItalic.ttf') format('truetype'); */
 	font-weight: normal;
@@ -11,7 +11,7 @@
 }
 @font-face {
 	font-family: 'dseg7-mini';
-	src: url('/assets/fonts/DSEG7ClassicMini-BoldItalic.woff2') format('woff2');
+	src: url('/fonts/DSEG7ClassicMini-BoldItalic.woff2') format('woff2');
 	/* url('/assets/fonts/DSEG7Classic-BoldItalic.woff') format('woff') */
 	/* url('/assets/fonts/DSEG7Classic-BoldItalic.ttf') format('truetype'); */
 	font-weight: normal;

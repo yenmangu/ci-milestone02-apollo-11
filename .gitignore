@@ -16,3 +16,5 @@ cloudinary_python.txt
 **/.env
 *.sh
 ecosystem.config.*js
+ci-appollo-11.code*
+*.code-workspace

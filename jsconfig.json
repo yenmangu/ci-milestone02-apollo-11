@@ -3,7 +3,7 @@
 		"checkJs": true,
 		"baseUrl": "assets/js",
 		"paths": {
-			"@types": ["./util/types.js"]
+			// "@types": ["./util/types.js"]
 		},
 		"typeRoots": ["./util/types.js"],
 		"lib": ["ES2020", "DOM"],

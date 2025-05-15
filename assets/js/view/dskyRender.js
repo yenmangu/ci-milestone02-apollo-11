@@ -1,5 +1,9 @@
 import { cast } from '../util/cast.js';
-import { pushButtonEmitter, indicatorLightsEmitter } from '../event/eventBus.js';
+import {
+	pushButtonEmitter,
+	indicatorLightsEmitter,
+	devLightsEmitter
+} from '../event/eventBus.js';
 import {} from '../util/types.js';
 
 /**
@@ -8,6 +12,7 @@ import {} from '../util/types.js';
 export class DskyRender {
 	constructor() {
 		this.cacheElements();
+		this.devLightsSub = devLightsEmitter.subscribe(event => {});
 		this.testLights();
 	}
 
@@ -28,9 +33,9 @@ export class DskyRender {
 			return map;
 		}, {});
 
-		console.log('DisplayMap: ', this.displayMap);
-		console.log('lightsMap: ', this.indicatorLightsMap);
-		console.log(Array.from(Object.entries(this.indicatorLightsMap)));
+		// console.log('DisplayMap: ', this.displayMap);
+		// console.log('lightsMap: ', this.indicatorLightsMap);
+		// console.log(Array.from(Object.entries(this.indicatorLightsMap)));
 
 		/** @type {HTMLButtonElement[]} */
 		this.buttons = Array.from(document.querySelectorAll('.push-button'));
@@ -80,7 +85,17 @@ export class DskyRender {
 
 	/**
 	 * Flash an indicator light or button
+	 * @param {string} id
 	 */
+	setLightViaEvent(id) {
+		console.log('setLightViaEvent invoked with: ', id);
+		const lightEl = Object.entries(this.indicatorLightsMap).find(
+			light => light[1].id === id
+		);
+		if (lightEl) {
+			lightEl[1].classList.toggle('active');
+		}
+	}
 
 	/**
 	 * Show error
@@ -110,18 +125,24 @@ export class DskyRender {
 
 		const buttonId = 'btn_light_';
 		const buttons = document.querySelectorAll(`[id^=${buttonId}]`);
-		console.log('Buttons: ', buttons);
+
 		buttons.forEach(btn => {
 			const btnEl = cast(btn);
-			const light = document.getElementById(btnEl.dataset.dev);
-			if (light) {
-				btn.addEventListener('click', e => {
-					e.preventDefault();
-					light.classList.toggle('active');
-					btn.classList.toggle('pressed');
-				});
-			}
-			console.log('light: ', light);
+			btn.addEventListener('click', e => {
+				e.preventDefault();
+				devLightsEmitter.emit({ type: 'light', id: btnEl.dataset.dev });
+			});
+			// const btnEl = cast(btn);
+
+			// const light = document.getElementById(btnEl.dataset.dev);
+			// if (light) {
+			// 	btn.addEventListener('click', e => {
+			// 		e.preventDefault();
+			// 		devLightsEmitter.emit({ type: 'light', id: btnEl.dataset.dsky });
+			// 		// light.classList.toggle('active');
+			// 		// btn.classList.toggle('pressed');
+			// 	});
+			// }
 		});
 	}
 }

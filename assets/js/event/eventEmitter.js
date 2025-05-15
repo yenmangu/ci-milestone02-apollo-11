@@ -36,6 +36,7 @@ export default class EventEmitter {
 	 * @param {{ type: string, action?:any } & Record<string, any>} eventObj
 	 */
 	emit(eventObj) {
+		console.log('eventObject: ', eventObj);
 		const eventType = eventObj.type;
 
 		// Emit to specific

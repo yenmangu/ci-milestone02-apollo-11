@@ -13,7 +13,7 @@ export function cast(el, expectedType = 'element') {
 			throw new TypeError('Expected an HTMLElement');
 		}
 	} else if (expectedType === 'nodeList') {
-		if (!(el instanceof NodeList && !Array.isArray(el))) {
+		if (!(el instanceof NodeList || Array.isArray(el))) {
 			throw new TypeError('Expected a NodeList or array');
 		}
 		/** @type {Iterable<Element>} */

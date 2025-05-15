@@ -6,10 +6,11 @@
  *  - push-button wiring
  */
 
-import createKeypadStateManager from 'keypad/keypadStateManager.js';
-import { DskyRender } from 'view/dskyRender.js';
-import { SevenSegmentDisplay } from 'seven-segment/sevenSegment.js';
-import { ModeTypes } from 'util/types.js';
+import createKeypadStateManager from '../keypad/keypadStateManager.js';
+import { DskyRender } from '../view/dskyRender.js';
+import { SevenSegmentDisplay } from '../seven-segment/sevenSegment.js';
+import { ModeTypes } from '../util/types.js';
+import { devLightsEmitter, pushButtonEmitter } from '../event/eventBus.js';
 
 export class DskeyController {
 	/**
@@ -51,6 +52,9 @@ export class DskeyController {
 		 * 'Wire' up the buttons
 		 */
 		this.view.onButtonClick(this.handleInput.bind(this));
+		this.keypadSubscription = undefined;
+		this.devLightsSubscription = devLightsEmitter;
+		this.onDevLights();
 	}
 
 	/**
@@ -63,6 +67,9 @@ export class DskeyController {
 				case ModeTypes.VERB:
 				case ModeTypes.NOUN:
 					this.keypad.setMode(dskyData);
+					break;
+				case ModeTypes.ENTR:
+					this.keypad.finalise();
 					break;
 				case ModeTypes.PLUS:
 				case ModeTypes.MINUS:
@@ -94,4 +101,25 @@ export class DskeyController {
 	getPolarity(dskyData) {
 		return dskyData === 'plus' ? '+' : '-';
 	}
+
+	onStateEvents() {
+		this.keypadSubscription = pushButtonEmitter.subscribe(event => {
+			// Keypad events (lights etc)
+		});
+	}
+
+	onDevLights() {
+		this.devLightsSubscription.subscribe(event => {
+			if (event.type === 'light') {
+				console.log('Light event: ', event.id);
+				this.view.setLightViaEvent(event.id);
+			}
+		});
+	}
+
+	initiate() {
+		this.view.setDskyStateZero();
+	}
+
+	onExit() {}
 }

@@ -4,7 +4,7 @@ import {
 	indicatorLightsEmitter,
 	devLightsEmitter
 } from '../event/eventBus.js';
-import {} from '../util/types.js';
+import {} from '../types/dskyTypes.js';
 
 /**
  * View class for the DSKY component

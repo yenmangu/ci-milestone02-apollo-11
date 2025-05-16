@@ -1,9 +1,9 @@
-import {} from '../util/types.js';
+import {} from '../types/dskyTypes.js';
 
 /**
  * A simple event emitter, inspired by the Angular EventEmitter
  * @template {string} EventType
- * @typedef {import('../util/types.js').EventEmitterInstance<EventType>} EventEmitterInstance
+ * @typedef {import('../types/dskyTypes.js').EventEmitterInstance<EventType>} EventEmitterInstance
  */
 
 /**
@@ -51,7 +51,7 @@ export default class EventEmitter {
 
 	/**
 	 * @param {(event:{type: string | '*', action?:any } & Record <string, any>) => void} listener
-	 * @returns {({ unsubscribe: () => void, log: () => import('../util/types.js').Subscription })}
+	 * @returns {({ unsubscribe: () => void, log: () => import('../types/dskyTypes.js').Subscription })}
 	 */
 	subscribe(listener) {
 		const event = '*';

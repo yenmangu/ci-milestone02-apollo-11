@@ -1,10 +1,6 @@
 /**
- * @fileoverview Global type definitions for the Apollo 11 project.
- * Use via JSDoc or import path alias `@types`
- */
-
-/**
- * Centralised types declaration file for JSDOC and enums
+ * @fileoverview Type definitions for DSKY components and classes.
+ * Use via JSDoc.
  */
 
 /**
@@ -121,4 +117,5 @@ export const ModeTypes = {
  * }} EventEmitterInstance
  *
  */
+
 export {};

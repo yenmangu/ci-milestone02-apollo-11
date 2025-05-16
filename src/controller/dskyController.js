@@ -9,13 +9,13 @@
 import createKeypadStateManager from '../keypad/keypadStateManager.js';
 import { DskyRender } from '../view/dskyRender.js';
 import { SevenSegmentDisplay } from '../seven-segment/sevenSegment.js';
-import { ModeTypes } from '../util/types.js';
+import { ModeTypes } from '../types/dskyTypes.js';
 import { devLightsEmitter, pushButtonEmitter } from '../event/eventBus.js';
 
 export class DskeyController {
 	/**
 	 *
-	 * @param {import("util/types.js").displayMap} displayMap
+	 * @param {import("src/types/dskyTypes.js").displayMap} displayMap
 	 * @param {HTMLButtonElement[]} buttonElements
 	 */
 	constructor(displayMap, buttonElements) {
@@ -33,7 +33,7 @@ export class DskeyController {
 
 		/**
 		 * Minimal display interface needed for the createKeypadStateManager function
-		 * @type {import('util/types.js').DisplayInterface}
+		 * @type {import('src/types/dskyTypes.js').DisplayInterface}
 		 */
 		const displayInterface = {
 			write: (id, val) => this.display.write(id, val),
@@ -44,7 +44,7 @@ export class DskeyController {
 		/**
 		 * Create kepad logic, injecting the minimal needed display interface -
 		 * decoupling the SevenSegmentDisplay Class from the factory function
-		 * @type {import("util/types.js").KeypadManager}
+		 * @type {import("src/types/dskyTypes.js").KeypadManager}
 		 */
 		this.keypad = createKeypadStateManager(displayInterface);
 

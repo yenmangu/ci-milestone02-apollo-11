@@ -24,6 +24,8 @@ export class GameController {
 		this.altitude = 0;
 		this.fuel = 100;
 		this.verticalVelocity = 0;
+		this.pauseGame = undefined;
+		this.resumeGame = undefined;
 	}
 
 	// Start time-based game loop
@@ -39,8 +41,27 @@ export class GameController {
 		if (!this.isRunning) return;
 
 		// Calculate elapsed mission time
+
 		const now = Date.now();
+		// Get the current elapsed time since the loop started
+		// 'Divide by 1000 in order to convert ms to s'
 		const realElapsed = (now - this.startTime) / 1000;
+
+		/**
+		 * Apply a time scale factor to accelerate or
+		 * decelerate the mission simulation.
+		 * Uses time_scale factor from JSON timeline
+		 * Fallback to '1' (real time speed) if no time_scale factor
+		 */
+		this.elapsedTime = realElapsed * (this.timeLine.metadata?.time_scale || 1);
+
+		// PauseFunction
+		if (this.pauseGame) {
+			while (!this.resumeGame) {
+				this.pause();
+			}
+			this.resume();
+		}
 
 		// Check phase transitions
 		this.checkPhases();
@@ -54,6 +75,12 @@ export class GameController {
 		// Request animation frame
 		requestAnimationFrame(() => this.gameLoop());
 	}
+	resume() {
+		throw new Error('Method not implemented.');
+	}
+	pause() {
+		throw new Error('Method not implemented.');
+	}
 	checkFailures() {
 		throw new Error('Method not implemented.');
 	}
@@ -61,6 +88,8 @@ export class GameController {
 		throw new Error('Method not implemented.');
 	}
 	checkPhases() {
+		// Check if game needs to advance to next phase
+
 		throw new Error('Method not implemented.');
 	}
 }

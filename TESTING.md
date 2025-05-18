@@ -30,11 +30,12 @@ All previously closed/fixed bugs can be tracked [here](https://www.github.com/ye
 
 ### Fixed Bugs (Untracked)
 
-The following lists any issues encountered whilst locally developing, that have been fixed before deployment. They have not been tracked on GitHub because I have only pushed a deployment once I confirm it works locally.
+The following lists any issues encountered whilst locally developing, that have been fixed before deployment. They have ***not*** been tracked on GitHub because I have ***only*** pushed a deployment once I confirm it works locally.
 
-| Bug | Fix |
-| --- | --- |
-|     |     |
+
+### Dev/Ops Issues
+
+
 
 ### Unfixed Bugs / Issues
 

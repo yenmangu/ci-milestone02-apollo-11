@@ -1,0 +1,158 @@
+{
+	"mission_phases": [{
+			"state": "idle",
+			"phase": "Lunar Orbit (CSM Separation)",
+			"start_time": 0,
+			"description": "Eagle separates from Columbia at 60 NM altitude",
+			"altitude_naut_miles": 60,
+			"fuel_percent": 100,
+			"required_action": "none",
+			"audio_ref": "nasa/comm_checks.mp3",
+			"failure_state": null
+		},
+		{
+			"state": "descent_orbit",
+			"phase": "Descent Orbit Insertion (DOI)",
+			"start_time": 300,
+			"description": "30-second burn to lower perilune to 50k ft",
+			"altitude_naut_miles": 15,
+			"fuel_percent": 98,
+			"required_action": "verify_burn",
+			"audio_ref": "nasa/doi_go.mp3",
+			"failure_state": {
+				"type": "ABORT_ENGINE_FAILURE",
+				"condition": "throttle < 5% for >10s",
+				"audio_ref": "nasa/abort_doi.mp3",
+				"historical_context": "Actual DOI achieved 10.2% thrust (102:33:05 GET)"
+			}
+		},
+		{
+			"state": "powered_descent",
+			"phase": "Powered Descent Initiation (PDI)",
+			"start_time": 1020,
+			"description": "DPS ignition at 10% throttle (102:45:00 GET)",
+			"altitude_feet": 50000,
+			"fuel_percent": 95,
+			"required_action": "throttle_up",
+			"audio_ref": "nasa/pdi_ignition.mp3",
+			"failure_state": {
+				"type": "ABORT_NO_IGNITION",
+				"condition": "throttle_activation_time >8s",
+				"audio_ref": "nasa/abort_pdi.mp3",
+				"historical_context": "DPS had triple redundancy - never occurred"
+			}
+		},
+		{
+			"state": "braking_phase",
+			"phase": "Braking Phase (P63)",
+			"start_time": 1080,
+			"description": "Full throttle to kill horizontal velocity",
+			"altitude_feet": 33000,
+			"fuel_percent": 85,
+			"required_action": "maintain_attitude",
+			"audio_ref": "nasa/braking_phase.mp3",
+			"failure_state": {
+				"type": "GIMBAL_LOCK",
+				"condition": "pitch >12° || yaw >12°",
+				"audio_ref": "nasa/gimbal_lock.mp3",
+				"historical_context": "Aldrin: 'I'm on attitude control' (104:02:25)"
+			}
+		},
+		{
+			"state": "program_alarm_1202",
+			"phase": "1202 Program Alarm",
+			"start_time": 1125,
+			"description": "Computer overload at 33,500 ft",
+			"altitude_feet": 33500,
+			"fuel_percent": 82,
+			"required_action": "acknowledge_alarm",
+			"timeout": 5,
+			"audio_ref": "nasa/1202_alarm.mp3",
+			"failure_state": {
+				"type": "ABORT_1202_TIMEOUT",
+				"condition": "!acknowledged && timeout<=0",
+				"audio_ref": "nasa/abort_1202.mp3",
+				"historical_context": "Armstrong: 'We're Go on that alarm' (104:01:26)"
+			}
+		},
+		{
+			"state": "approach_phase",
+			"phase": "Approach Phase (P64)",
+			"start_time": 1200,
+			"description": "Manual control at ~2,000 ft",
+			"altitude_feet": 2000,
+			"fuel_percent": 45,
+			"required_action": "manual_attitude",
+			"audio_ref": "nasa/manual_control.mp3",
+			"failure_state": {
+				"type": "CRATER_COLLISION",
+				"condition": "horizontal_velocity >20fps",
+				"audio_ref": "nasa/collision_warning.mp3",
+				"historical_context": "Armstrong overflew West Crater at 104:16"
+			}
+		},
+		{
+			"state": "program_alarm_1201",
+			"phase": "1201 Program Alarm",
+			"start_time": 1260,
+			"description": "Second computer overload at 1,600 ft",
+			"altitude_feet": 1600,
+			"fuel_percent": 30,
+			"required_action": "acknowledge_alarm",
+			"timeout": 3,
+			"audio_ref": "nasa/1201_alarm.mp3",
+			"failure_state": {
+				"type": "ABORT_1201_TIMEOUT",
+				"condition": "!acknowledged && timeout<=0",
+				"audio_ref": "nasa/abort_1201.mp3",
+				"historical_context": "Guidance system rebooted successfully"
+			}
+		},
+		{
+			"state": "final_descent",
+			"phase": "Final Descent (P66)",
+			"start_time": 1320,
+			"description": "Manual landing (104:17:00 GET)",
+			"altitude_feet": 500,
+			"fuel_percent": 15,
+			"required_action": "manual_throttle",
+			"audio_ref": "nasa/final_descent.mp3",
+			"failure_state": {
+				"type": "CRASH_EXCESS_VELOCITY",
+				"condition": "vertical_velocity>3fps || horizontal_velocity>5fps",
+				"audio_ref": "nasa/crash.mp3",
+				"historical_context": "Actual touchdown: 1.7fps vertical, 0.5fps horizontal"
+			}
+		},
+		{
+			"state": "landed",
+			"phase": "Lunar Touchdown",
+			"start_time": 1380,
+			"description": "Contact light at 104:17:39 GET",
+			"altitude_feet": 0,
+			"fuel_percent": 2,
+			"required_action": "engine_stop",
+			"audio_ref": "nasa/contact_light.mp3",
+			"failure_state": null
+		}
+	],
+	"metadata": {
+		"time_scale": 1.5,
+		"global_failures": [{
+			"type": "FUEL_EXHAUSTED",
+			"condition": "fuel_percent <=0",
+			"audio_ref": "nasa/fuel_exhausted.mp3",
+			"applies_to": ["powered_descent", "braking_phase", "approach_phase", "final_descent"],
+			"historical_context": "Real mission had 25s fuel remaining at touchdown"
+		}],
+		"historical_references": {
+			"time_format": "GET (Ground Elapsed Time)",
+			"primary_source": "Apollo 11 Flight Journal (NASA)",
+			"key_events": {
+				"pdi_actual": "102:45:00 GET",
+				"1202_alarm": "104:01:26 GET",
+				"touchdown": "104:17:39 GET"
+			}
+		}
+	}
+}

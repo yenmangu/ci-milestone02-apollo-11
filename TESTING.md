@@ -22,7 +22,7 @@
 
 [![GitHub issue custom search](https://img.shields.io/github/issues-search?query=repo%3Ayenmangu%2Fci-milestone02-apollo-11%20label%3Abug&label=bugs)](https://www.github.com/yenmangu/ci-milestone02-apollo-11/issues?q=is%3Aissue+is%3Aclosed+label%3Abug)
 
-I've used [GitHub Issues](https://www.github.com/yenmangu/ci-milestone02-apollo-11/issues) to track and manage bugs and issues found after deployment during the development stages of my project.
+I've used [GitHub Issues](https://www.github.com/yenmangu/ci-milestone02-apollo-11/issues) to track and manage bugs and issues found whilst testing deployments during the development stages of my project.
 
 All previously closed/fixed bugs can be tracked [here](https://www.github.com/yenmangu/ci-milestone02-apollo-11/issues?q=is%3Aissue+is%3Aclosed+label%3Abug).
 

@@ -56,8 +56,15 @@ All previously closed/fixed bugs can be tracked [here](https://www.github.com/ye
 
 ### Fixed Bugs (Untracked)
 
-The following lists any issues encountered whilst locally developing, that have been fixed before deployment. They have ***not*** been tracked on GitHub because I have ***only*** pushed a deployment once I confirm it works locally.
+> Note: The following bugs were dicovered and resolved during local development and did not make it into version control. They are recorded here for transparency and future reference.
 
+
+| Bugs / Issue                        | Explanation                                                                                                                 | Fix                                                                                                                                                                                                 |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DOM type assertion / mismatch error | A Type issue arose when trying to access property of `HTMLElement` that is not available on the generic supertype `Element` | Wrote custom [`cast.js`](./src/util/cast.js) script which accepts 2 arguments: `element: Element` and `expectedType: string` and leverages JSDoc tags to assert the expected `HTMLElement` subtype. |
+
+
+- DOM type assertion/mismatch errors
 
 ### Dev/Ops Issues
 

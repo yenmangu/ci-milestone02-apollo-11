@@ -64,8 +64,6 @@ All previously closed/fixed bugs can be tracked [here](https://www.github.com/ye
 | DOM type assertion / mismatch error | A Type issue arose when trying to access property of `HTMLElement` that is not available on the generic supertype `Element` | Wrote custom [`cast.js`](./src/util/cast.js) script which accepts 2 arguments: `element: Element` and `expectedType: string` and leverages JSDoc tags to assert the expected `HTMLElement` subtype. |
 
 
-- DOM type assertion/mismatch errors
-
 ### Dev/Ops Issues
 
 

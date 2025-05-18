@@ -19,11 +19,14 @@ export class FSM {
 	/**
 	 * Adds a new mission state to the finite state machine.
 	 *
-	 * @param {keyof import('./states.js').StatesEnum} name - The key used to identify this state (e.g, "DESCENT").
+	 * @param {keyof import('./states.js').StatesEnum} name
+	 * 	- The key used to identify this state (e.g, "DESCENT").
 	 * Must be key from States enum.
-	 * @param {import('src/types/missionTypes.js').MissionStateContructor} stateClass - A class constructor for the mission state.
+	 * @param {import('src/types/missionTypes.js').MissionStateContructor} stateClass
+	 * 	- A class constructor for the mission state.
 	 * @example
-	 * fsm.addState("DESCENT", PoweredDescentState); // Now accessible via transitionTo("DESCENT")
+	 * fsm.addState("DESCENT", PoweredDescentState);
+	 * 	// Now accessible via transitionTo("DESCENT")
 	 */
 	addState(name, stateClass) {
 		// Enforce valid state keys

@@ -6,18 +6,41 @@
 ## Code Validation
 
 ### HTML
+I have used the recommended [HTML W3C Validator](https://validator.w3.org) to validate all of my HTML files.
+
 
 ### CSS
 
+I have used the recommended [CSS Jigsaw Validator](https://jigsaw.w3.org/css-validator) to validate all of my CSS files.
+
 ## Responsiveness
+
+I've tested my deployed project to check for responsiveness issues.
+
+| Page | Mobile | Tablet | Desktop | Notes |
+| ---- | ------ | ------ | ------- | ----- |
 
 ## Browser Compatibility
 
+| Page | Chrome | Firefox | Safari | Notes |
+| ---- | ------ | ------- | ------ | ----- |
+
 ## Lighthouse Audit
+
+| Page | Mobile | Desktop |
+| ---- | ------ | ------- |
 
 ## Defensive Programming
 
+Defensive programming was manually tested with the below user acceptance testing:
+
+| Page | Expectation | Test | Result | Screenshot |
+| ---- | ----------- | ---- | ------ | ---------- |
+
 ## User Story Testing
+
+| Target | Expectation | Outcome | Screenshot |
+| ------ | ----------- | ------- | ---------- |
 
 ## Bugs
 

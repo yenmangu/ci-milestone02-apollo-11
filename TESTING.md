@@ -56,7 +56,7 @@ All previously closed/fixed bugs can be tracked [here](https://www.github.com/ye
 
 ### Fixed Bugs (Untracked)
 
-> Note: The following bugs were dicovered and resolved during local development and did not make it into version control. They are recorded here for transparency and future reference.
+> [!IMPORTANT] Note: The following bugs were dicovered and resolved during local development and did not make it into version control. They are recorded here for transparency and future reference.
 
 
 | Bugs / Issue                        | Explanation                                                                                                                 | Fix                                                                                                                                                                                                 |

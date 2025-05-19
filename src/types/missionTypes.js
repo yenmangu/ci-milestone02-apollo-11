@@ -33,7 +33,7 @@ import { MissionState } from '../mission/missionState.js';
  * ALL possible states in the application
  * @readonly
  */
-export const AppStates = {
+const AppStates = {
 	// Timeline states (from JSON)
 	IDLE: 'idle',
 	DESCENT_ORBIT: 'descent_orbit',
@@ -129,4 +129,4 @@ export const AppStates = {
  * @property {(state: MissionStateKey|string) => MissionPhase | undefined} getPhase
  */
 
-export {};
+export { AppStates };

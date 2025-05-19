@@ -62,6 +62,8 @@ All previously closed/fixed bugs can be tracked [here](https://www.github.com/ye
 | Bugs / Issue                        | Explanation                                                                                                                 | Fix                                                                                                                                                                                                 |
 | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | DOM type assertion / mismatch error | A Type issue arose when trying to access property of `HTMLElement` that is not available on the generic supertype `Element` | Wrote custom [`cast.js`](./src/util/cast.js) script which accepts 2 arguments: `element: Element` and `expectedType: string` and leverages JSDoc tags to assert the expected `HTMLElement` subtype. |
+| `undefined` return from `getPhase`  | the [timeline.js](./src/data/timeline.js) `getPhase` method was producing `undefined`.                                      | use the value from the `AppStates` enum  as the lookup in the `.find` method, not the key                                                                                                           |
+
 
 
 ### Dev/Ops Issues

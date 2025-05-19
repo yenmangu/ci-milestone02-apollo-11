@@ -1,11 +1,12 @@
 import { renderPhaseInfo } from '../../view/phaseRender.js';
 import { MissionState } from '../missionState.js';
 /**
+ * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
+ */
+
+/**
  * Represents 'IDLE' mission state
  * @extends MissionState
- */
-/**
- * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
  */
 export class IdleState extends MissionState {
 	/**
@@ -24,7 +25,7 @@ export class IdleState extends MissionState {
 	 * @param {MissionPhase} phase
 	 */
 	onEnter(phase) {
-		console.log('[FSM] IdleState onEnter');
+		console.log('[State: Idle] onEnter');
 		if (phase) {
 			renderPhaseInfo(phase);
 		}

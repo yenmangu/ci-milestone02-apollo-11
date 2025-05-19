@@ -18,7 +18,7 @@ export class FSM {
 	/**
 	 * Adds a new mission state to the finite state machine.
 	 *
-	 * @param {keyof import('../types/missionTypes.js').StatesEnum} name
+	 * @param {import('src/types/missionTypes.js').AppStatesKeys} name
 	 * 	- The key used to identify this state (e.g, "DESCENT").
 	 * Must be key from States enum.
 	 * @param {import('src/types/missionTypes.js').MissionStateContructor} stateClass
@@ -38,15 +38,20 @@ export class FSM {
 		if (!(stateClass.prototype instanceof MissionState)) {
 			throw new TypeError(`${stateClass.name} must inherit from MissionState`);
 		}
-		this.states.set(name, new stateClass(this.game));
+		const stateValue = States[name];
+		this.states.set(stateValue, new stateClass(this.game));
 	}
 	/**
 	 *
 	 * @param {string} stateName
 	 */
 	transitionTo(stateName) {
+		const state = this.states.get(States[stateName]);
+		if (!state) {
+			throw new Error(`State "${stateName}" not found`);
+		}
 		if (this.currentState) this.currentState.exit();
-		this.currentState = this.states.get(stateName);
+		this.currentState = state;
 		this.currentState.enter();
 	}
 }

@@ -1,10 +1,14 @@
 export class MissionState {
 	/**
-	 * @typedef {import('../controller/gameController.js').GameController} GameControllerInstance
-	 * @param {GameControllerInstance} gameController
+	 * @typedef {import('../controller/gameController.js').GameController} GameController
+	 * @typedef {import('src/types/missionTypes.js').AppStatesKeys} StateKey
+	 * @param {GameController} gameController
+	 * @param {StateKey} stateKey
 	 */
-	constructor(gameController) {
-		this.game = gameController;
+	constructor(gameController, stateKey) {
+		/**@type {GameController} */ this.game = gameController;
+		/** @type {StateKey} */ this.stateKey = stateKey;
+
 		/**
 		 * Single point of truth for pause status.
 		 * All child state classes inherit this.

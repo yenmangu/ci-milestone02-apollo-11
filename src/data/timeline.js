@@ -1,4 +1,3 @@
-import { States } from 'src/state/states.js';
 import { AppStates } from '../types/missionTypes.js';
 let cachedTimeline = null;
 
@@ -15,20 +14,12 @@ const VALID_TIMELINE_STATES = new Set(
 );
 
 /**
- *
- * @param {string} state
- * @returns {state is TimelineState}
- */
-function isTimelineState(state) {
-	return VALID_TIMELINE_STATES.has(state);
-}
-
-/**
  * Loads and validates the timeline data
  * @returns {Promise<MissionTimeline>}
  */
 export async function loadTimeline() {
 	// Exit early if cachedTimeline exists
+	console.log('loadTimeline invoked');
 	if (cachedTimeline) {
 		return cachedTimeline;
 	}
@@ -53,8 +44,22 @@ export async function loadTimeline() {
 
 		// const stateString =
 		const getPhase = state => {
-			return timelineJson.mission_phases.find(p => p.state === state);
+			console.log('State look up: ', state);
+			const stateString = AppStates[state];
+
+			const phase = timelineJson.mission_phases.find(p => p.state === stateString);
+			console.log('Phase found: ', phase);
+			return phase;
 		};
+
+		/**
+		 * @type {MissionTimeline}
+		 */
+		const timeline = Object.freeze({
+			...timelineJson,
+			getPhase
+		});
+		return timeline;
 	} catch (error) {
 		console.error('Failed to load timeline: ', error);
 		throw error;

@@ -1,15 +1,15 @@
-import { IdleState } from 'src/mission/states/idle.js';
-import { FSM } from 'src/state/fsm.js';
-import { DescentOrbit } from 'src/mission/states/descentOrbit.js';
-import { PoweredDescent } from 'src/mission/states/poweredDescent.js';
-import { BrakingPhase } from 'src/mission/states/brakingPhase.js';
-import { Alarm1202 } from 'src/mission/states/alarm1202.js';
-import { ApproachPhase } from 'src/mission/states/approachPhase.js';
-import { Alarm1201 } from 'src/mission/states/alarm1201.js';
-import { FinalDescent } from 'src/mission/states/finalDescent.js';
-import { Landed } from 'src/mission/states/landed.js';
-import { Failed } from 'src/mission/states/failed.js';
-import { Paused } from 'src/mission/states/paused.js';
+import { FSM } from '../state/fsm.js';
+import { IdleState } from '../mission/states/idle.js';
+import { DescentOrbit } from '../mission/states/descentOrbit.js';
+import { PoweredDescent } from '../mission/states/poweredDescent.js';
+import { BrakingPhase } from '../mission/states/brakingPhase.js';
+import { Alarm1202 } from '../mission/states/alarm1202.js';
+import { ApproachPhase } from '../mission/states/approachPhase.js';
+import { Alarm1201 } from '../mission/states/alarm1201.js';
+import { FinalDescent } from '../mission/states/finalDescent.js';
+import { Landed } from '../mission/states/landed.js';
+import { Failed } from '../mission/states/failed.js';
+import { Paused } from '../mission/states/paused.js';
 
 /**
  * @typedef {import('src/types/missionTypes.js').MissionTimeline} MissionTimeline
@@ -26,6 +26,7 @@ import { Paused } from 'src/mission/states/paused.js';
 export class GameController {
 	/** @param {MissionTimeline} timeline */
 	constructor(timeline) {
+		console.log('GameController created');
 		this.fsm = new FSM(this);
 		this.fsm.addState('IDLE', IdleState);
 		this.fsm.addState('DESCENT_ORBIT', DescentOrbit);

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport"
+					content="width=device-width, initial-scale=1.0">
+		<title>Apollo 11 Lunar Excursion Module (LEM) Simulation</title>
+		<link rel="stylesheet"
+					href="/assets/css/style.css">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+					rel="stylesheet"
+					integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
+					crossorigin="anonymous">
+	</head>
+	<body>
+		<!-- header -->
+		<header>
+			<!-- nav -->
+			<nav class="navbar navbar-expand-lg bg-body-tertiary">
+				<div class="container-fluid">
+					<a class="navbar-brand"
+						 href="#">Navbar</a>
+					<button class="navbar-toggler"
+									type="button"
+									data-bs-toggle="collapse"
+									data-bs-target="#navbarNav"
+									aria-controls="navbarNav"
+									aria-expanded="false"
+									aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse"
+							 id="navbarNav">
+						<ul class="navbar-nav">
+							<li class="nav-item">
+								<a class="nav-link active"
+									 aria-current="page"
+									 href="./index.html">Home</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link"
+									 href="./simulator.html">Simulator</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link"
+									 href="./about.html">About</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link disabled"
+									 aria-disabled="true">Disabled</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</header>
+		<!-- main -->
+		<main>
+			<!-- lunar altitude animation section -->
+			<section id="lemAnimation">
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<div class="landing-display"> Landing Display Placeholder </div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- landing ui section -->
+			<section id="landingUi">
+				<div class="container">
+					<div class="row">
+						<div class="col-3">
+							<div class="col landing-ui"> Altitude<span id="altitude"></span>
+							</div>
+						</div>
+						<div class="col-3">
+							<div class="col landing-ui"> Velocity<span id="velocity"></span>
+							</div>
+						</div>
+						<div class="col-3">
+							<div class="col landing-ui"> Fuel<span id="fuel"></span>
+							</div>
+						</div>
+						<div class="col-3">
+							<div class="col  landing-ui"> Extras<span id="extras"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- dsky section -->
+			<section id="dsky">
+				<div class="container">
+					<div class="row lights-displays">
+						<div class="col-6 indicator-lights">
+							<div class="container">
+								<div class="row">
+									<div id="uplinkLight"
+											 class="col-6 light white">UPLINK ACTY</div>
+									<div id="tempLight"
+											 class="col-6 light yellow">TEMP</div>
+								</div>
+								<div class="row">
+									<div id="noAttLight"
+											 class="col-6 light white">NO ATT</div>
+									<div id="gimbalLockLight"
+											 class="col-6 light yellow">GIMBALL LOCK</div>
+								</div>
+								<div class="row">
+									<div id="stbyLight"
+											 class="col-6 light white">STBY</div>
+									<div id="progLight"
+											 class="col-6 light yellow">PROG</div>
+								</div>
+								<div class="row">
+									<div id="keyReleaseLight"
+											 class="col-6 light white">KEY REL</div>
+									<div id="restartLight"
+											 class="col-6 light yellow">RESTART</div>
+								</div>
+								<div class="row">
+									<div id="opErrLight"
+											 class="col-6 light white">OPR ERR</div>
+									<div id="trackerLight"
+											 class="col-6 light yellow">TRACKER</div>
+								</div>
+								<div class="row">
+									<div id="priorityDisp"
+											 class="col-6 light">PRO <br>DISP</div>
+									<div id="altitudeLight"
+											 class="col-6 light yellow">ALT</div>
+								</div>
+								<div class="row">
+									<div id="noDapLight"
+											 class="col-6 light">NO DAP</div>
+									<div id="velocitLight"
+											 class="col-6 light yellow">VEL</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-6 numerical-displays">
+							<div class="container">
+								<div class="row static-display prog">
+									<div id="compActy"
+											 data-dsky="inactive"
+											 class="col comp-acty active">COMP ACTY</div>
+									<div class="col dsky-highlight">PROG </div>
+								</div>
+								<div class="row prog">
+									<div class="col"></div>
+									<div class="col seven-segment">
+										<span id="prog"></span>
+									</div>
+								</div>
+								<div class="row static-display">
+									<div class="col-6 dsky-highlight">VERB</div>
+									<div class="col-6 dsky-highlight">NOUN</div>
+								</div>
+								<div class="row verb-noun">
+									<div class="col-6 seven-segment">
+										<span id="verb"></span>
+									</div>
+									<div id="nounSegment"
+											 class="col-6 seven-segment">
+										<span id="noun"></span>
+									</div>
+								</div>
+								<div class="row data-register">
+									<div id="polarity1Segment"
+											 class="col-2 polarity">
+										<span id="polarity_1">+</span>
+									</div>
+									<div class="col-10 seven-segment">
+										<span id="register_1"></span>
+									</div>
+								</div>
+								<div class="row data-register">
+									<div class="col-2 polarity">
+										<span id="polarity_2">+</span>
+									</div>
+									<div class="col-10 seven-segment">
+										<span id="register_2"></span>
+									</div>
+								</div>
+								<div class="row data-register">
+									<div class="col-2 polarity">
+										<span id="polarity_3">+</span>
+									</div>
+									<div class="col-10 seven-segment">
+										<span id="register_3"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-2">
+						<div class="col py-2">
+							<div class="push-buttons">
+								<div class="column verb-noun">
+									<button data-state=""
+													data-dsky="verb"
+													class="push-button btn">VERB</button>
+									<button data-state=""
+													data-dsky="noun"
+													class="push-button btn">NOUN</button>
+								</div>
+								<div class="column numerical-one">
+									<button data-state=""
+													data-dsky="plus"
+													class="push-button btn">+</button>
+									<button data-state=""
+													data-dsky="minus"
+													class="push-button btn">-</button>
+									<button data-state=""
+													data-dsky="0"
+													class="push-button btn">0</button>
+								</div>
+								<div class="column numerical-two">
+									<button data-state=""
+													data-dsky="7"
+													class="push-button btn">7</button>
+									<button data-state=""
+													data-dsky="4"
+													class="push-button btn">4</button>
+									<button data-state=""
+													data-dsky="1"
+													class="push-button btn">1</button>
+								</div>
+								<div class="column numerical-three">
+									<button data-state=""
+													data-dsky="8"
+													class="push-button btn">8</button>
+									<button data-state=""
+													data-dsky="5"
+													class="push-button btn">5</button>
+									<button data-state=""
+													data-dsky="2"
+													class="push-button btn">2</button>
+								</div>
+								<div class="column numerical-four">
+									<button data-state=""
+													data-dsky="9"
+													class="push-button btn">9</button>
+									<button data-state=""
+													data-dsky="6"
+													class="push-button btn">6</button>
+									<button data-state=""
+													data-dsky="3"
+													class="push-button btn">3</button>
+								</div>
+								<div class="column actions-one">
+									<button data-state=""
+													data-dsky="clr"
+													class="push-button btn">CLR</button>
+									<button data-state=""
+													data-dsky="pro"
+													class="push-button btn">PRO</button>
+									<button data-state=""
+													data-dsky="key-rel"
+													class="push-button btn">KEY <br> REL</button>
+								</div>
+								<div class="column actions-two">
+									<button data-state=""
+													data-dsky="entr"
+													class="push-button btn">ENTR</button>
+									<button data-state=""
+													data-dsky="rset"
+													class="push-button btn">RSET</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+		<!-- footer -->
+		<footer>Footer</footer>
+		<!-- bootstrap script -->
+		<script src="/src/main.js"
+						type="module"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+						integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+						crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.7.1.js"
+						integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+						crossorigin="anonymous"></script>
+	</body>
+</html>

@@ -43,8 +43,8 @@ export class FSM {
 		if (!(stateClass.prototype instanceof MissionState)) {
 			throw new TypeError(`${stateClass.name} must inherit from MissionState`);
 		}
-		const stateValue = AppStates[key];
-		this.states.set(stateValue, new stateClass(this.game));
+		const instance = new stateClass(this.game, key);
+		this.states.set(AppStates[key], instance);
 	}
 	/**
 	 *

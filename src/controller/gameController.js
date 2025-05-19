@@ -12,11 +12,19 @@ import { Failed } from 'src/mission/states/failed.js';
 import { Paused } from 'src/mission/states/paused.js';
 
 /**
+ * @typedef {import('src/types/missionTypes.js').MissionTimeline} MissionTimeline
+ * @typedef {MissionTimeline['metadata']} Metadata
+ * @typedef {MissionTimeline['metadata']['global_failures']} GlobalFailures
+ * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
+ * @typedef {MissionPhase['failure_state']} FailureState
+ */
+
+/**
  * Game loop controller
  * takes a parsed JSON mission timline document
  */
 export class GameController {
-	/** @type {Object} */
+	/** @param {MissionTimeline} timeline */
 	constructor(timeline) {
 		this.fsm = new FSM(this);
 		this.fsm.addState('IDLE', IdleState);
@@ -39,8 +47,11 @@ export class GameController {
 		this.currentPhaseIndex = 0;
 
 		// Mission data
-		this.timeLine = timeline.mission_phases;
-		this.failureConditions = timeline.metadata.failure_conditions;
+
+		/** @type {MissionTimeline} */ this.timeLine = timeline;
+
+		/** @type {GlobalFailures} */ this.globalFailureConditions =
+			timeline.metadata.global_failures;
 
 		// UserInput tracking
 		this.requiredInputs = [];

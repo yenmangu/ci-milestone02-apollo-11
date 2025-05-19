@@ -1,5 +1,4 @@
 import { MissionState } from '../mission/missionState.js';
-import { States } from 'src/state/states.js';
 
 /**
  * @fileoverview Type definitions for game controllers
@@ -12,7 +11,7 @@ import { States } from 'src/state/states.js';
  */
 
 /**
- * @typedef {new (game: GameController) => MissionState} MissionStateContructor
+ * @typedef {new (game: GameController, key:AppStatesKeys) => MissionState} MissionStateContructor
  */
 
 /**
@@ -106,9 +105,27 @@ export const AppStates = {
  */
 
 /**
+ * @typedef {Object[]} GlobalFailures
+ * @property {string} type
+ * @property {string} condition
+ * @property {string} audio_ref
+ * @property {string[]} applies_to
+ * @property {string} historical_context
+ */
+
+/**
+ * @typedef {Object} TimelineMetadata
+ * @property {number} time_scale
+ * @property {string} velocity_units
+ * @property {GlobalFailures} global_failures
+ * @property {Object} historical_references
+ *
+ */
+
+/**
  * @typedef {Object} MissionTimeline
  * @property {MissionPhase[]} mission_phases
- * @property {Object} metadata
+ * @property {TimelineMetadata} metadata
  * @property {(state: MissionStateKey|string) => MissionPhase | undefined} getPhase
  */
 

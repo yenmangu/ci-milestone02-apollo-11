@@ -1,8 +1,8 @@
 import { MissionState } from '../missionState.js';
 
 export class Failed extends MissionState {
-	constructor(gameController) {
-		super(gameController);
+	constructor(gameController, key) {
+		super(gameController, key);
 	}
 	enter() {
 		console.log('Failed state entered');

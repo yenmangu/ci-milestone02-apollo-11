@@ -1,8 +1,8 @@
 import { MissionState } from '../missionState.js';
 
 export class FinalDescent extends MissionState {
-	constructor(gameController) {
-		super(gameController);
+	constructor(gameController, key) {
+		super(gameController, key);
 	}
 	enter() {
 		console.log('FinalDescent state entered');

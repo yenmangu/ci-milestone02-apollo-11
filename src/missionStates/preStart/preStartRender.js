@@ -11,3 +11,11 @@ export function onStart(callback) {
 export function getUISections() {
 	return document.querySelectorAll('section[id$="-ui"]');
 }
+
+/**
+ *
+ * @param {NodeListOf<HTMLElement>} sections
+ */
+export function showUISections(sections) {
+	sections.forEach(section => {});
+}

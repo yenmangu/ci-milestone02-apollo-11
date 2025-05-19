@@ -1,10 +1,10 @@
 import { FSM } from '../FSM/fsm.js';
 import { IdleState } from '../missionStates/idle/idleState.js';
-import { DescentOrbit } from '../missionStates/descentOrbit/descentOrbitPhase.js';
+import { DescentOrbit } from '../missionStates/descentOrbit/descentOrbitState.js';
 import { PoweredDescent } from '../missionStates/poweredDescent/poweredDescentState.js';
-import { BrakingPhase } from '../missionStates/brakingPhase/brakingPhaseState.js';
+import { BrakingPhase } from '../missionStates/brakingState/brakingState.js';
 import { Alarm1202 } from '../missionStates/1202ProgramAlarm/1202AlarmState.js';
-import { ApproachPhase } from '../missionStates/approachPhase/approachPhaseState.js';
+import { ApproachPhase } from '../missionStates/approachState/approachState.js';
 import { Alarm1201 } from '../missionStates/1201ProgramAlarm/1201AlarmState.js';
 import { FinalDescent } from '../missionStates/finalDescent/finalDescentState.js';
 import { Landed } from '../missionStates/landed/landedState.js';

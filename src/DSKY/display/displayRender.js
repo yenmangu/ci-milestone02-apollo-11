@@ -1,10 +1,10 @@
-import { cast } from '../util/cast.js';
+import { cast } from '../../util/cast.js';
 import {
 	pushButtonEmitter,
 	indicatorLightsEmitter,
 	devLightsEmitter
-} from '../event/eventBus.js';
-import {} from '../types/dskyTypes.js';
+} from '../../event/eventBus.js';
+import {} from '../../types/dskyTypes.js';
 
 /**
  * View class for the DSKY component

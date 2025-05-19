@@ -1,8 +1,8 @@
 import { MissionState } from '../missionState.js';
 
 export class Alarm1202 extends MissionState {
-	constructor(gameController) {
-		super(gameController);
+	constructor(gameController, key) {
+		super(gameController, key);
 	}
 	enter() {
 		console.log('Alarm1202 state entered');

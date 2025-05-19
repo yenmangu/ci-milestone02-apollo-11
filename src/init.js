@@ -1,8 +1,8 @@
-import { DskyRender } from './DSKY/dskyRender.js';
-import createKeypadStateManager from './keypad/keypadStateManager.js';
+import { DskyRender } from './DSKY/display/displayRender.js';
+import createKeypadStateManager from './DSKY/keypad/keypadStateManager.js';
 import { initSevenSegmentDisplay } from './seven-segment/initSevenSegment.js';
 import { SevenSegmentDisplay } from './seven-segment/sevenSegment.js';
-import { DskeyController } from './DSKY/dskyController.js';
+import { DskeyController } from './DSKY/display/displayController.js';
 import { cast } from './util/cast.js';
 import { loadTimeline } from './data/timeline.js';
 import { GameController } from './game/gameController.js';

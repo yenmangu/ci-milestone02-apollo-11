@@ -1,14 +1,14 @@
-import { pushButtonEmitter } from '../event/eventBus.js';
+import { pushButtonEmitter } from '../../event/eventBus.js';
 
 /**
  *
- * @param {import('../types/dskyTypes.js').DisplayInterface} display
- * @returns {import('../types/dskyTypes.js').keypadStateManager}
+ * @param {import('../../types/dskyTypes.js').DisplayInterface} display
+ * @returns {import('../../types/dskyTypes.js').keypadStateManager}
  */
 const createKeypadStateManager = display => {
 	console.log('Creating keyboard state manager: ');
 
-	/**@type {import('../types/dskyTypes.js').KeypadState} */
+	/**@type {import('../../types/dskyTypes.js').KeypadState} */
 	const state = {
 		mode: null,
 		verb: null,

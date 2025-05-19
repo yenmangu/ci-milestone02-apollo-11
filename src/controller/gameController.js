@@ -26,7 +26,7 @@ import { Paused } from '../mission/states/paused.js';
 export class GameController {
 	/** @param {MissionTimeline} timeline */
 	constructor(timeline) {
-		console.log('GameController created');
+		console.log('GameController created with timeline: ', timeline);
 		this.fsm = new FSM(this);
 		this.fsm.addState('IDLE', IdleState);
 		this.fsm.addState('DESCENT_ORBIT', DescentOrbit);

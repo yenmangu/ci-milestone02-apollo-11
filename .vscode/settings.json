@@ -17,5 +17,9 @@
 	"workbench.colorTheme": "Ayu Mirage Bordered",
 	"terminal.integrated.gpuAcceleration": "auto",
 	"typescript.disableAutomaticTypeAcquisition": true,
-	"editor.fontFamily": "SF Mono"
+	"editor.fontFamily": "SF Mono",
+	"autoOpenPreviewPanel.extensionEnabled": true,
+	"autoOpenPreviewPanel.openPreviewToSide": true,
+	"javascript.preferences.importModuleSpecifier": "relative",
+	"javascript.preferences.importModuleSpecifierEnding": "js"
 }

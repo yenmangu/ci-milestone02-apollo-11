@@ -1,14 +1,18 @@
 {
 	"compilerOptions": {
 		"target": "ES2020",
-		"module": "Node18",
+		"module": "ESNext",
 		"resolveJsonModule": true,
-		"baseUrl": "./",
+		"moduleResolution": "node",
+		"baseUrl": ".",
+		// "paths": {
+		// 	"src/*": ["src/*"]
+		// },
 		"checkJs": true,
 		"strict": false,
 		"typeRoots": ["./util/types.js"],
 		"lib": ["ES2020", "DOM"]
 	},
 	"exclude": ["node_modules/", "api/node_modules/"],
-	"include": ["src/**/*.js", "public/**/*.js"]
+	"include": ["src/**/*", "public/**/*"]
 }

@@ -1,6 +1,5 @@
 import { IdleState } from 'src/mission/states/idle.js';
 import { FSM } from 'src/state/fsm.js';
-import { AppStates } from '../types/missionTypes.js';
 import { DescentOrbit } from 'src/mission/states/descentOrbit.js';
 import { PoweredDescent } from 'src/mission/states/poweredDescent.js';
 import { BrakingPhase } from 'src/mission/states/brakingPhase.js';

@@ -1,4 +1,6 @@
 export default (function () {
+	console.log('domain.js');
+
 	const pathname = window.location.pathname;
 	const pageLinks = document.querySelectorAll('a.nav-link');
 	pageLinks.forEach(a => {

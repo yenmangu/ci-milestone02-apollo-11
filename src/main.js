@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const testResponseData = await getTestResponse();
 	// Only load initProgram on simulator.html
 	if (pathname === SIMULATOR_PATH) {
+		console.log('Awaiting initProgram');
+
 		await initProgram();
 	}
 });

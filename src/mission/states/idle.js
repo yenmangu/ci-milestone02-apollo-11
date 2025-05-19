@@ -4,7 +4,9 @@ import { MissionState } from '../missionState.js';
  * Represents 'IDLE' mission state
  * @extends MissionState
  */
-
+/**
+ * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
+ */
 export class IdleState extends MissionState {
 	/**
 	 * @typedef {import('src/types/missionTypes.js').GameController} GameController
@@ -17,11 +19,17 @@ export class IdleState extends MissionState {
 		/** @type {StateKey} */ this.stateKey = 'IDLE';
 	}
 
-	enter() {
-		console.log('Idle state entered');
-		const phase = this.game.timeLine.getPhase(this.stateKey);
-		renderPhaseInfo(phase);
+	/**
+	 * @override
+	 * @param {MissionPhase} phase
+	 */
+	onEnter(phase) {
+		console.log('[FSM] IdleState onEnter');
+		if (phase) {
+			renderPhaseInfo(phase);
+		}
 	}
+
 	exit() {
 		console.log('Exiting idle state');
 	}

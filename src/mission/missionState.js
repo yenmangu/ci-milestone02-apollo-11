@@ -1,7 +1,10 @@
+/**
+ * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
+ * @typedef {import('../controller/gameController.js').GameController} GameController
+ * @typedef {import('src/types/missionTypes.js').AppStatesKeys} StateKey
+ */
 export class MissionState {
 	/**
-	 * @typedef {import('../controller/gameController.js').GameController} GameController
-	 * @typedef {import('src/types/missionTypes.js').AppStatesKeys} StateKey
 	 * @param {GameController} gameController
 	 * @param {StateKey} stateKey
 	 */
@@ -19,8 +22,23 @@ export class MissionState {
 
 	// Abstract Methods all child classes must implement
 
+	/**
+	 * Called by FSM when state becomes active.
+	 * Fetches the JSON phase and delegates to onEnter.
+	 */
 	enter() {
-		throw new Error('Subclass must implement enter()');
+		// Common boilerplate
+		const phase = this.game.timeLine.getPhase(this.stateKey);
+		this.onEnter(phase);
+	}
+
+	/**
+	 *
+	 * @param {MissionPhase} phase
+	 * 	JSON data for this phase or undefined if missing.
+	 */
+	onEnter(phase) {
+		// Default does nothing - subclass override this
 	}
 
 	exit() {

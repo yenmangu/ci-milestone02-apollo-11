@@ -1,15 +1,15 @@
 import { getTestResponse } from './api.js';
 import { initProgram } from './init.js';
-import pathname from './domain.js';
+import path from './domain.js';
 import { SIMULATOR_PATH } from './env.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 	const testResponseData = await getTestResponse();
 	// Only load initProgram on simulator.html
-	console.log('pathname: ', pathname);
+	console.log('pathname: ', path);
 	console.log('Simulator Path: ', SIMULATOR_PATH);
 
-	if (pathname === SIMULATOR_PATH) {
+	if (path === SIMULATOR_PATH) {
 		console.log('Awaiting initProgram');
 
 		await initProgram();

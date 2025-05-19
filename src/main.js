@@ -6,6 +6,9 @@ import { SIMULATOR_PATH } from './env.js';
 document.addEventListener('DOMContentLoaded', async () => {
 	const testResponseData = await getTestResponse();
 	// Only load initProgram on simulator.html
+	console.log('pathname: ', pathname);
+	console.log('Simulator Path: ', SIMULATOR_PATH);
+
 	if (pathname === SIMULATOR_PATH) {
 		console.log('Awaiting initProgram');
 

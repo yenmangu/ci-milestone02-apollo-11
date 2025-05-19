@@ -1,4 +1,4 @@
-import { MissionState } from '../mission/missionState.js';
+import { MissionState } from '../missionStates/missionState.js';
 import { AppStates } from '../types/missionTypes.js';
 /**
  * @typedef {import('src/types/missionTypes.js').AppStatesKeys} AppStatesKey

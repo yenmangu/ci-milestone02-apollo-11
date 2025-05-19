@@ -11,7 +11,7 @@ import { MissionState } from '../missionState.js';
 export class IdleState extends MissionState {
 	/**
 	 * @typedef {import('src/types/missionTypes.js').GameController} GameController
-	 * @typedef {import('src/state/fsm.js').AppStatesKey} StateKey
+	 * @typedef {import('src/FSM/fsm.js').AppStatesKey} StateKey
 	 * @param {GameController} gameController
 	 * @param {StateKey} stateKey
 	 */

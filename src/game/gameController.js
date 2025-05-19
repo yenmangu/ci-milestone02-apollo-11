@@ -1,15 +1,15 @@
-import { FSM } from '../state/fsm.js';
-import { IdleState } from '../mission/states/idle.js';
-import { DescentOrbit } from '../mission/states/descentOrbit.js';
-import { PoweredDescent } from '../mission/states/poweredDescent.js';
-import { BrakingPhase } from '../mission/states/brakingPhase.js';
-import { Alarm1202 } from '../mission/states/alarm1202.js';
-import { ApproachPhase } from '../mission/states/approachPhase.js';
-import { Alarm1201 } from '../mission/states/alarm1201.js';
-import { FinalDescent } from '../mission/states/finalDescent.js';
-import { Landed } from '../mission/states/landed.js';
-import { Failed } from '../mission/states/failed.js';
-import { Paused } from '../mission/states/paused.js';
+import { FSM } from '../FSM/fsm.js';
+import { IdleState } from '../missionStates/idle/idleState.js';
+import { DescentOrbit } from '../missionStates/descentOrbit/descentOrbitPhase.js';
+import { PoweredDescent } from '../missionStates/poweredDescent/poweredDescentState.js';
+import { BrakingPhase } from '../missionStates/brakingPhase/brakingPhaseState.js';
+import { Alarm1202 } from '../missionStates/1202ProgramAlarm/1202AlarmState.js';
+import { ApproachPhase } from '../missionStates/approachPhase/approachPhaseState.js';
+import { Alarm1201 } from '../missionStates/1201ProgramAlarm/1201AlarmState.js';
+import { FinalDescent } from '../missionStates/finalDescent/finalDescentState.js';
+import { Landed } from '../missionStates/landed/landedState.js';
+import { Failed } from '../missionStates/failed/failedState.js';
+import { Paused } from '../missionStates/paused/pausedState.js';
 
 /**
  * @typedef {import('src/types/missionTypes.js').MissionTimeline} MissionTimeline

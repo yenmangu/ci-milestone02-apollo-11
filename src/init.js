@@ -1,11 +1,11 @@
-import { DskyRender } from './view/dskyRender.js';
+import { DskyRender } from './DSKY/dskyRender.js';
 import createKeypadStateManager from './keypad/keypadStateManager.js';
 import { initSevenSegmentDisplay } from './seven-segment/initSevenSegment.js';
 import { SevenSegmentDisplay } from './seven-segment/sevenSegment.js';
-import { DskeyController } from './controller/dskyController.js';
+import { DskeyController } from './DSKY/dskyController.js';
 import { cast } from './util/cast.js';
 import { loadTimeline } from './data/timeline.js';
-import { GameController } from './controller/gameController.js';
+import { GameController } from './game/gameController.js';
 /**
  * Initialises the seven digit display and the keypad state manager factory
  */

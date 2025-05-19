@@ -1,6 +1,6 @@
 /**
  * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
- * @typedef {import('../controller/gameController.js').GameController} GameController
+ * @typedef {import('../game/gameController.js').GameController} GameController
  * @typedef {import('src/types/missionTypes.js').AppStatesKeys} StateKey
  */
 export class MissionState {

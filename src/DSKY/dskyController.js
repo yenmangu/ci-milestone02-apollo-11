@@ -7,7 +7,7 @@
  */
 
 import createKeypadStateManager from '../keypad/keypadStateManager.js';
-import { DskyRender } from '../view/dskyRender.js';
+import { DskyRender } from './dskyRender.js';
 import { SevenSegmentDisplay } from '../seven-segment/sevenSegment.js';
 import { ModeTypes } from '../types/dskyTypes.js';
 import { devLightsEmitter, pushButtonEmitter } from '../event/eventBus.js';

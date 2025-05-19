@@ -1,4 +1,4 @@
-import { MissionState } from '../mission/missionState.js';
+import { MissionState } from '../missionStates/missionState.js';
 
 /**
  * @fileoverview Type definitions for game controllers
@@ -6,7 +6,7 @@ import { MissionState } from '../mission/missionState.js';
  */
 
 /**
- * @typedef {import('../controller/gameController.js').GameController} GameController
+ * @typedef {import('../game/gameController.js').GameController} GameController
  *
  */
 
@@ -16,6 +16,7 @@ import { MissionState } from '../mission/missionState.js';
 
 /**
  * @typedef {Object} StatesEnum
+ * @property {string} PRE_START
  * @property {string} IDLE
  * @property {string} DESCENT_ORBIT
  * @property {string} POWERED_DESCENT
@@ -46,6 +47,7 @@ const AppStates = {
 	LANDED: 'landed',
 
 	// Special states (not in JSON)
+	PRE_START: 'pre_start',
 	FAILED: 'failed',
 	PAUSED: 'paused'
 };

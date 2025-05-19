@@ -113,7 +113,7 @@ export class DskyRender {
 			button.classList.add('btn', 'btn-primary');
 			buttonArray.push(button);
 		});
-		const dskySection = document.getElementById('dsky');
+		const dskySection = document.getElementById('dsky-ui');
 		const buttonDiv = document.createElement('div');
 		buttonDiv.style.display = 'flex';
 		buttonDiv.style.flexDirection = 'row';

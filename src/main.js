@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	if (path === SIMULATOR_PATH) {
 		console.log('Awaiting initProgram');
+		// const ui = await awaitForStart();
+
+		// console.log('ui elements: ', ui);
 
 		await initProgram();
 	}

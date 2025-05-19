@@ -1,6 +1,6 @@
 import {} from '../types/dskyTypes.js';
 import { MissionState } from 'src/mission/missionState.js';
-import { States } from './states.js';
+import { AppStates } from 'src/types/missionTypes.js';
 
 export class FSM {
 	/**
@@ -29,16 +29,18 @@ export class FSM {
 	 */
 	addState(name, stateClass) {
 		// Enforce valid state keys
-		if (!(name in States)) {
+		if (!(name in AppStates)) {
 			throw new TypeError(
-				`"${name}" is not a valid state key. Use ${Object.keys(States).join(', ')}`
+				`"${name}" is not a valid state key. Use ${Object.keys(AppStates).join(
+					', '
+				)}`
 			);
 		}
 		// Runtime validation for class
 		if (!(stateClass.prototype instanceof MissionState)) {
 			throw new TypeError(`${stateClass.name} must inherit from MissionState`);
 		}
-		const stateValue = States[name];
+		const stateValue = AppStates[name];
 		this.states.set(stateValue, new stateClass(this.game));
 	}
 	/**
@@ -46,7 +48,7 @@ export class FSM {
 	 * @param {string} stateName
 	 */
 	transitionTo(stateName) {
-		const state = this.states.get(States[stateName]);
+		const state = this.states.get(AppStates[stateName]);
 		if (!state) {
 			throw new Error(`State "${stateName}" not found`);
 		}

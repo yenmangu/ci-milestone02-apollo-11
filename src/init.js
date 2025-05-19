@@ -22,7 +22,7 @@ export async function initProgram() {
 
 		const timeline = await loadTimeline();
 		const gameContoller = new GameController(timeline);
-		gameContoller.fsm.transitionTo('DESCENT_ORBIT');
+		gameContoller.fsm.transitionTo('IDLE');
 		return gameContoller;
 	} catch (error) {
 		throw error;

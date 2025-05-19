@@ -1,5 +1,4 @@
 import {} from '../types/dskyTypes.js';
-import { GameController } from 'src/controller/gameController.js';
 import { MissionState } from 'src/mission/missionState.js';
 import { States } from './states.js';
 
@@ -19,7 +18,7 @@ export class FSM {
 	/**
 	 * Adds a new mission state to the finite state machine.
 	 *
-	 * @param {keyof import('./states.js').StatesEnum} name
+	 * @param {keyof import('../types/missionTypes.js').StatesEnum} name
 	 * 	- The key used to identify this state (e.g, "DESCENT").
 	 * Must be key from States enum.
 	 * @param {import('src/types/missionTypes.js').MissionStateContructor} stateClass

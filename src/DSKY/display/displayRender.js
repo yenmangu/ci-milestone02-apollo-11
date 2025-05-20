@@ -9,15 +9,17 @@ import {} from '../../types/dskyTypes.js';
 /**
  * View class for the DSKY component
  */
-export class DskyRender {
-	constructor() {
+export class DisplayRender {
+	constructor(segmentDisplayMap, lightsMap) {
+		this.segmentDisplayMap = segmentDisplayMap;
+		this.lightsMap = lightsMap;
 		this.cacheElements();
 		this.devLightsSub = devLightsEmitter.subscribe(event => {});
 		this.testLights();
 	}
 
 	cacheElements() {
-		/** @type {{[key:string]: HTMLElement}} */
+		/** @type {import('../../types/dskyTypes.js').displayMap} */
 		this.displayMap = Array.from(
 			document.querySelectorAll('.seven-segment span[id]')
 		).reduce((map, element) => {
@@ -41,15 +43,6 @@ export class DskyRender {
 		this.buttons = Array.from(document.querySelectorAll('.push-button'));
 	}
 
-	onButtonClick(handler) {
-		this.buttons.forEach(btn => {
-			btn.addEventListener('click', e => {
-				e.preventDefault();
-				handler(btn.dataset.dsky);
-			});
-		});
-	}
-
 	setDskyStateZero() {
 		Object.values(this.displayMap).forEach((display, idx) => {
 			display.textContent = idx < 3 ? '00' : '00000';
@@ -68,18 +61,6 @@ export class DskyRender {
 	bulkWrite(values) {
 		for (let [id, value] of Object.entries(values)) {
 			this.write(id, value);
-		}
-	}
-
-	/**
-	 *
-	 * @param {string} dskyData
-	 * @param {string} state
-	 */
-	setButtonState(dskyData, state) {
-		const btn = this.buttons.find(b => b.dataset.dskyData === dskyData);
-		if (btn) {
-			btn.dataset.state = state;
 		}
 	}
 
@@ -132,29 +113,6 @@ export class DskyRender {
 				e.preventDefault();
 				devLightsEmitter.emit({ type: 'light', id: btnEl.dataset.dev });
 			});
-			// const btnEl = cast(btn);
-
-			// const light = document.getElementById(btnEl.dataset.dev);
-			// if (light) {
-			// 	btn.addEventListener('click', e => {
-			// 		e.preventDefault();
-			// 		devLightsEmitter.emit({ type: 'light', id: btnEl.dataset.dsky });
-			// 		// light.classList.toggle('active');
-			// 		// btn.classList.toggle('pressed');
-			// 	});
-			// }
 		});
 	}
 }
-
-/**
- * END CLASS
- */
-
-// export function setDskyStateZero() {
-// 	/** @type {NodeListOf<HTMLElement>} */
-// 	const segmentDisplays = document.querySelectorAll('.seven-segment span[id]');
-// 	segmentDisplays.forEach((display, key) => {
-// 		display.textContent = key === 0 || key === 1 || key === 2 ? '' : '00000';
-// 	});
-// }

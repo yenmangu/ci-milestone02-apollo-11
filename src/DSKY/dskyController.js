@@ -19,7 +19,10 @@ export class DSKY {
 		this.display = new DisplayRender();
 
 		/** @type {KeypadController} */
-		this.keypadController = new KeypadController(displayMap, this);
+		this.keypadController = new KeypadController(displayMap, {
+			getPolarity: this.getPolarity.bind(this),
+			resetDsky: this.resetDsky.bind(this)
+		});
 
 		const displayInterface = {
 			write: (id, val) => this.displayController.write(id, val),

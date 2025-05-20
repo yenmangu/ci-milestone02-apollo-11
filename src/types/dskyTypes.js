@@ -71,6 +71,12 @@ export const ModeTypes = {
  */
 
 /**
+ * @typedef {Object} DSKYParentInterface
+ * @property {(dskyData: string) => string} getPolarity
+ * @property {()=> void} resetDsky
+ */
+
+/**
  * EventEmitter & Subscription Types
  */
 

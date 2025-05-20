@@ -6,7 +6,7 @@ export class KeypadController {
 	/**
 	 *
 	 * @param {*} displayMap
-	 * @param {DSKY} parent
+	 * @param {import('../../types/dskyTypes.js').DSKYParentInterface} parent
 	 */
 	constructor(displayMap, parent) {
 		this.parent = parent;

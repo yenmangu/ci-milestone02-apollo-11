@@ -7,7 +7,7 @@ import {
 import {} from '../../types/dskyTypes.js';
 
 /**
- * View class for the DSKY component
+ * Render class for the DSKY component
  */
 export class DisplayRender {
 	constructor(segmentDisplayMap, lightsMap) {
@@ -56,12 +56,6 @@ export class DisplayRender {
 			console.warn(`No display for ${id}`);
 		}
 		el.textContent = value;
-	}
-
-	bulkWrite(values) {
-		for (let [id, value] of Object.entries(values)) {
-			this.write(id, value);
-		}
 	}
 
 	/**

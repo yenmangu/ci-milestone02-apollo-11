@@ -1,6 +1,11 @@
 import { cast } from '../../util/cast.js';
 import { DisplayRender } from './displayRender.js';
 
+/**
+ * @class Display Controller
+ * Responsible for writing to the display only.
+ *
+ */
 export class DisplayController {
 	constructor(displayMap) {
 		this.displayMap = displayMap;
@@ -13,12 +18,7 @@ export class DisplayController {
 	 * @param {string} value - The value to display
 	 */
 	write(id, value) {
-		const el = this.displayMap[id];
-		if (!el) {
-			console.warn(`Seven segment display: no element found for ID '${id}'`);
-			return;
-		}
-		el.textContent = value;
+		this.displayRender.write(id, value);
 	}
 
 	/**
@@ -27,9 +27,11 @@ export class DisplayController {
 	 */
 	bulkWrite(values) {
 		for (const [id, value] of Object.entries(values)) {
-			this.write(id, value);
+			this.displayRender.write(id, value);
 		}
 	}
 
-	clearVerbNoun() {}
+	clearVerbNoun() {
+		// this.displayRender.clearVerbNoun()
+	}
 }

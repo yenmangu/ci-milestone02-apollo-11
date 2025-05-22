@@ -9,7 +9,7 @@ import {} from '../../types/dskyTypes.js';
 /**
  * Render class for the DSKY component
  */
-export class DisplayRender {
+export class DisplayView {
 	constructor(segmentDisplayMap, lightsMap) {
 		this.segmentDisplayMap = segmentDisplayMap;
 		this.lightsMap = lightsMap;

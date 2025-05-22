@@ -1,22 +1,23 @@
 import { DisplayController } from './display/displayController.js';
 
 import createKeypadStateManager from './keypad/keypadStateManager.js';
-import { DisplayRender } from './display/displayRender.js';
+import { DisplayView } from './display/displayView.js';
 import { ModeTypes } from '../types/dskyTypes.js';
 import { pushButtonEmitter } from '../event/eventBus.js';
 import { KeypadController } from './keypad/keypadController.js';
 
-export class DSKY {
+export class DSKYController {
 	/**
 	 *
 	 * @param {import("../types/dskyTypes.js").displayMap} displayMap
+	 * @param {Object} uiElements
 	 */
-	constructor(displayMap) {
+	constructor(displayMap, uiElements) {
 		/**
 		 * @type {import('../types/dskyTypes.js').SevenSegmentDisplay}
 		 */
-		this.displayController = new DisplayController(displayMap);
-		this.display = new DisplayRender();
+		this.displayController = new DisplayController(displayMap, uiElements);
+		this.display = new DisplayView();
 
 		/** @type {KeypadController} */
 		this.keypadController = new KeypadController(displayMap, {
@@ -29,13 +30,13 @@ export class DSKY {
 			bulkWrite: vals => this.displayController.bulkWrite(vals),
 			clearVerbNoun: () => this.displayController.clearVerbNoun()
 		};
+
 		this.keypad = createKeypadStateManager(displayInterface);
 
 		this.keypadController.onButtonClick(
 			this.keypadController.handleInput.bind(this)
 		);
 
-		this.getDsky();
 		this.devLightsSubscription = undefined;
 	}
 
@@ -68,8 +69,5 @@ export class DSKY {
 
 	initiate() {
 		this.display.setDskyStateZero();
-	}
-	getDsky() {
-		throw new Error('Method not implemented.');
 	}
 }

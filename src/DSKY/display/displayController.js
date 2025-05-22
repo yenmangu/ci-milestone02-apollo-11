@@ -1,5 +1,5 @@
 import { cast } from '../../util/cast.js';
-import { DisplayRender } from './displayRender.js';
+import { DisplayView } from './displayView.js';
 
 /**
  * @class Display Controller
@@ -7,9 +7,14 @@ import { DisplayRender } from './displayRender.js';
  *
  */
 export class DisplayController {
-	constructor(displayMap) {
+	/**
+	 *
+	 * @param {Record<string,HTMLElement>} displayMap
+	 * @param {import('../../types/uiTypes.js').DskyDomElements} uiElements
+	 */
+	constructor(displayMap, uiElements) {
 		this.displayMap = displayMap;
-		this.displayRender = new DisplayRender();
+		this.displayRender = new DisplayView(uiElements);
 	}
 
 	/**

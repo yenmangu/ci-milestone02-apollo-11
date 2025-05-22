@@ -14,7 +14,9 @@ export class DisplayController {
 	 */
 	constructor(displayMap, uiElements) {
 		this.displayMap = displayMap;
-		this.displayRender = new DisplayView(uiElements);
+		this.lightsMap = uiElements.indicatorLights;
+		/** @type {DisplayView} */
+		this.displayView = new DisplayView(this.displayMap, this.lightsMap);
 	}
 
 	/**
@@ -23,7 +25,7 @@ export class DisplayController {
 	 * @param {string} value - The value to display
 	 */
 	write(id, value) {
-		this.displayRender.write(id, value);
+		this.displayView.write(id, value);
 	}
 
 	/**
@@ -32,11 +34,14 @@ export class DisplayController {
 	 */
 	bulkWrite(values) {
 		for (const [id, value] of Object.entries(values)) {
-			this.displayRender.write(id, value);
+			this.displayView.write(id, value);
 		}
 	}
 
 	clearVerbNoun() {
 		// this.displayRender.clearVerbNoun()
+	}
+	setDskyStateZero() {
+		this.displayView.setDskyStateZero();
 	}
 }

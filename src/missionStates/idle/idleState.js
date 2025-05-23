@@ -1,14 +1,14 @@
 import { renderPhaseInfo } from '../../view/phaseRender.js';
-import { MissionState } from '../missionState.js';
+import { MissionStateBase } from '../missionStateBase.js';
 /**
  * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
  */
 
 /**
  * Represents 'IDLE' mission state
- * @extends MissionState
+ * @extends MissionStateBase
  */
-export class IdleState extends MissionState {
+export class IdleState extends MissionStateBase {
 	/**
 	 * @typedef {import('src/types/missionTypes.js').GameController} GameController
 	 * @typedef {import('src/FSM/fsm.js').AppStatesKey} StateKey

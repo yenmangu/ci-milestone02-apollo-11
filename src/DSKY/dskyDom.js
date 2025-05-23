@@ -11,10 +11,13 @@ function queryDom() {
 		document.querySelectorAll('.seven-segment span[id]'),
 		'nodeList'
 	);
-	const indicatorLights = cast(
-		document.querySelectorAll('.indicator-lights .light'),
-		'nodeList'
-	);
+	/** @type {{[key:string]: HTMLElement}} */
+	const indicatorLights = Array.from(
+		document.querySelectorAll('.indicator-lights .light')
+	).reduce((map, element) => {
+		map[element.id] = cast(element);
+		return map;
+	}, {});
 	const progLight = document.getElementById('compActy');
 	const displayMap = initSevenSegmentDisplay();
 	const pushButtons = cast(

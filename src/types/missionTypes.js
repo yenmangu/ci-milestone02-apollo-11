@@ -1,4 +1,4 @@
-import { MissionState } from '../missionStates/missionState.js';
+import { MissionStateBase } from '../missionStates/missionStateBase.js';
 
 /**
  * @fileoverview Type definitions for game controllers
@@ -11,7 +11,7 @@ import { MissionState } from '../missionStates/missionState.js';
  */
 
 /**
- * @typedef {new (game: GameController, key:AppStatesKeys) => MissionState} MissionStateContructor
+ * @typedef {new (game: GameController, key:AppStatesKeys) => MissionStateBase} MissionStateContructor
  */
 
 /**

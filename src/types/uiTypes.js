@@ -38,10 +38,19 @@
 /**
  * @typedef {Object} DskyDomElements
  * @property {NodeListOf<HTMLElement>} sevenSegmentDisplays
- * @property {NodeListOf<HTMLElement>} indicatorLights
- * @property {Record<string,HTMLElement>} displayMap
+ * @property {Record<string, HTMLElement>} indicatorLights
+ * @property {Record<string, HTMLElement>} displayMap
  * @property {Array<NodeListOf<HTMLElement>>} pushButtons
  * @property {HTMLElement} progLight
+ */
+
+/**
+ * Display map for the seven-segment displays
+ * @typedef {Record<string,HTMLElement>} displayMap
+ */
+
+/**
+ * @typedef {Record<string,HTMLElement>} lightsMap
  */
 
 export {};

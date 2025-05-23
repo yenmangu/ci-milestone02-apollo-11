@@ -1,5 +1,5 @@
 import { ModeTypes } from '../../types/dskyTypes.js';
-import { DSKY } from '../dskyController.js';
+import { DSKYController } from '../dskyController.js';
 import createKeypadStateManager from './keypadStateManager.js';
 
 export class KeypadController {
@@ -34,6 +34,7 @@ export class KeypadController {
 		this.buttons.forEach(btn => {
 			btn.addEventListener('click', e => {
 				e.preventDefault();
+				console.log('Button clicked: ', e.currentTarget);
 				handler(btn.dataset.dsky);
 			});
 		});

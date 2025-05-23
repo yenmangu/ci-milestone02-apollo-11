@@ -4,11 +4,6 @@
  */
 
 /**
- * Display map for the seven-segment displays
- * @typedef {Record<string,HTMLElement>} displayMap
- */
-
-/**
  * @enum {string}
  */
 export const ModeTypes = {

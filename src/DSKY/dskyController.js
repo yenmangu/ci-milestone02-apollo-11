@@ -8,19 +8,19 @@ import { KeypadController } from './keypad/keypadController.js';
 
 export class DSKYController {
 	/**
-	 *
-	 * @param {import("../types/dskyTypes.js").displayMap} displayMap
-	 * @param {Object} uiElements
+	 * @param {import('../types/uiTypes.js').DskyDomElements} uiElements
 	 */
-	constructor(displayMap, uiElements) {
-		/**
-		 * @type {import('../types/dskyTypes.js').SevenSegmentDisplay}
-		 */
-		this.displayController = new DisplayController(displayMap, uiElements);
-		this.display = new DisplayView();
+	constructor(uiElements) {
+		console.log(uiElements);
+		this.displayMap = uiElements.displayMap;
+		this.lightsMap = uiElements.indicatorLights;
+		if (!this.displayController) {
+			/** @type {DisplayController} */
+			this.displayController = new DisplayController(this.displayMap, uiElements);
+		}
 
 		/** @type {KeypadController} */
-		this.keypadController = new KeypadController(displayMap, {
+		this.keypadController = new KeypadController(this.displayMap, {
 			getPolarity: this.getPolarity.bind(this),
 			resetDsky: this.resetDsky.bind(this)
 		});
@@ -58,16 +58,7 @@ export class DSKYController {
 		});
 	}
 
-	onDevLights() {
-		this.devLightsSubscription.subscribe(event => {
-			if (event.type === 'light') {
-				console.log('Light event: ', event.id);
-				this.display.setLightViaEvent(event.id);
-			}
-		});
-	}
-
 	initiate() {
-		this.display.setDskyStateZero();
+		this.displayController.setDskyStateZero();
 	}
 }

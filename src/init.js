@@ -1,28 +1,23 @@
-import { DskyRender } from './DSKY/display/displayRender.js';
-import createKeypadStateManager from './DSKY/keypad/keypadStateManager.js';
-import { initSevenSegmentDisplay } from './seven-segment/initSevenSegment.js';
-import { SevenSegmentDisplay } from './seven-segment/sevenSegment.js';
-import { DskeyController } from './DSKY/display/displayController.js';
-import { cast } from './util/cast.js';
+import { uiElements } from './DSKY/dskyDom.js';
+import { DSKYController } from './DSKY/dskyController.js';
 import { loadTimeline } from './data/timeline.js';
 import { GameController } from './game/gameController.js';
-/**
- * Initialises the seven digit display and the keypad state manager factory
- */
+import { DSKYInterface } from './DSKY/dskyInterface.js';
+
 export async function initProgram() {
 	try {
 		console.log('Init program initiated');
-		const displayMap = initSevenSegmentDisplay();
-		const dskyButtons = cast(
-			Array.from(document.querySelectorAll('.push-button')),
-			'nodeList'
-		);
-		const dsky = new DskeyController(displayMap, dskyButtons);
-		dsky.initiate();
 
+		console.log('UI Elements: ', uiElements);
 		const timeline = await loadTimeline();
+
+		const dsky = new DSKYController(uiElements);
+		const dskyInterface = new DSKYInterface(dsky);
 		const gameContoller = new GameController(timeline);
-		gameContoller.fsm.transitionTo('IDLE');
+
+		dskyInterface.initiate();
+
+		gameContoller.fsm.transitionTo('PRE_START');
 		return gameContoller;
 	} catch (error) {
 		throw error;

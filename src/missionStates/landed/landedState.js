@@ -1,6 +1,6 @@
-import { MissionState } from '../missionState.js';
+import { MissionStateBase } from '../missionStateBase.js';
 
-export class Landed extends MissionState {
+export class Landed extends MissionStateBase {
 	constructor(gameController, key) {
 		super(gameController, key);
 	}

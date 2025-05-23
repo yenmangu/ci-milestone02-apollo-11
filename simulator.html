@@ -57,7 +57,18 @@
 		<!-- main -->
 		<main>
 			<!-- lunar altitude animation section -->
-			<section id="lemAnimation">
+			<section id="pre-start">
+				<div class="container-fluid text-center">
+					<div class="row">
+						<div class="col-12">
+							<button class="btn btn-primary"
+											id="startBtn"> Start Simulation </button>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section id="lemAnimation-ui"
+							 data-running="false">
 				<div class="container">
 					<div class="row">
 						<div class="col">
@@ -67,30 +78,32 @@
 				</div>
 			</section>
 			<!-- landing ui section -->
-			<section id="landingUi">
+			<section id="landing-ui"
+							 data-running="false">
 				<div class="container">
 					<div class="row">
 						<div class="col-3">
-							<div class="col landing-ui"> Altitude<span id="altitude"></span>
+							<div class="col landing-ui"> Altitude<span id="instrument-altitude"></span>
 							</div>
 						</div>
 						<div class="col-3">
-							<div class="col landing-ui"> Velocity<span id="velocity"></span>
+							<div class="col landing-ui"> Velocity<span id="instrument-velocity"></span>
 							</div>
 						</div>
 						<div class="col-3">
-							<div class="col landing-ui"> Fuel<span id="fuel"></span>
+							<div class="col landing-ui"> Fuel<span id="instrument-fuel"></span>
 							</div>
 						</div>
 						<div class="col-3">
-							<div class="col  landing-ui"> Extras<span id="extras"></span>
+							<div class="col  landing-ui"> Extras<span id="instrument-extras"></span>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>
 			<!-- dsky section -->
-			<section id="dsky">
+			<section id="dsky-ui"
+							 data-running="false">
 				<div class="container">
 					<div class="row lights-displays">
 						<div class="col-6 indicator-lights">

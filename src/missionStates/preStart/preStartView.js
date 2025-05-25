@@ -12,10 +12,11 @@ export class PreStartView extends EventTarget {
 
 	constructor() {
 		super();
-		console.trace('Instance pre start view created');
+		// console.trace('Instance pre start view created');
 		this.startButton = document.querySelector('button#startBtn');
-		this.uiElements = document.querySelectorAll('section [id$="-ui"]');
-		console.log('startButton: ', this.startButton);
+		this.uiElements = document.querySelectorAll('section[id$="-ui"]');
+		console.log('Ui el: ', this.uiElements);
+
 		this.startButton.addEventListener('click', e => {
 			this.dispatchEvent(new Event('userStarted'));
 		});
@@ -34,7 +35,6 @@ export class PreStartView extends EventTarget {
 		this.hide(startContainer);
 	}
 
-	showUI() {}
 	/**
 	 *
 	 * @param {HTMLElement[]} errorArr
@@ -56,12 +56,15 @@ export class PreStartView extends EventTarget {
 		alert(`Error: Element/s ${elList} Not found`);
 	}
 
-	/**
-	 *
-	 * @param {HTMLElement} uiElement
-	 */
-	show(uiElement) {
-		uiElement.classList.remove('hidden');
+	showUI() {
+		console.log('Showing UI Elements');
+		console.log('Ui Element: ', this.uiElements);
+		for (const [index, element] of Object.entries(this.uiElements)) {
+			console.log('element: ', element);
+			if (element.classList.contains('hidden')) {
+				element.classList.remove('hidden');
+			}
+		}
 	}
 
 	/**

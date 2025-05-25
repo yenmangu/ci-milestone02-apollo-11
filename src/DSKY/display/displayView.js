@@ -16,7 +16,7 @@ export class DisplayView {
 	 * @param {import('../../types/uiTypes.js').lightsMap} lightsMap
 	 */
 	constructor(displayMap, lightsMap) {
-		console.log('Display view instance created');
+		// console.log('Display view instance created');
 		this.displayMap = displayMap;
 
 		/** @type {import('../../types/uiTypes.js').lightsMap} */
@@ -30,7 +30,7 @@ export class DisplayView {
 	}
 
 	setDskyStateZero() {
-		console.log('Setting state zero');
+		// console.log('Setting state zero');
 
 		Object.values(this.displayMap).forEach((display, idx) => {
 			display.textContent = idx < 3 ? '00' : '00000';

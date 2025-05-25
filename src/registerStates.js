@@ -24,10 +24,10 @@ export function registerStates(game, dskyInterface) {
 		[keys.idle, createIdleModule]
 		// More to come
 	];
-	console.log('States in registerStates: ', states);
+	// console.log('States in registerStates: ', states);
 
 	for (const [key, factory] of states) {
 		game.fsm.registerFactory(key, () => factory(game, dskyInterface));
-		console.log(`State: ${key} added`);
+		// console.log(`State: ${key} added`);
 	}
 }

@@ -1,7 +1,7 @@
 import { MissionStateBase } from '../missionStates/missionStateBase.js';
 import { AppStates } from '../types/missionTypes.js';
 /**
- * @typedef {import('src/types/missionTypes.js').AppStatesKeys} AppStatesKey
+ * @typedef {import('src/types/missionTypes.js').AppStateKey} AppStatesKey
  */
 
 export class FSM {
@@ -16,6 +16,11 @@ export class FSM {
 		//  * @type {}
 		//  */
 		this.currentState = null;
+		this.factories = {};
+
+		// Maybe needed, maybe not
+		this.controllers = new Map();
+		this.views = new Map();
 	}
 	/**
 	 * Adds a new mission state to the finite state machine.
@@ -44,17 +49,49 @@ export class FSM {
 		}
 		this.states.set(AppStates[key], stateInstance);
 	}
+
+	// Registers a factory for deffered state creation
 	/**
 	 *
 	 * @param {AppStatesKey} key
+	 * @param {()=>{view: any, controller: any, state: MissionStateBase}} factoryFn
+	 */
+	registerFactory(key, factoryFn) {
+		this.factories[key] = factoryFn;
+	}
+
+	/**
+	 * Transitions to a state, instantiating lazily if needed
+	 * @param {AppStatesKey} key
 	 */
 	transitionTo(key) {
-		const state = this.states.get(AppStates[key]);
-		if (!state) {
-			throw new Error(`State "${key}" not found`);
+		// const state = this.states.get(AppStates[key]);
+		const stateKey = AppStates[key];
+
+		// Lazily create the state if not yet constructed
+
+		if (!this.states.has(stateKey)) {
+			// console.log('Factories: ', this.factories);
+
+			const factory = this.factories[key];
+			if (!factory) {
+				throw new Error(`No state or factory found for key "${key}"`);
+			}
+
+			const { view, controller, state } = factory();
+			if (!(state instanceof MissionStateBase)) {
+				throw new TypeError(
+					`Factory for "${key}" must return a state extending MissionStateBase`
+				);
+			}
+			this.states.set(stateKey, state);
+			// Added even if not needed
+			this.views.set(stateKey, view);
+			this.controllers.set(stateKey, controller);
 		}
 		if (this.currentState) this.currentState.exit();
-		this.currentState = state;
+		this.currentState = this.states.get(stateKey);
 		this.currentState.enter();
+		console.log('Current State: ', this.currentState);
 	}
 }

@@ -92,6 +92,5 @@ export class FSM {
 		if (this.currentState) this.currentState.exit();
 		this.currentState = this.states.get(stateKey);
 		this.currentState.enter();
-		console.log('Current State: ', this.currentState);
 	}
 }

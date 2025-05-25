@@ -85,7 +85,7 @@ This approach ensures that each state is explicit, and follows a strict set of r
 
 I decided on an OOP approach to the project, to encapsulate the logic each 'component' requires.
 
-I have used subclasses for the concrete states, to ensure each concrete state ***must*** implement the methods inherited by the super `MissionState` class.
+I have used subclasses for the concrete states, to ensure each concrete state ***must*** implement the methods inherited by the super `MissionStateBase` class.
 
 
 

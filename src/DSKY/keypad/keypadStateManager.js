@@ -6,7 +6,7 @@ import { pushButtonEmitter } from '../../event/eventBus.js';
  * @returns {import('../../types/dskyTypes.js').keypadStateManager}
  */
 const createKeypadStateManager = display => {
-	console.log('Creating keyboard state manager: ');
+	// console.log('Creating keyboard state manager: ');
 
 	/**@type {import('../../types/dskyTypes.js').KeypadState} */
 	const state = {

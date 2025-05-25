@@ -1,4 +1,4 @@
-import { cast } from '../util/cast.js';
+import { cast } from '../../util/cast.js';
 
 export function initSevenSegmentDisplay() {
 	/** @type {Record<string, HTMLElement>} */

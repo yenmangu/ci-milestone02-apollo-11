@@ -32,7 +32,6 @@ const VALID_TIMELINE_STATES = new Set(
  */
 export async function loadTimeline() {
 	// Exit early if cachedTimeline exists
-	console.log('loadTimeline invoked');
 	if (cachedTimeline) {
 		return cachedTimeline;
 	}
@@ -44,7 +43,6 @@ export async function loadTimeline() {
 		});
 
 		// Validate ALL phases match our types
-		console.log('VTS', VALID_TIMELINE_STATES);
 
 		const allValid = timelineJsonRaw.mission_phases.every(phase => {
 			VALID_TIMELINE_STATES.has(phase.state);
@@ -71,7 +69,6 @@ export async function loadTimeline() {
 			const phase = timelineJsonRaw.mission_phases.find(
 				p => p.state === stateValue
 			);
-			console.log('Phase found: ', phase);
 			return phase;
 		};
 

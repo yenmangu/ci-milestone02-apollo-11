@@ -1,8 +1,6 @@
 import { DisplayController } from './display/displayController.js';
-
+import { InstrumentsController } from './instruments/instrumentController.js';
 import createKeypadStateManager from './keypad/keypadStateManager.js';
-import { DisplayView } from './display/displayView.js';
-import { ModeTypes } from '../types/dskyTypes.js';
 import { pushButtonEmitter } from '../event/eventBus.js';
 import { KeypadController } from './keypad/keypadController.js';
 
@@ -11,9 +9,11 @@ export class DSKYController {
 	 * @param {import('../types/uiTypes.js').DskyDomElements} uiElements
 	 */
 	constructor(uiElements) {
-		console.log(uiElements);
+		this.instruments = uiElements.instrumentsMap;
+
 		this.displayMap = uiElements.displayMap;
 		this.lightsMap = uiElements.indicatorLights;
+
 		if (!this.displayController) {
 			/** @type {DisplayController} */
 			this.displayController = new DisplayController(this.displayMap, uiElements);

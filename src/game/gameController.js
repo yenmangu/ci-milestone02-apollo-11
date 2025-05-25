@@ -15,7 +15,6 @@ import { FSM } from '../FSM/fsm.js';
 export class GameController {
 	/** @param {MissionTimeline} timeline */
 	constructor(timeline) {
-		console.log('GameController created with timeline: ', timeline);
 		this.fsm = new FSM(this);
 
 		// Core loop properties

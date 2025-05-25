@@ -16,17 +16,38 @@ export class PreStartView extends EventTarget {
 		// console.trace('Instance pre start view created');
 		this.startButton = document.querySelector('button#startBtn');
 		this.resetButton = document.querySelector('button#goBack');
+
+		this.prevButton = document.querySelector('button#prevBtn');
+		this.nextButton = document.querySelector('button#nextBtn');
+
 		this.uiElements = document.querySelectorAll('section[id$="-ui"]');
 		this.startContainer = document.querySelector('section[id="pre-start"]');
-		console.log('Ui el: ', this.uiElements);
+		// console.log('Ui el: ', this.uiElements);
 
 		this.startButton.addEventListener('click', e => {
+			e.preventDefault();
 			this.emitEvent('userStarted');
 		});
 
 		this.resetButton.addEventListener('click', e => {
+			e.preventDefault();
 			this.emitEvent('reset');
 		});
+
+		this.prevButton.addEventListener('click', e => {
+			e.preventDefault();
+			console.log('prev');
+
+			this.emitEvent('prev');
+		});
+
+		this.nextButton.addEventListener('click', e => {
+			e.preventDefault();
+			console.log('next');
+
+			this.emitEvent('next');
+		});
+
 		this.resetContainer = document.querySelector('section#go-back');
 	}
 
@@ -83,6 +104,8 @@ export class PreStartView extends EventTarget {
 	 * @param {string} eventType
 	 */
 	emitEvent(eventType) {
+		console.log('Emitting event: ', eventType);
+
 		this.dispatchEvent(
 			new CustomEvent(eventType, {
 				bubbles: true,

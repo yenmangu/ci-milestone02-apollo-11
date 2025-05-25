@@ -61,7 +61,7 @@ export const ModeTypes = {
  *
  * @typedef {ReturnType<import("../DSKY/keypad/keypadStateManager.js").default>} KeypadManager
  *
- * @typedef {import('../seven-segment/sevenSegment.js').SevenSegmentDisplay} SevenSegmentDisplay
+ * @typedef {import('../DSKY/seven-segment/sevenSegment.js').SevenSegmentDisplay} SevenSegmentDisplay
  *
  */
 

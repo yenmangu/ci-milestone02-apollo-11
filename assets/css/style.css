@@ -40,6 +40,10 @@
 
 /* Global styles */
 
+*.hidden {
+	display: none;
+}
+
 /* Remove default styles applied by browser */
 * {
 	padding: 0;

@@ -77,6 +77,13 @@ export class MissionStateBase {
 			audio_ref,
 			dsky_actions
 		} = phase;
+
+		this.dskyInterface.instrumentsController.updateInstruments({
+			altitude_units,
+			lunar_altitude,
+			velocity_fps,
+			fuel_percent
+		});
 	}
 
 	/**

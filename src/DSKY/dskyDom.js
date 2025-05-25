@@ -1,4 +1,4 @@
-import { initSevenSegmentDisplay } from '../seven-segment/initSevenSegment.js';
+import { initSevenSegmentDisplay } from './seven-segment/initSevenSegment.js';
 import { cast } from '../util/cast.js';
 
 /**
@@ -11,7 +11,7 @@ function queryDom() {
 		document.querySelectorAll('.seven-segment span[id]'),
 		'nodeList'
 	);
-	/** @type {{[key:string]: HTMLElement}} */
+	/** @type {{[key: string]: HTMLElement}} */
 	const indicatorLights = Array.from(
 		document.querySelectorAll('.indicator-lights .light')
 	).reduce((map, element) => {
@@ -25,12 +25,22 @@ function queryDom() {
 		'nodeList'
 	);
 
+	/** @type {{[key: string]: HTMLElement}} */
+	const instrumentsMap = Array.from(
+		document.querySelectorAll('span[id^="instrument-"]')
+	).reduce((map, element) => {
+		const key = element.id.slice(element.id.indexOf('-'));
+		map[key] = cast(element);
+		return map;
+	}, {});
+
 	return {
 		sevenSegmentDisplays,
 		displayMap,
 		indicatorLights,
 		progLight,
-		pushButtons
+		pushButtons,
+		instrumentsMap
 	};
 }
 

@@ -12,6 +12,16 @@
 | **DSKY**               | *Display and Keyboard* (pronounced “Dis-key”) — The interface astronauts used to interact with the AGC using numeric codes (verbs and nouns).                                                                                      |
 | **1201 / 1202 Alarms** | Program alarms triggered by the AGC due to memory overload during descent. The system recovered and continued functioning, but they briefly caused uncertainty about whether the landing should be aborted.                        |
 
+## Architcture
+
+> Note:
+
+### Class Diagrams for gameController
+
+### State Diagrams
+
+
+
 ## Features
 
 ### Existing Features

@@ -1,15 +1,20 @@
 import { DisplayController } from './display/displayController.js';
 import { DSKYController } from './dskyController.js';
+import { InstrumentsController } from './instruments/instrumentController.js';
 
 /**
  * Public façade for all DSKY operations.
- * Wraps the internal `DSKYController` and exposes
+ * Wraps the internal `DSKYController` and the internal `InstrumentsController` and exposes
  * only high level methods
  */
 export class DSKYInterface {
-	/** @param {DSKYController} dskyController  */
-	constructor(dskyController) {
+	/**
+	 *  @param {DSKYController} dskyController
+	 *  @param {InstrumentsController} instrumentsController
+	 */
+	constructor(dskyController, instrumentsController) {
 		this.dskyController = dskyController;
+		this.instrumentsController = instrumentsController;
 	}
 
 	write(id, value) {

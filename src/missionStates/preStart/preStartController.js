@@ -4,6 +4,7 @@
  */
 
 import { DSKYInterface } from '../../DSKY/dskyInterface.js';
+import { devNavEmitter } from '../../event/eventBus.js';
 import { GameController } from '../../game/gameController.js';
 import { AppStateKeys } from '../../types/missionTypes.js';
 import { PreStartView } from './preStartView.js';
@@ -26,6 +27,7 @@ export class PreStartController {
 			this.view.addEventListener(eventName, this.handleEvent.bind(this));
 		});
 	}
+
 	handleEvent(event) {
 		if (event.type) {
 			if (event.type === 'userStarted') {
@@ -36,6 +38,8 @@ export class PreStartController {
 			}
 		}
 	}
+
+	handleNavigation(type) {}
 	resetSimulation() {
 		this.view.onReset();
 		this.gameController.fsm.transitionTo(AppStateKeys.pre_start);

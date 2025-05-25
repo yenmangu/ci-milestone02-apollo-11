@@ -9,6 +9,13 @@
  * @property {pushButtons} pushButtons
  */
 
+export const TelemetryKeys = {
+	velocity: 'velocity_fps',
+	altitude: 'lunar_altitude',
+	altitudeUnits: 'altitude_units',
+	fuel: 'fuel_percent'
+};
+
 /**
  * @typedef {NodeListOf<HTMLElement>} instrumentsArray
  * @property {HTMLElement} velocityIndicator
@@ -36,12 +43,17 @@
  */
 
 /**
+ * @typedef {Record<string,HTMLElement>} Instruments
+ */
+
+/**
  * @typedef {Object} DskyDomElements
  * @property {NodeListOf<HTMLElement>} sevenSegmentDisplays
  * @property {Record<string, HTMLElement>} indicatorLights
  * @property {Record<string, HTMLElement>} displayMap
  * @property {Array<NodeListOf<HTMLElement>>} pushButtons
  * @property {HTMLElement} progLight
+ * @property {Record<string, HTMLElement>} instrumentsMap
  */
 
 /**
@@ -51,6 +63,10 @@
 
 /**
  * @typedef {Record<string,HTMLElement>} lightsMap
+ */
+
+/**
+ * @typedef {Record<string,HTMLElement>} instrumentsMap
  */
 
 export {};

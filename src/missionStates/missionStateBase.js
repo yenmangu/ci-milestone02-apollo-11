@@ -33,6 +33,7 @@ export class MissionStateBase {
 		 * @type {boolean}
 		 */
 		this.isPaused = false;
+		// console.trace('Mission state base: ', this);
 	}
 
 	// Abstract Methods all child classes must implement
@@ -43,7 +44,18 @@ export class MissionStateBase {
 	 */
 	enter() {
 		// Common boilerplate
+		if (!this.game.timeLine?.getPhase) {
+			console.warn(
+				`Skipping enter logic: getPhase not available for state ${this.stateKey}`
+			);
+		}
 		const phase = this.game.timeLine.getPhase(this.stateKey);
+		if (!this.stateKey) {
+			console.debug('No State Key');
+		}
+		if (!phase) {
+			console.trace('Cannot get phase:');
+		}
 		this.onEnter(phase);
 	}
 

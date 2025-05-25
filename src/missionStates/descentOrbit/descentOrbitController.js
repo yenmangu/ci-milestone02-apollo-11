@@ -1,13 +1,16 @@
 import { DSKYInterface } from '../../DSKY/dskyInterface.js';
+import { GameController } from '../../game/gameController.js';
 import { DescentOrbitView } from './descentOrbitView.js';
 
 export class DescentOrbitController {
 	/**
-	 * @param {DescentOrbitView} descentOrbitView
+	 * @param {GameController} gameController
 	 * @param {DSKYInterface} dskyInterface
+	 * @param {DescentOrbitView} view
 	 */
-	constructor(descentOrbitView, dskyInterface) {
-		this.idleView = descentOrbitView;
+	constructor(gameController, dskyInterface, view) {
+		this.controller = gameController;
 		this.dsky = dskyInterface;
+		this.view = view;
 	}
 }

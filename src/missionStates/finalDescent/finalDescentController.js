@@ -1,6 +1,7 @@
 export class FinalDescentController {
-	constructor(view, dsky) {
+	constructor(gameController, dskyInterface, view) {
+		this.controller = gameController;
+		this.dsky = dskyInterface;
 		this.view = view;
-		this.interface = dsky;
 	}
 }

@@ -34,15 +34,7 @@ export class PreStartView extends EventTarget {
 		this.hide(startContainer);
 	}
 
-	showUI() {
-		// let /** @type {HTMLElement[]} */ errorArr;
-		// this.uiElements.DSKYElements.forEach(el => {
-		// 	el ? this.show(el) : errorArr.push(el);
-		// });
-		// if (errorArr.length) {
-		// 	this.buildError(errorArr);
-		// }
-	}
+	showUI() {}
 	/**
 	 *
 	 * @param {HTMLElement[]} errorArr

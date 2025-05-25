@@ -9,7 +9,7 @@ export class IdleController {
 	 * @param {DSKYInterface} dskyInterface
 	 */
 	constructor(gameController, dskyInterface, view) {
-		this.controller = gameController;
+		this.gameController = gameController;
 		this.dsky = dskyInterface;
 		this.view = view;
 	}

@@ -61,7 +61,7 @@ export class PreStartView extends EventTarget {
 	 * @param {HTMLElement} uiElement
 	 */
 	show(uiElement) {
-		uiElement.classList.add('hidden');
+		uiElement.classList.remove('hidden');
 	}
 
 	/**

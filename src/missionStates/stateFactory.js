@@ -35,7 +35,7 @@ export function makeModule(StateClass, ControllerClass, ViewClass, key) {
 	return (gameController, dskyInterface) => {
 		const view = new ViewClass();
 		const controller = new ControllerClass(gameController, dskyInterface, view);
-		const state = new StateClass(gameController, dskyInterface, key);
+		const state = new StateClass(gameController, dskyInterface, controller, key);
 		return { view, controller, state };
 	};
 }

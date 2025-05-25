@@ -12,5 +12,14 @@ export class IdleController {
 		this.gameController = gameController;
 		this.dsky = dskyInterface;
 		this.view = view;
+		this.uiElements = document.querySelectorAll('section[id$="-ui"]');
+	}
+
+	onEnter() {
+		this.view.showElements(this.uiElements);
+	}
+
+	showElements() {
+		const {} = this.dsky.dskyController.uiElements;
 	}
 }

@@ -1,8 +1,8 @@
 import { MissionStateBase } from '../missionStateBase.js';
 
-export class ApproachPhase extends MissionStateBase {
-	constructor(gameController) {
-		super(gameController);
+export class ApproachPhaseState extends MissionStateBase {
+	constructor(gameController, dskyInterface, key) {
+		super(gameController, dskyInterface, key);
 	}
 	enter() {
 		console.log('ApproachPhase state entered');

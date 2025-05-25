@@ -3,6 +3,8 @@ import { DSKYController } from './DSKY/dskyController.js';
 import { loadTimeline } from './data/timeline.js';
 import { GameController } from './game/gameController.js';
 import { DSKYInterface } from './DSKY/dskyInterface.js';
+import { createPreStartModule } from './missionStates/preStart/index.js';
+import { registerStates } from './registerStates.js';
 
 export async function initProgram() {
 	try {
@@ -16,6 +18,8 @@ export async function initProgram() {
 		const gameContoller = new GameController(timeline);
 
 		dskyInterface.initiate();
+
+		registerStates(gameContoller, dskyInterface);
 
 		gameContoller.fsm.transitionTo('PRE_START');
 		return gameContoller;

@@ -1,4 +1,4 @@
-import { preStartController } from './preStartController.js';
+import { PreStartController } from './preStartController.js';
 /**
  * @class
  * Extends `EventTarget` to enable custom event dispatching,
@@ -12,9 +12,10 @@ export class PreStartView extends EventTarget {
 
 	constructor() {
 		super();
+		console.trace('Instance pre start view created');
 		this.startButton = document.querySelector('button#startBtn');
 		this.uiElements = document.querySelectorAll('section [id$="-ui"]');
-		console.log('uiElements: ', this.uiElements);
+		console.log('startButton: ', this.startButton);
 		this.startButton.addEventListener('click', e => {
 			this.dispatchEvent(new Event('userStarted'));
 		});

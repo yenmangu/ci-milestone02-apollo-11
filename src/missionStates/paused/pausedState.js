@@ -1,8 +1,8 @@
 import { MissionStateBase } from '../missionStateBase.js';
 
-export class Paused extends MissionStateBase {
-	constructor(gameController, key) {
-		super(gameController, key);
+export class PauseState extends MissionStateBase {
+	constructor(gameController, dskyInterface, key) {
+		super(gameController, dskyInterface, key);
 	}
 	enter() {
 		console.log('Paused state entered');

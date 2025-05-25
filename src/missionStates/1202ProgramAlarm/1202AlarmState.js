@@ -1,8 +1,8 @@
 import { MissionStateBase } from '../missionStateBase.js';
 
-export class Alarm1202 extends MissionStateBase {
-	constructor(gameController, key) {
-		super(gameController, key);
+export class Alarm1202State extends MissionStateBase {
+	constructor(gameController, dskyInterface, key) {
+		super(gameController, dskyInterface, key);
 	}
 	enter() {
 		console.log('Alarm1202 state entered');

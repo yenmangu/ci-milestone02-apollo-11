@@ -1,4 +1,5 @@
-import { renderPhaseInfo } from '../../view/phaseRender.js';
+import { DSKYInterface } from '../../DSKY/dskyInterface.js';
+import { GameController } from '../../game/gameController.js';
 import { MissionStateBase } from '../missionStateBase.js';
 /**
  * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
@@ -10,26 +11,19 @@ import { MissionStateBase } from '../missionStateBase.js';
  */
 export class IdleState extends MissionStateBase {
 	/**
-	 * @typedef {import('src/types/missionTypes.js').GameController} GameController
-	 * @typedef {import('src/FSM/fsm.js').AppStatesKey} StateKey
 	 * @param {GameController} gameController
-	 * @param {StateKey} stateKey
+	 * @param {DSKYInterface} dskyInterface
+	 * @param {import('src/types/missionTypes.js').AppStatesKeys} key
 	 */
-	constructor(gameController, stateKey) {
-		super(gameController, stateKey);
-		/** @type {StateKey} */ this.stateKey = 'IDLE';
+	constructor(gameController, dskyInterface, key) {
+		super(gameController, dskyInterface, key);
 	}
 
 	/**
 	 * @override
 	 * @param {MissionPhase} phase
 	 */
-	onEnter(phase) {
-		console.log('[State: Idle] onEnter');
-		if (phase) {
-			renderPhaseInfo(phase);
-		}
-	}
+	onEnter(phase) {}
 
 	exit() {
 		console.log('Exiting idle state');

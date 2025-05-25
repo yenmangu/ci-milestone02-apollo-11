@@ -1,15 +1,4 @@
 import { FSM } from '../FSM/fsm.js';
-import { IdleState } from '../missionStates/idle/idleState.js';
-import { DescentOrbit } from '../missionStates/descentOrbit/descentOrbitState.js';
-import { PoweredDescent } from '../missionStates/poweredDescent/poweredDescentState.js';
-import { BrakingPhase } from '../missionStates/brakingState/brakingState.js';
-import { Alarm1202 } from '../missionStates/1202ProgramAlarm/1202AlarmState.js';
-import { ApproachPhase } from '../missionStates/approachState/approachState.js';
-import { Alarm1201 } from '../missionStates/1201ProgramAlarm/1201AlarmState.js';
-import { FinalDescent } from '../missionStates/finalDescent/finalDescentState.js';
-import { Landed } from '../missionStates/landed/landedState.js';
-import { Failed } from '../missionStates/failed/failedState.js';
-import { Paused } from '../missionStates/paused/pausedState.js';
 
 /**
  * @typedef {import('src/types/missionTypes.js').MissionTimeline} MissionTimeline
@@ -28,17 +17,6 @@ export class GameController {
 	constructor(timeline) {
 		console.log('GameController created with timeline: ', timeline);
 		this.fsm = new FSM(this);
-		this.fsm.addState('IDLE', IdleState);
-		this.fsm.addState('DESCENT_ORBIT', DescentOrbit);
-		this.fsm.addState('POWERED_DESCENT', PoweredDescent);
-		this.fsm.addState('BRAKING_PHASE', BrakingPhase);
-		this.fsm.addState('PROG_ALARM_1202', Alarm1202);
-		this.fsm.addState('APPROACH_PHASE', ApproachPhase);
-		this.fsm.addState('PROG_ALARM_1201', Alarm1201);
-		this.fsm.addState('FINAL_DESCENT', FinalDescent);
-		this.fsm.addState('LANDED', Landed);
-		this.fsm.addState('FAILED', Failed);
-		this.fsm.addState('PAUSED', Paused);
 
 		// Core loop properties
 

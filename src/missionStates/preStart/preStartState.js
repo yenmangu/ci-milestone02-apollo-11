@@ -1,7 +1,6 @@
 import { DSKYInterface } from '../../DSKY/dskyInterface.js';
 import { GameController } from '../../game/gameController.js';
 import { MissionStateBase } from '../missionStateBase.js';
-import { preStartController } from './preStartController.js';
 
 export class PreStartState extends MissionStateBase {
 	/**

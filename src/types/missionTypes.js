@@ -1,3 +1,4 @@
+import { DSKYInterface } from '../DSKY/dskyInterface.js';
 import { MissionStateBase } from '../missionStates/missionStateBase.js';
 
 /**
@@ -11,7 +12,11 @@ import { MissionStateBase } from '../missionStates/missionStateBase.js';
  */
 
 /**
- * @typedef {new (game: GameController, key:AppStatesKeys) => MissionStateBase} MissionStateContructor
+ * @typedef {DSKYInterface}
+ */
+
+/**
+ * @typedef {MissionStateBase} missionStateBase
  */
 
 /**
@@ -53,6 +58,56 @@ const AppStates = {
 };
 
 /**
+ * @typedef {Object} MissionStatesKeysEnum
+ * @property {MISSION_STATES_KEYS} idle
+ * @property {MISSION_STATES_KEYS} descent_orbit
+ * @property {MISSION_STATES_KEYS} powered_descent
+ * @property {MISSION_STATES_KEYS} braking_phase
+ * @property {MISSION_STATES_KEYS} program_alarm_1202
+ * @property {MISSION_STATES_KEYS} approach_phase
+ * @property {MISSION_STATES_KEYS} program_alarm_1201
+ * @property {MISSION_STATES_KEYS} final_descent
+ * @property {MISSION_STATES_KEYS} landed
+ * @property {MISSION_STATES_KEYS} pre_start
+ * @property {MISSION_STATES_KEYS} failed
+ * @property {MISSION_STATES_KEYS} paused
+ */
+
+/**
+ * @type {MissionStatesKeysEnum}
+ * @readonly
+ */
+const MissionStatesKeys = {
+	idle: 'IDLE',
+	descent_orbit: 'DESCENT_ORBIT',
+	powered_descent: 'POWERED_DESCENT',
+	braking_phase: 'BRAKING_PHASE',
+	program_alarm_1202: 'PROG_ALARM_1202',
+	approach_phase: 'APPROACH_PHASE',
+	program_alarm_1201: 'PROG_ALARM_1201',
+	final_descent: 'FINAL_DESCENT',
+	landed: 'LANDED',
+	pre_start: 'PRE_START',
+	failed: 'FAILED',
+	paused: 'PAUSED'
+};
+
+/**
+ * @typedef {'IDLE'
+ * |'DESCENT_ORBIT'
+ * |'POWERED_DESCENT'
+ * |'BRAKING_PHASE'
+ * |'PROG_ALARM_1202'
+ * |'APPROACH_PHASE'
+ * |'PROG_ALARM_1201'
+ * |'FINAL_DESCENT'
+ * |'LANDED'
+ * |'PRE_START'
+ * |'FAILED'
+ * |'PAUSED'} MISSION_STATES_KEYS
+ */
+
+/**
  * @typedef {Object} FailureState
  * @property {string} type
  * @property {string} condition
@@ -74,6 +129,14 @@ const AppStates = {
 
 /**
  * @typedef {keyof typeof AppStates} AppStatesKeys
+ */
+
+/**
+ * @typedef {keyof typeof MissionStatesKeys} StatesKeys
+ */
+
+/**
+ * @typedef {typeof MissionStatesKeys[keyof typeof MissionStatesKeys]} StatesKeysValues
  */
 
 /**
@@ -131,4 +194,4 @@ const AppStates = {
  * @property {(state: MissionStateKey|string) => MissionPhase | undefined} getPhase
  */
 
-export { AppStates };
+export { AppStates, MissionStatesKeys };

@@ -1,4 +1,4 @@
-import { MissionState } from '../missionStates/missionState.js';
+import { MissionStateBase } from '../missionStates/missionStateBase.js';
 import { AppStates } from '../types/missionTypes.js';
 /**
  * @typedef {import('src/types/missionTypes.js').AppStatesKeys} AppStatesKey
@@ -23,13 +23,13 @@ export class FSM {
 	 * @param {AppStatesKey} key
 	 * 	- The key used to identify this state (e.g, "DESCENT").
 	 * Must be key from States enum.
-	 * @param {import('src/types/missionTypes.js').MissionStateContructor} stateClass
-	 * 	- A class constructor for the mission state.
+	 * @param {MissionStateBase} stateInstance
+	 * 	- Ready to go state instance
 	 * @example
 	 * fsm.addState("DESCENT", PoweredDescentState);
 	 * 	// Now accessible via transitionTo("DESCENT")
 	 */
-	addState(key, stateClass) {
+	addState(key, stateInstance) {
 		// Enforce valid state keys
 		if (!(key in AppStates)) {
 			throw new TypeError(
@@ -39,11 +39,10 @@ export class FSM {
 			);
 		}
 		// Runtime validation for class
-		if (!(stateClass.prototype instanceof MissionState)) {
-			throw new TypeError(`${stateClass.name} must inherit from MissionState`);
+		if (!(stateInstance instanceof MissionStateBase)) {
+			throw new TypeError(`${stateInstance} must inherit from MissionStateBase`);
 		}
-		const instance = new stateClass(this.game, key);
-		this.states.set(AppStates[key], instance);
+		this.states.set(AppStates[key], stateInstance);
 	}
 	/**
 	 *

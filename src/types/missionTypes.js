@@ -1,4 +1,3 @@
-import { DSKYInterface } from '../DSKY/dskyInterface.js';
 import { MissionStateBase } from '../missionStates/missionStateBase.js';
 
 /**
@@ -12,27 +11,7 @@ import { MissionStateBase } from '../missionStates/missionStateBase.js';
  */
 
 /**
- * @typedef {DSKYInterface}
- */
-
-/**
  * @typedef {MissionStateBase} missionStateBase
- */
-
-/**
- * @typedef {Object} StatesEnum
- * @property {string} PRE_START
- * @property {string} IDLE
- * @property {string} DESCENT_ORBIT
- * @property {string} POWERED_DESCENT
- * @property {string} BRAKING_PHASE
- * @property {string} PROG_ALARM_1202
- * @property {string} APPROACH_PHASE
- * @property {string} PROG_ALARM_1201
- * @property {string} FINAL_DESCENT
- * @property {string} LANDED
- * @property {string} FAILED
- * @property {string} PAUSED
  */
 
 /**
@@ -41,6 +20,7 @@ import { MissionStateBase } from '../missionStates/missionStateBase.js';
  */
 const AppStates = {
 	// Timeline states (from JSON)
+	PRE_START: 'pre_start',
 	IDLE: 'idle',
 	DESCENT_ORBIT: 'descent_orbit',
 	POWERED_DESCENT: 'powered_descent',
@@ -50,34 +30,32 @@ const AppStates = {
 	PROG_ALARM_1201: 'program_alarm_1201',
 	FINAL_DESCENT: 'final_descent',
 	LANDED: 'landed',
-
 	// Special states (not in JSON)
-	PRE_START: 'pre_start',
 	FAILED: 'failed',
 	PAUSED: 'paused'
 };
 
 /**
- * @typedef {Object} MissionStatesKeysEnum
- * @property {MISSION_STATES_KEYS} idle
- * @property {MISSION_STATES_KEYS} descent_orbit
- * @property {MISSION_STATES_KEYS} powered_descent
- * @property {MISSION_STATES_KEYS} braking_phase
- * @property {MISSION_STATES_KEYS} program_alarm_1202
- * @property {MISSION_STATES_KEYS} approach_phase
- * @property {MISSION_STATES_KEYS} program_alarm_1201
- * @property {MISSION_STATES_KEYS} final_descent
- * @property {MISSION_STATES_KEYS} landed
- * @property {MISSION_STATES_KEYS} pre_start
- * @property {MISSION_STATES_KEYS} failed
- * @property {MISSION_STATES_KEYS} paused
+ * @typedef {Object} AppStatesEnum
+ * @property {AppStateKey} idle
+ * @property {AppStateKey} descent_orbit
+ * @property {AppStateKey} powered_descent
+ * @property {AppStateKey} braking_phase
+ * @property {AppStateKey} program_alarm_1202
+ * @property {AppStateKey} approach_phase
+ * @property {AppStateKey} program_alarm_1201
+ * @property {AppStateKey} final_descent
+ * @property {AppStateKey} landed
+ * @property {AppStateKey} pre_start
+ * @property {AppStateKey} failed
+ * @property {AppStateKey} paused
  */
 
 /**
- * @type {MissionStatesKeysEnum}
+ * @type {AppStatesEnum}
  * @readonly
  */
-const MissionStatesKeys = {
+export const AppStateKeys = {
 	idle: 'IDLE',
 	descent_orbit: 'DESCENT_ORBIT',
 	powered_descent: 'POWERED_DESCENT',
@@ -93,18 +71,65 @@ const MissionStatesKeys = {
 };
 
 /**
+ * @typedef { 'idle'
+ * | 'descent_orbit'
+ * | 'powered_descent'
+ * | 'braking_phase'
+ * | 'program_alarm_1202'
+ * | 'approach_phase'
+ * | 'program_alarm_1201'
+ * | 'final_descent'
+ * | 'landed'
+ * | 'pre_start'
+ * | 'failed'
+ * | 'paused' } AppStateValue
+ * // union of string values like 'idle' | 'pre_start' | ...
+ */
+
+/**
  * @typedef {'IDLE'
- * |'DESCENT_ORBIT'
- * |'POWERED_DESCENT'
- * |'BRAKING_PHASE'
- * |'PROG_ALARM_1202'
- * |'APPROACH_PHASE'
- * |'PROG_ALARM_1201'
- * |'FINAL_DESCENT'
- * |'LANDED'
- * |'PRE_START'
- * |'FAILED'
- * |'PAUSED'} MISSION_STATES_KEYS
+ * | 'DESCENT_ORBIT'
+ * | 'POWERED_DESCENT'
+ * | 'BRAKING_PHASE'
+ * | 'PROG_ALARM_1202'
+ * | 'APPROACH_PHASE'
+ * | 'PROG_ALARM_1201'
+ * | 'FINAL_DESCENT'
+ * | 'LANDED'
+ * | 'PRE_START'
+ * | 'FAILED'
+ * | 'PAUSED'} AppStateKey
+ * // union of keys like 'IDLE' | 'PRE_START' | ...
+ */
+
+/**
+ * @typedef {typeof AppStates[keyof typeof AppStates]} AppState
+ */
+
+/**
+ * @typedef {Exclude<AppStateKey, 'PRE_START'|'FAILED'|'PAUSED'>} MissionStateKey
+ */
+
+/**
+ * @typedef {Exclude<AppStateValue, 'pre_start'|'failed'|'paused'>} MissionStateValue
+ */
+
+/**
+ * @typedef {Object} DSKYVerbNoun
+ * @property {string} verb - The verb code for the DSKY action.
+ * @property {string} noun - The noun code for the DSKY action.
+ * @property {string} description - Description of the verb-noun action.
+ */
+
+/**
+ * @typedef {Object} DSKYActionItem
+ * @property {string|null} [program] - The DSKY program number or null if none.
+ * @property {string|null} [description] - Optional description of the program.
+ * @property {DSKYVerbNoun[]} verb_noun - List of verb-noun pairs associated with this program.
+ */
+
+/**
+ * @typedef {DSKYActionItem[]} DSKYActions
  */
 
 /**
@@ -116,40 +141,8 @@ const MissionStatesKeys = {
  */
 
 /**
- * @typedef {'idle'
- * |'descent_orbit'
- * |'powered_descent'
- * |'braking_phase'
- * |'program_alarm_1202'
- * |'approach_phase'
- * |'program_alarm_1201'
- * |'final_descent'
- * |'landed'} MissionStateKey
- */
-
-/**
- * @typedef {keyof typeof AppStates} AppStatesKeys
- */
-
-/**
- * @typedef {keyof typeof MissionStatesKeys} StatesKeys
- */
-
-/**
- * @typedef {typeof MissionStatesKeys[keyof typeof MissionStatesKeys]} StatesKeysValues
- */
-
-/**
- * @typedef {typeof AppStates[keyof typeof AppStates]} AppStatesValues
- */
-
-/**
- * @typedef {Exclude<AppStatesValues, 'failed'|'paused'>} TimelineState
- */
-
-/**
  * @typedef {Object} MissionPhase
- * @property {TimelineState} state
+ * @property {string} state
  * @property {number} start_time
  * @property {string} phase_name
  * @property {string} description
@@ -160,11 +153,12 @@ const MissionStatesKeys = {
  * @property {string} required_action
  * @property {string} audio_ref
  * @property {number} [timeout]
- * @property {Object|null} failure_state
+ * @property {Object|null|undefined} [failure_state]
+ * @property {DSKYActions|null|undefined} [dsky_actions]
+ *
  */
 
 /**
- * @typedef {Object} AppState
  * @typedef {MissionStateKey} currentState
  * @property {MissionPhase | null} currentPhase
  */
@@ -194,4 +188,4 @@ const MissionStatesKeys = {
  * @property {(state: MissionStateKey|string) => MissionPhase | undefined} getPhase
  */
 
-export { AppStates, MissionStatesKeys };
+export { AppStates };

@@ -1,16 +1,29 @@
-import { AppStates } from '../types/missionTypes.js';
+import { AppStates, AppStateKeys } from '../types/missionTypes.js';
 let cachedTimeline = null;
 
 /**
+ * @typedef {import('../types/missionTypes.js').AppStateKey} AppStateKey
+ * @typedef {import('../types/missionTypes.js').AppStateValue} AppStateValue
  * @typedef {import('../types/missionTypes.js').MissionStateKey} MissionStateKey
  * @typedef {import('../types/missionTypes.js').MissionTimeline} MissionTimeline
  * @typedef {import('../types/missionTypes.js').MissionPhase} MissionPhase
- * @typedef {import('../types/missionTypes.js').TimelineState} TimelineState
+ * @typedef {import('../types/missionTypes.js').MissionStateValue} TimelineState
  */
+
+/**
+ * @type {{[K in AppStateKey]: AppStateValue}}
+ */
+const keyToValue = /** @type {any} */ (
+	Object.fromEntries(
+		Object.entries(AppStateKeys).map(([value, key]) => [key, value])
+	)
+);
 
 // Valid timeline states (runtime check)
 const VALID_TIMELINE_STATES = new Set(
-	Object.values(AppStates).filter(v => v !== 'failed' && v !== 'paused')
+	Object.values(AppStates).filter(
+		v => v !== 'failed' && v !== 'paused' && v !== 'pre_start'
+	)
 );
 
 /**
@@ -26,28 +39,38 @@ export async function loadTimeline() {
 
 	try {
 		// Dynamic import
-		const { default: timelineJson } = await import('./timeline.json', {
+		const { default: timelineJsonRaw } = await import('./timeline.json', {
 			with: { type: 'json' }
 		});
 
 		// Validate ALL phases match our types
-		const allValid = timelineJson.mission_phases.every(phase => {
-			return VALID_TIMELINE_STATES.has(phase.state);
+		console.log('VTS', VALID_TIMELINE_STATES);
+
+		const allValid = timelineJsonRaw.mission_phases.every(phase => {
+			VALID_TIMELINE_STATES.has(phase.state);
 		});
 
-		if (!allValid) throw new Error('Invalid timeline data');
+		const invalidStates = timelineJsonRaw.mission_phases
+			.map(phase => phase.state)
+			.filter(state => !VALID_TIMELINE_STATES.has(state));
+
+		if (invalidStates.length > 0) {
+			console.error('Invalid states in timeline:', invalidStates);
+			throw new Error(`Invalid timeline data: ${invalidStates.join(', ')}`);
+		}
+
+		// if (!allValid) throw new Error('Invalid timeline data');
 
 		/**
 		 * @param {MissionStateKey} state
 		 * @returns {MissionPhase | undefined}
 		 */
-
 		// const stateString =
 		const getPhase = state => {
-			console.log('State look up: ', state);
-			const stateString = AppStates[state];
-
-			const phase = timelineJson.mission_phases.find(p => p.state === stateString);
+			const stateValue = keyToValue[state];
+			const phase = timelineJsonRaw.mission_phases.find(
+				p => p.state === stateValue
+			);
 			console.log('Phase found: ', phase);
 			return phase;
 		};
@@ -56,7 +79,7 @@ export async function loadTimeline() {
 		 * @type {MissionTimeline}
 		 */
 		const timeline = Object.freeze({
-			...timelineJson,
+			...timelineJsonRaw,
 			getPhase
 		});
 		return timeline;

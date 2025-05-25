@@ -57,13 +57,13 @@
 				"program": "P63",
 				"description": "Initiates powered descent engine burn",
 				"verb_noun": [{
-						"verb": 37,
-						"noun": 11,
+						"verb": "37",
+						"noun": "11",
 						"description": "Throttle Control - set throttle percentage"
 					},
 					{
-						"verb": 16,
-						"noun": 14,
+						"verb": "16",
+						"noun": "14",
 						"description": "Rendezvous radar enable/disable (used for descent radar check)"
 					}
 				]

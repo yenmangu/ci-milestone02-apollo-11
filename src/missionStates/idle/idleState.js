@@ -13,7 +13,7 @@ export class IdleState extends MissionStateBase {
 	/**
 	 * @param {GameController} gameController
 	 * @param {DSKYInterface} dskyInterface
-	 * @param {import('src/types/missionTypes.js').AppStatesKeys} key
+	 * @param {import('src/types/missionTypes.js').AppStateKey} key
 	 */
 	constructor(gameController, dskyInterface, key) {
 		super(gameController, dskyInterface, key);

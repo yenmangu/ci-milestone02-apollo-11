@@ -3,7 +3,7 @@ import { GameController } from './game/gameController.js';
 import { createIdleModule } from './missionStates/idle/index.js';
 import { MissionStateBase } from './missionStates/missionStateBase.js';
 import { createPreStartModule } from './missionStates/preStart/index.js';
-import { MissionStatesKeys } from './types/missionTypes.js';
+import { AppStateKeys } from './types/missionTypes.js';
 
 /**
  *
@@ -11,9 +11,9 @@ import { MissionStatesKeys } from './types/missionTypes.js';
  * @param {DSKYInterface} dskyInterface
  */
 export function registerStates(game, dskyInterface) {
-	const keys = MissionStatesKeys;
+	const keys = AppStateKeys;
 	/**
-	 * @typedef {import('./types/missionTypes.js').MISSION_STATES_KEYS} StateKey
+	 * @typedef {import('./types/missionTypes.js').AppStateKey} StateKey
 	 * @typedef {{view:any, controller:any, state:MissionStateBase}} StateModule
 	 * @typedef {(game: GameController, dsky: DSKYInterface)=> StateModule} StateFactory
 	 */
@@ -24,6 +24,7 @@ export function registerStates(game, dskyInterface) {
 		[keys.idle, createIdleModule]
 		// More to come
 	];
+	console.log('States in registerStates: ', states);
 
 	for (const [key, factory] of states) {
 		game.fsm.registerFactory(key, () => factory(game, dskyInterface));

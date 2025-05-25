@@ -3,7 +3,7 @@ import { GameController } from '../game/gameController.js';
 
 /**
  * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
- * @typedef {import('src/types/missionTypes.js').AppStatesKeys} StateKey
+ * @typedef {import('src/types/missionTypes.js').AppStateKey} StateKey
  */
 
 /**
@@ -33,7 +33,6 @@ export class MissionStateBase {
 		 * @type {boolean}
 		 */
 		this.isPaused = false;
-		// console.trace('Mission state base: ', this);
 	}
 
 	// Abstract Methods all child classes must implement
@@ -49,14 +48,35 @@ export class MissionStateBase {
 				`Skipping enter logic: getPhase not available for state ${this.stateKey}`
 			);
 		}
-		const phase = this.game.timeLine.getPhase(this.stateKey);
 		if (!this.stateKey) {
 			console.debug('No State Key');
 		}
+		const phase = this.game.timeLine.getPhase(this.stateKey);
 		if (!phase) {
-			console.trace('Cannot get phase:');
+			console.log('Non Mission Critical state found');
+		} else {
+			console.log(`Mission critical phase: ${phase.state} found.`);
+			this.onMissionCritical(phase);
 		}
-		this.onEnter(phase);
+	}
+
+	/**
+	 *
+	 * @param {MissionPhase} phase
+	 */
+	onMissionCritical(phase) {
+		const {
+			start_time,
+			phase_name,
+			description,
+			lunar_altitude,
+			altitude_units,
+			velocity_fps,
+			fuel_percent,
+			required_action,
+			audio_ref,
+			dsky_actions
+		} = phase;
 	}
 
 	/**
@@ -66,6 +86,7 @@ export class MissionStateBase {
 	 */
 	onEnter(phase) {
 		// Default does nothing - subclass override this
+		console.log('Phase: ', phase);
 	}
 
 	exit() {

@@ -5,7 +5,7 @@
 
 import { DSKYInterface } from '../../DSKY/dskyInterface.js';
 import { GameController } from '../../game/gameController.js';
-import { MissionStatesKeys } from '../../types/missionTypes.js';
+import { AppStateKeys } from '../../types/missionTypes.js';
 import { PreStartView } from './preStartView.js';
 
 export class PreStartController {
@@ -38,7 +38,7 @@ export class PreStartController {
 	}
 	resetSimulation() {
 		this.view.onReset();
-		this.gameController.fsm.transitionTo(MissionStatesKeys.pre_start);
+		this.gameController.fsm.transitionTo(AppStateKeys.pre_start);
 	}
 
 	onUserStarted() {
@@ -49,6 +49,6 @@ export class PreStartController {
 		// console.log('Event captured: ', event);
 		// console.log('Starting simulation with key: ', MissionStatesKeys.idle);
 		// Check for any state changes
-		this.gameController.fsm.transitionTo(MissionStatesKeys.idle);
+		this.gameController.fsm.transitionTo(AppStateKeys.idle);
 	}
 }

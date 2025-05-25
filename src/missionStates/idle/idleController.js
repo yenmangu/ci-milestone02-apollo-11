@@ -12,5 +12,7 @@ export class IdleController {
 		this.gameController = gameController;
 		this.dsky = dskyInterface;
 		this.view = view;
+
+		console.log('timeline: ', this.gameController.timeLine);
 	}
 }

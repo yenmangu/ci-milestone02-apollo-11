@@ -26,8 +26,7 @@ export function registerStates(game, dskyInterface) {
 	];
 
 	for (const [key, factory] of states) {
-		const { view, controller, state } = factory(game, dskyInterface);
-		game.fsm.addState(key, state);
+		game.fsm.registerFactory(key, () => factory(game, dskyInterface));
 		console.log(`State: ${key} added`);
 	}
 }

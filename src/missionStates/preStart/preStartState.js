@@ -12,4 +12,8 @@ export class PreStartState extends MissionStateBase {
 	constructor(gameController, dskyInterface, key) {
 		super(gameController, dskyInterface, key);
 	}
+
+	enter() {
+		console.log('overriding enter');
+	}
 }

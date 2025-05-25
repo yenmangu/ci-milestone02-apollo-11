@@ -69,10 +69,9 @@ export class PreStartView extends EventTarget {
 	}
 
 	showUI() {
-		console.log('Showing UI Elements');
-		console.log('Ui Element: ', this.uiElements);
+		// console.log('Showing UI Elements');
+		// console.log('Ui Element: ', this.uiElements);
 		for (const [index, element] of Object.entries(this.uiElements)) {
-			console.log('element: ', element);
 			if (element.classList.contains('hidden')) {
 				element.classList.remove('hidden');
 			}

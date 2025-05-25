@@ -38,6 +38,7 @@ export class PreStartController {
 	}
 	resetSimulation() {
 		this.view.onReset();
+		this.gameController.fsm.transitionTo(MissionStatesKeys.pre_start);
 	}
 
 	onUserStarted() {

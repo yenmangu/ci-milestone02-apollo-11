@@ -15,18 +15,38 @@ export class PreStartController {
 	 * @param {PreStartView} view
 	 */
 	constructor(gameController, dskyInterface, view) {
+		// console.trace('preStartController: ', this);
 		this.gameController = gameController;
 		this.dsky = dskyInterface;
 		this.view = view;
 
+		this.onUserStarted = this.onUserStarted.bind(this);
 		// Can now attach event listener to view because view extends `EventTarget`
-		this.view.addEventListener('userStarted', event => {
-			this.onUserStarted(event);
+		['userStarted', 'reset'].forEach(eventName => {
+			this.view.addEventListener(eventName, this.handleEvent.bind(this));
 		});
 	}
-	onUserStarted(event) {
-		console.log('Event captured: ', event);
-		console.log('Starting simulation...');
+	handleEvent(event) {
+		if (event.type) {
+			if (event.type === 'userStarted') {
+				this.onUserStarted();
+			}
+			if (event.type === 'reset') {
+				this.resetSimulation();
+			}
+		}
+	}
+	resetSimulation() {
+		this.view.onReset();
+	}
+
+	onUserStarted() {
+		this.view.onStart();
+		// console.log('this.gameController: ', this.gameController);
+		// console.log('this.gameController.fsm: ', this.gameController?.fsm);
+
+		// console.log('Event captured: ', event);
+		// console.log('Starting simulation with key: ', MissionStatesKeys.idle);
 		// Check for any state changes
 		this.gameController.fsm.transitionTo(MissionStatesKeys.idle);
 	}

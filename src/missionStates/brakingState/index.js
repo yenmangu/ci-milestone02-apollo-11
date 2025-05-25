@@ -1,7 +1,7 @@
 import { makeModule } from '../stateFactory.js';
 import { BrakingPhaseController } from './brakingPhaseController.js';
 import { BrakingPhaseView } from './brakingPhaseView.js';
-import { BrakingPhaseState } from './brakingState.js';
+import { BrakingPhaseState } from './brakingPhaseState.js';
 
 export const createBrakingPhaseModule = makeModule(
 	BrakingPhaseState,

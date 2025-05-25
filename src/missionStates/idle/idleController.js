@@ -16,6 +16,8 @@ export class IdleController {
 	}
 
 	onEnter() {
+		console.log('on idle enter');
+
 		this.view.showElements(this.uiElements);
 	}
 

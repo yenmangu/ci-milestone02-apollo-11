@@ -1,8 +1,9 @@
 import { MissionStateBase } from '../missionStateBase.js';
 
 export class LandedState extends MissionStateBase {
-	constructor(gameController, dskyInterface, key) {
+	constructor(gameController, dskyInterface, stateController, key) {
 		super(gameController, dskyInterface, key);
+		this.stateController = stateController;
 	}
 	enter() {
 		console.log('Landed state entered');

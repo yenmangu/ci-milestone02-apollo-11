@@ -42,7 +42,6 @@ export class MissionStateBase {
 	 * Fetches the JSON phase and delegates to onEnter.
 	 */
 	enter() {
-		// Common boilerplate
 		if (!this.game.timeLine?.getPhase) {
 			console.warn(
 				`Skipping enter logic: getPhase not available for state ${this.stateKey}`
@@ -51,13 +50,19 @@ export class MissionStateBase {
 		if (!this.stateKey) {
 			console.debug('No State Key');
 		}
+		console.trace('mission state base: ', this.stateKey);
+
 		const phase = this.game.timeLine.getPhase(this.stateKey);
+		if (phase) {
+			console.log('Phase: ', phase);
+		}
 		if (!phase) {
 			console.log('Non Mission Critical state found');
 		} else {
 			console.log(`Mission critical phase: ${phase.state} found.`);
 			this.onMissionCritical(phase);
 		}
+		this.onEnter(phase);
 	}
 
 	/**
@@ -91,10 +96,7 @@ export class MissionStateBase {
 	 * @param {MissionPhase} phase
 	 * 	JSON data for this phase or undefined if missing.
 	 */
-	onEnter(phase) {
-		// Default does nothing - subclass override this
-		console.log('Phase: ', phase);
-	}
+	onEnter(phase) {}
 
 	exit() {
 		throw new Error('Subclass must implement exit()');

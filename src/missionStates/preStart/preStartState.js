@@ -10,8 +10,9 @@ export class PreStartState extends MissionStateBase {
 	 * @param {DSKYInterface} dskyInterface
 	 * @param {import('../../types/missionTypes.js').AppStateKey} key
 	 */
-	constructor(gameController, dskyInterface, key) {
+	constructor(gameController, dskyInterface, stateController, key) {
 		super(gameController, dskyInterface, key);
+		this.stateController = stateController;
 	}
 
 	enter() {

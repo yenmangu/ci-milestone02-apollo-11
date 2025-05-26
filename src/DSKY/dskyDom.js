@@ -29,7 +29,7 @@ function queryDom() {
 	const instrumentsMap = Array.from(
 		document.querySelectorAll('span[id^="instrument-"]')
 	).reduce((map, element) => {
-		const key = element.id.slice(element.id.indexOf('-'));
+		const key = element.id.slice(element.id.indexOf('-') + 1);
 		map[key] = cast(element);
 		return map;
 	}, {});

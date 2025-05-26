@@ -9,10 +9,17 @@ export class DSKYController {
 	 * @param {import('../types/uiTypes.js').DskyDomElements} uiElements
 	 */
 	constructor(uiElements) {
+		this.uiElements = uiElements;
 		this.instruments = uiElements.instrumentsMap;
 
 		this.displayMap = uiElements.displayMap;
 		this.lightsMap = uiElements.indicatorLights;
+		this.expectedActions = {};
+		this.requiredActions = '';
+		this.phaseName = '';
+		this.phaseDescription = '';
+		this.failureState = {};
+		this.audioRef = '';
 
 		if (!this.displayController) {
 			/** @type {DisplayController} */
@@ -38,6 +45,7 @@ export class DSKYController {
 		);
 
 		this.devLightsSubscription = undefined;
+		this.startTime = undefined;
 	}
 
 	defaultMethod() {

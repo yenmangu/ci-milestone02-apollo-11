@@ -6,9 +6,20 @@ import { DSKYInterface } from './DSKY/dskyInterface.js';
 import { registerStates } from './registerStates.js';
 import { InstrumentsController } from './DSKY/instruments/instrumentController.js';
 import { devNavEmitter } from './event/eventBus.js';
+import { AppStateKeys } from './types/missionTypes.js';
 
 export async function initProgram() {
 	try {
+		// DEV
+		const dev = true;
+		/**
+		 * @type {import('./types/missionTypes.js').AppStateKey}
+		 */
+		let state = AppStateKeys.pre_start;
+		if (dev) {
+			state = AppStateKeys.idle;
+		}
+
 		console.log('Init program initiated');
 
 		// console.log('UI Elements: ', uiElements);
@@ -23,23 +34,19 @@ export async function initProgram() {
 
 		registerStates(gameController, dskyInterface);
 
-		gameController.fsm.transitionTo('PRE_START');
-
 		/**
 		 * Inject DevTools if in dev mode
 		 */
-		if (
-			window.location.hostname === 'localhost' ||
-			window.location.hostname === '127.0.0.1' ||
-			window.location.search.includes('devtools')
-		) {
+		gameController.fsm.transitionTo(state);
+
+		if (dev) {
 			console.log('Dev time!');
 
 			const { DevTools } = await import('./dev/devTools.js');
 			new DevTools({
 				gameController,
 				fsm: gameController.fsm,
-				emitter: devNavEmitter // or however it's exposed
+				emitter: devNavEmitter
 			});
 		}
 

@@ -1,4 +1,6 @@
 import { DSKYInterface } from '../DSKY/dskyInterface.js';
+import { stateEmitter } from '../event/eventBus.js';
+import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
 
 /**
@@ -26,6 +28,7 @@ export class MissionStateBase {
 		/** @type {GameController} */ this.game = gameController;
 		/** @type {DSKYInterface} */ this.dskyInterface = dskyInterface;
 		/** @type {StateKey} */ this.stateKey = stateKey;
+		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
 
 		/**
 		 * Single point of truth for pause status.
@@ -50,16 +53,11 @@ export class MissionStateBase {
 		if (!this.stateKey) {
 			console.debug('No State Key');
 		}
-		console.trace('mission state base: ', this.stateKey);
-
 		const phase = this.game.timeLine.getPhase(this.stateKey);
-		if (phase) {
-			console.log('Phase: ', phase);
-		}
+
 		if (!phase) {
 			console.log('Non Mission Critical state found');
 		} else {
-			console.log(`Mission critical phase: ${phase.state} found.`);
 			this.onMissionCritical(phase);
 		}
 		this.onEnter(phase);
@@ -89,6 +87,16 @@ export class MissionStateBase {
 			velocity_fps,
 			fuel_percent
 		});
+
+		this.dskyInterface.dskyController.expectedActions = dsky_actions;
+		this.dskyInterface.dskyController.requiredActions = required_action;
+		this.dskyInterface.dskyController.phaseName = phase_name;
+		this.dskyInterface.dskyController.phaseDescription = description;
+		this.dskyInterface.dskyController.startTime = start_time;
+		this.dskyInterface.dskyController.audioRef = audio_ref;
+		if (phase.failure_state) {
+			this.dskyInterface.dskyController.failureState = phase.failure_state;
+		}
 	}
 
 	/**
@@ -96,7 +104,9 @@ export class MissionStateBase {
 	 * @param {MissionPhase} phase
 	 * 	JSON data for this phase or undefined if missing.
 	 */
-	onEnter(phase) {}
+	onEnter(phase) {
+		throw new Error('Subclass must implement onEnter()');
+	}
 
 	exit() {
 		throw new Error('Subclass must implement exit()');

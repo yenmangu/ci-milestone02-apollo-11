@@ -15,9 +15,7 @@ export class PoweredDescentState extends MissionStateBase {
 		super(gameController, dskyInterface, key);
 		this.stateController = stateController;
 	}
-	enter() {
-		console.log('PoweredDescent state entered');
-	}
+
 	exit() {
 		console.log('Exiting PoweredDescent state');
 	}

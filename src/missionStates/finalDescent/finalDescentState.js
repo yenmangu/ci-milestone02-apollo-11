@@ -5,9 +5,7 @@ export class FinalDescentState extends MissionStateBase {
 		super(gameController, dskyInterface, key);
 		this.stateController = stateController;
 	}
-	enter() {
-		console.log('FinalDescent state entered');
-	}
+
 	exit() {
 		console.log('Exiting FinalDescent state');
 	}

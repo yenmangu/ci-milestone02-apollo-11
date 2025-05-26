@@ -42,12 +42,6 @@ export async function loadTimeline() {
 			with: { type: 'json' }
 		});
 
-		// Validate ALL phases match our types
-
-		const allValid = timelineJsonRaw.mission_phases.every(phase => {
-			VALID_TIMELINE_STATES.has(phase.state);
-		});
-
 		const invalidStates = timelineJsonRaw.mission_phases
 			.map(phase => phase.state)
 			.filter(state => !VALID_TIMELINE_STATES.has(state));
@@ -56,8 +50,6 @@ export async function loadTimeline() {
 			console.error('Invalid states in timeline:', invalidStates);
 			throw new Error(`Invalid timeline data: ${invalidStates.join(', ')}`);
 		}
-
-		// if (!allValid) throw new Error('Invalid timeline data');
 
 		/**
 		 * @param {MissionStateKey} state

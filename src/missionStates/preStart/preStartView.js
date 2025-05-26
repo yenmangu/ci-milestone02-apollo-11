@@ -15,7 +15,7 @@ export class PreStartView extends EventTarget {
 		super();
 		// console.trace('Instance pre start view created');
 		this.startButton = document.querySelector('button#startBtn');
-		this.resetButton = document.querySelector('button#goBack');
+		// this.resetButton = document.querySelector('button#goBack');
 		this.uiElements = document.querySelectorAll('section[id$="-ui"]');
 		this.startContainer = document.querySelector('section[id="pre-start"]');
 		// console.log('Ui el: ', this.uiElements);
@@ -23,10 +23,6 @@ export class PreStartView extends EventTarget {
 		this.startButton.addEventListener('click', e => {
 			e.preventDefault();
 			this.emitEvent('userStarted');
-		});
-
-		this.resetButton.addEventListener('click', e => {
-			this.emitEvent('reset');
 		});
 
 		this.resetContainer = document.querySelector('section#go-back');

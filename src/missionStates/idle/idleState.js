@@ -30,8 +30,6 @@ export class IdleState extends MissionStateBase {
 	 * @param {MissionPhase} phase
 	 */
 	onEnter(phase) {
-		console.log('Entering idle state');
-
 		this.controller.onEnter();
 	}
 

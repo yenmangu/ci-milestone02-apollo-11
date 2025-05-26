@@ -25,13 +25,11 @@ export class InstrumentsController {
 			const writableValue = typeof value === 'string' ? value : value.toString();
 			this.telemetry[key] = writableValue;
 			if (key !== TelemetryKeys.altitudeUnits) {
-				const formattedString = ` ${writableValue}`;
-				this.instrumentsView.write(key, formattedString);
+				this.instrumentsView.write(key, writableValue);
 			} else {
 				this.instrumentsView.setUnits(writableValue);
 			}
 		}
-		console.log('Telemetry: ', this.telemetry);
 	}
 
 	updateVelocity(value) {

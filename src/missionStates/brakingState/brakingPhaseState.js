@@ -5,9 +5,7 @@ export class BrakingPhaseState extends MissionStateBase {
 		super(gameController, dskyInterface, key);
 		this.stateController = stateController;
 	}
-	enter() {
-		console.log('BrakingPhase state entered');
-	}
+
 	exit() {
 		console.log('Exiting BrakingPhase state');
 	}

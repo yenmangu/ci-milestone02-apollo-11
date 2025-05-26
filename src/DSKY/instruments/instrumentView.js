@@ -8,7 +8,8 @@ export class InstrumentsView {
 		 * @type {import("../../types/uiTypes.js").instrumentsMap}
 		 */
 		this.instrumentsMap = instrumentsMap;
-		console.log('instrumentsMap: ', instrumentsMap);
+		this.telemetry = {};
+		this.units = '';
 	}
 
 	/**
@@ -17,8 +18,12 @@ export class InstrumentsView {
 	 * @param {string} value
 	 */
 	write(instrument, value) {
-		this.telemetry = {};
+		this.telemetry[instrument] = value;
+		const formattedString = `: ${value}`;
+		this.instrumentsMap[instrument].innerText = value;
 	}
 
-	setUnits(altitude_units) {}
+	setUnits(altitude_units) {
+		this.units = altitude_units;
+	}
 }

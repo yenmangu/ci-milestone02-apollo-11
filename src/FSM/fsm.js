@@ -1,3 +1,5 @@
+import { stateEmitter } from '../event/eventBus.js';
+import EventEmitter from '../event/eventEmitter.js';
 import { MissionStateBase } from '../missionStates/missionStateBase.js';
 import { AppStates } from '../types/missionTypes.js';
 /**
@@ -21,6 +23,8 @@ export class FSM {
 		// Maybe needed, maybe not
 		this.controllers = new Map();
 		this.views = new Map();
+
+		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
 	}
 	/**
 	 * Adds a new mission state to the finite state machine.
@@ -65,6 +69,8 @@ export class FSM {
 	 * @param {AppStatesKey} key
 	 */
 	transitionTo(key) {
+		console.log('Key: ', key);
+
 		// const state = this.states.get(AppStates[key]);
 		const stateKey = AppStates[key];
 
@@ -84,6 +90,7 @@ export class FSM {
 					`Factory for "${key}" must return a state extending MissionStateBase`
 				);
 			}
+
 			this.states.set(stateKey, state);
 			// Added even if not needed
 			this.views.set(stateKey, view);
@@ -91,6 +98,7 @@ export class FSM {
 		}
 		if (this.currentState) this.currentState.exit();
 		this.currentState = this.states.get(stateKey);
+		this.stateEmitter.emit({ type: stateKey });
 		this.currentState.enter();
 	}
 }

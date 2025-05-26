@@ -40,7 +40,7 @@ export class PreStartController {
 
 	resetSimulation() {
 		this.view.onReset();
-		this.gameController.fsm.transitionTo(AppStateKeys.pre_start);
+		// this.gameController.fsm.transitionTo(AppStateKeys.pre_start);
 	}
 
 	onUserStarted() {
@@ -52,5 +52,8 @@ export class PreStartController {
 		// console.log('Starting simulation with key: ', MissionStatesKeys.idle);
 		// Check for any state changes
 		this.gameController.fsm.transitionTo(AppStateKeys.idle);
+	}
+	onExit() {
+		this.view.hide(this.view.startButton);
 	}
 }

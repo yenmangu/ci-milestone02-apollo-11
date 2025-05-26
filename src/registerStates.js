@@ -42,7 +42,6 @@ export function registerStates(game, dskyInterface) {
 		[keys.landed, createLandedModule],
 		[keys.failed, createFailedModule],
 		[keys.paused, createPausedModule]
-		// More to come
 	];
 	// console.log('States in registerStates: ', states);
 

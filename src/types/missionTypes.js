@@ -35,6 +35,10 @@ const AppStates = {
 	PAUSED: 'paused'
 };
 
+export const AppStateValuesToKeys = Object.fromEntries(
+	Object.entries(AppStates).map(([k, v]) => [v, k])
+);
+
 /**
  * @typedef {Object} AppStatesEnum
  * @property {AppStateKey} idle

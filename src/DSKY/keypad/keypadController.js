@@ -1,22 +1,30 @@
+/**
+ * @typedef {import('../../types/dskyTypes.js').keypadStateManager} keypadStateManager
+ */
+
 import { ModeTypes } from '../../types/dskyTypes.js';
-import { DSKYController } from '../dskyController.js';
-import createKeypadStateManager from './keypadStateManager.js';
 
 export class KeypadController {
 	/**
 	 *
-	 * @param {*} displayMap
 	 * @param {import('../../types/dskyTypes.js').DSKYParentInterface} parent
+	 * @param {import('../../types/dskyTypes.js').keypadStateManager} keypadStateManager
 	 */
-	constructor(displayMap, parent) {
+	constructor(parent, keypadStateManager) {
 		this.parent = parent;
-		this.displayMap = displayMap;
 		/**
 		 * @type {import('../../types/dskyTypes.js').keypadStateManager}
 		 */
-		this.keypadStateManager = createKeypadStateManager(displayMap);
+		console.log(
+			'Received keypadStateManager in KeypadController:',
+			keypadStateManager
+		);
+
+		/** @type {keypadStateManager} */ this.keypadStateManager = keypadStateManager;
+
 		/** @type {HTMLButtonElement[]} */
-		this.buttons = Array.from(document.querySelectorAll('push-button'));
+		this.buttons = Array.from(document.querySelectorAll('button.push-button'));
+		console.log('SANITY BUTTON CHECK', this.buttons);
 	}
 	/**
 	 *
@@ -34,13 +42,17 @@ export class KeypadController {
 		this.buttons.forEach(btn => {
 			btn.addEventListener('click', e => {
 				e.preventDefault();
+				const target = /** @type {HTMLButtonElement} */ (e.currentTarget);
 				console.log('Button clicked: ', e.currentTarget);
-				handler(btn.dataset.dsky);
+				handler(target.dataset.dsky);
 			});
 		});
 	}
 
 	handleInput(dskyData) {
+		if (!this.keypadStateManager) {
+			console.warn('Keypad state manager not initialised');
+		}
 		if (Object.values(ModeTypes).includes(dskyData)) {
 			switch (dskyData) {
 				case ModeTypes.VERB:

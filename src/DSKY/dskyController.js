@@ -26,22 +26,31 @@ export class DSKYController {
 			this.displayController = new DisplayController(this.displayMap, uiElements);
 		}
 
-		/** @type {KeypadController} */
-		this.keypadController = new KeypadController(this.displayMap, {
-			getPolarity: this.getPolarity.bind(this),
-			resetDsky: this.resetDsky.bind(this)
-		});
-
 		const displayInterface = {
 			write: (id, val) => this.displayController.write(id, val),
 			bulkWrite: vals => this.displayController.bulkWrite(vals),
 			clearVerbNoun: () => this.displayController.clearVerbNoun()
 		};
 
-		this.keypad = createKeypadStateManager(displayInterface);
+		console.log('Creating keypadStateManager...');
 
+		this.keypad = createKeypadStateManager(displayInterface);
+		console.log('Keypad manager created:', this.keypad);
+
+		/** @type {KeypadController} */
+		this.keypadController = new KeypadController(
+			{
+				getPolarity: this.getPolarity.bind(this),
+				resetDsky: this.resetDsky.bind(this)
+			},
+			this.keypad
+		);
+
+		// The handleInput is expecting access to
+		// - keypadController.keypadStateManager.
+		// This means we must bind to the correct `this` context.
 		this.keypadController.onButtonClick(
-			this.keypadController.handleInput.bind(this)
+			this.keypadController.handleInput.bind(this.keypadController)
 		);
 
 		this.devLightsSubscription = undefined;

@@ -24,7 +24,7 @@ export class DisplayView {
 
 		this.flashingIntervals = {};
 		this.devLightsSub = devLightsEmitter.subscribe(event => {
-			this.setLightViaEvent(event.id);
+			this.setLightViaEvent(event.payload);
 		});
 		this.testLights(false);
 	}
@@ -105,7 +105,7 @@ export class DisplayView {
 			btn.addEventListener('click', e => {
 				e.preventDefault();
 				console.log('Single click');
-				devLightsEmitter.emit({ type: 'light', id: btnEl.dataset.dev });
+				devLightsEmitter.emit('light', btnEl.dataset.dev);
 			});
 		});
 	}

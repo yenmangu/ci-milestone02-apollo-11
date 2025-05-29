@@ -2,10 +2,10 @@ import { pushButtonEmitter } from '../../event/eventBus.js';
 
 /**
  *
- * @param {import('../../types/dskyTypes.js').DisplayInterface} display
+ * @param {import('../../types/dskyTypes.js').DisplayInterface} displayInterface
  * @returns {import('../../types/dskyTypes.js').keypadStateManager}
  */
-const createKeypadStateManager = display => {
+const createKeypadStateManager = displayInterface => {
 	// console.log('Creating keyboard state manager: ');
 
 	/**@type {import('../../types/dskyTypes.js').KeypadState} */
@@ -23,10 +23,12 @@ const createKeypadStateManager = display => {
 
 	const manager = {
 		setMode(mode) {
+			console.log('Invoked set mode');
+
 			state.mode = mode;
 			state.buffer = '';
 			logState('setMode');
-			pushButtonEmitter.emit({ type: mode, action: 'enable' });
+			pushButtonEmitter.emit(mode, 'enable');
 		},
 
 		appendDigit(digit) {
@@ -46,7 +48,7 @@ const createKeypadStateManager = display => {
 			} else if (state.mode === 'noun') {
 				state.noun = state.buffer;
 			}
-			display.bulkWrite({
+			displayInterface.bulkWrite({
 				verb: state.verb ?? '00',
 				noun: state.noun ?? '00'
 			});
@@ -61,8 +63,8 @@ const createKeypadStateManager = display => {
 			state.noun = null;
 			state.buffer = '';
 			state.polarity = null;
-			display.clearVerbNoun();
-			pushButtonEmitter.emit({ type: 'reset' });
+			displayInterface.clearVerbNoun();
+			pushButtonEmitter.emit('reset');
 		},
 
 		getState() {

@@ -35,20 +35,17 @@ export class IdleState extends MissionStateBase {
 	 */
 	onEnter(phase) {
 		this.controller.onEnter().then(() => {
-			this.requiredActions = ['ready'];
+			this.requiredActions = [];
 			this.actionsCompleted.clear();
 
 			this.watchUntilComplete(
-				event => this.handleActionEvent(event),
+				event => {},
 				() => {
 					console.log('Idle phase completed');
 					this.onAllCompleted();
 				}
 			);
 		});
-	}
-	handleActionEvent(event) {
-		throw new Error('Method not implemented.');
 	}
 
 	exit() {

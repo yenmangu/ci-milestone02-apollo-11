@@ -9,7 +9,11 @@ import { stateEmitter } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { FSM } from '../FSM/fsm.js';
 import { GameController } from '../game/gameController.js';
-import { AppStateKeys } from '../types/missionTypes.js';
+import {
+	AppStateKeys,
+	AppStates,
+	AppStateValuesToKeys
+} from '../types/missionTypes.js';
 import { cast } from '../util/cast.js';
 
 export class DevTools {
@@ -20,6 +24,8 @@ export class DevTools {
 	constructor({ gameController, fsm, emitter }) {
 		this.fsm = fsm;
 		this.gameController = gameController;
+		this.nonNavigableStates = ['FAILED', 'PAUSED'];
+
 		this.fsm.transitionTo(AppStateKeys.idle);
 		this.devPanel = this.showDevPanel();
 		/**
@@ -62,15 +68,32 @@ export class DevTools {
 		this.stateEmitter.subscribe(event => {
 			if (this.event !== event) {
 				console.log('Event chage detected: ', event);
-
 				this.event = event;
+
 				this.setStateName();
 			}
 		});
 	}
 	setStateName() {
-		this.stateKey = this.factories[this.currentStateIndex][0];
-		document.getElementById('stateName').innerText = this.stateKey;
+		console.log('this.fsm.currentState.stateKey: ', this.fsm.currentState.stateKey);
+		const currentStateKey = Object.entries(AppStates).find(([key]) => {
+			console.log('key: ', key);
+			return key === this.fsm.currentState.stateKey;
+		})?.[0];
+
+		if (currentStateKey) {
+			this.stateKey =
+				/** @type {import('../types/missionTypes.js').AppStateKey} */ (
+					currentStateKey
+				);
+			console.log('currentStateKey found: ', currentStateKey);
+			this.currentStateIndex = this.factories.findIndex(([key]) => {
+				return key === currentStateKey;
+			});
+			document.getElementById('stateName').innerText = AppStates[this.stateKey];
+		} else {
+			console.warn('Could not match FSM state to known factory keys');
+		}
 	}
 
 	addListeners() {
@@ -143,6 +166,14 @@ export class DevTools {
 		}
 
 		const [newStateKey] = this.factories[newIndex];
+
+		// Guard against transitioning to special non-mission states
+		if (this.nonNavigableStates.includes(newStateKey)) {
+			console.warn(`Blocked navigation to special state: ${newStateKey}`);
+			return;
+		}
+		console.log(`${newStateKey} ${newIndex}`);
+
 		this.fsm.transitionTo(newStateKey);
 		this.currentStateIndex = newIndex;
 		this.setStateName();

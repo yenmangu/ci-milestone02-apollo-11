@@ -1,4 +1,5 @@
 import { DSKYInterface } from '../../DSKY/dskyInterface.js';
+import { actionEmitter } from '../../event/eventBus.js';
 import { GameController } from '../../game/gameController.js';
 import { IdleView } from './idleView.js';
 
@@ -12,7 +13,11 @@ export class IdleController {
 		this.gameController = gameController;
 		this.dsky = dskyInterface;
 		this.view = view;
+		this.actionEmitter = actionEmitter;
 		this.uiElements = document.querySelectorAll('section[id$="-ui"]');
+		this.view.addEventListener('phaseIntroComplete', () => {
+			this.actionEmitter.emit({ type: 'actionsComplete' });
+		});
 	}
 
 	onEnter() {

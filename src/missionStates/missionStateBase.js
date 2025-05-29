@@ -9,7 +9,7 @@
  */
 
 import { DSKYInterface } from '../DSKY/dskyInterface.js';
-import { stateEmitter } from '../event/eventBus.js';
+import { stateEmitter, phaseNameEmitter } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
 import watchUntilComplete from '../util/watchUntilComplete.js';
@@ -35,9 +35,11 @@ export class MissionStateBase {
 		/** @type {DSKYInterface} */ this.dskyInterface = dskyInterface;
 		/** @type {StateKey} */ this.stateKey = stateKey;
 		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
+		/** @type {EventEmitter} */ this.phaseNameEmitter = phaseNameEmitter;
 		/** @type {Object[]} */ this.requiredActions = [];
 		/** @type {Set<string>} */ this.actionsCompleted = new Set();
 		this.actionWatcher = null;
+		this.phaseHeadingEl = document.getElementById('phaseName');
 
 		/**
 		 * Single point of truth for pause status.
@@ -74,9 +76,19 @@ export class MissionStateBase {
 		if (!phase) {
 			console.log('Non Mission Critical state found');
 		} else {
+			this.updatePhaseHeading(phase.phase_name);
 			this.onMissionCritical(phase);
 		}
 		this.onEnter(phase);
+	}
+
+	updatePhaseHeading(phaseName) {
+		console.log('PhaseName: ', phaseName);
+		this.phaseNameEmitter.emit({ type: phaseName });
+
+		if (this.phaseHeadingEl) {
+			this.phaseHeadingEl.innerText = phaseName;
+		}
 	}
 
 	/**
@@ -134,7 +146,7 @@ export class MissionStateBase {
 	 *
 	 * @protected
 	 */
-	watchUntillComplete(onAction, onComplete) {
+	watchUntilComplete(onAction, onComplete) {
 		this.actionWatcher = watchUntilComplete(onAction, onComplete);
 	}
 
@@ -144,9 +156,9 @@ export class MissionStateBase {
 	 */
 	markActionComplete(actionKey) {
 		this.actionsCompleted.add(actionKey);
-		const allComplete = this.requiredActions.every(action => {
-			this.actionsCompleted.has(action);
-		});
+		const allComplete = this.requiredActions.every(action =>
+			this.actionsCompleted.has(action)
+		);
 
 		if (allComplete) {
 			// Ignored because this is an optional hook the subclass can implement

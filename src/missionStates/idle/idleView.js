@@ -3,7 +3,7 @@ import { cast } from '../../util/cast.js';
 export class IdleView extends EventTarget {
 	constructor() {
 		super();
-		this.lemUI = document.getElementById('lemAnimation-ui');
+		this.lemUI = document.getElementById('lemUI');
 		this.countdownElement = null;
 	}
 
@@ -33,7 +33,7 @@ export class IdleView extends EventTarget {
 	async renderCountdown(seconds = 3) {
 		return new Promise(resolve => {
 			if (!this.lemUI) {
-				console.warn('lemAnimation-ui not found');
+				console.warn('lemUI not found');
 				resolve();
 				return;
 			}
@@ -49,6 +49,7 @@ export class IdleView extends EventTarget {
 				if (remaining <= 0) {
 					this.lemUI.innerHTML = '';
 					resolve();
+					this.dispatchEvent(new Event('phaseIntroComplete'));
 				} else {
 					remaining--;
 					setTimeout(tick, 1000);

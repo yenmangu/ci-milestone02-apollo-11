@@ -109,11 +109,13 @@ export class MissionStateBase {
 			dsky_actions
 		} = phase;
 
-		this.dskyInterface.instrumentsController.updateInstruments({
+		this.dskyInterface.instrumentsController.updateHud({
 			altitude_units,
 			lunar_altitude,
 			velocity_fps,
-			fuel_percent
+			fuel_percent,
+			start_time,
+			phase_name
 		});
 
 		this.dskyInterface.dskyController.expectedActions = dsky_actions;

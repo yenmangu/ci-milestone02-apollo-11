@@ -60,8 +60,8 @@ export class FSM {
 	 * @param {AppStatesKey} key
 	 * @param {()=>{view: any, controller: any, state: MissionStateBase}} factoryFn
 	 */
-	registerFactory(key, factoryFn) {
-		this.factories[key] = factoryFn;
+	registerFactory(key, factoryFn, meta = {}) {
+		this.factories[key] = { factoryFn, meta };
 	}
 
 	/**
@@ -79,7 +79,7 @@ export class FSM {
 		if (!this.states.has(stateKey)) {
 			// console.log('Factories: ', this.factories);
 
-			const factory = this.factories[key];
+			const { factoryFn: factory, meta } = this.factories[key];
 			if (!factory) {
 				throw new Error(`No state or factory found for key "${key}"`);
 			}

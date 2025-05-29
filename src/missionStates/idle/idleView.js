@@ -18,6 +18,7 @@ export class IdleView extends EventTarget {
 				htmlEl.classList.remove('hidden');
 			}
 		});
+		document.getElementById('pre-start').classList.add('hidden');
 	}
 
 	showPhaseInto() {

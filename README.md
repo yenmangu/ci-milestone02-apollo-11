@@ -71,6 +71,14 @@ There are no remaining major differences between the local version when compared
 
 ## Credits
 
+links to add to write up:
+https://fontsinuse.com/uses/56966/nasa-apollo-11-mission
+https://fontsinuse.com/typefaces/4496/spartan
+https://medium.com/@dovid11564/using-css-animations-to-mimic-the-look-of-a-crt-monitor-3919de3318e2
+
+
+
+
 ### Content
 
 - Template code for the navbar taken from [Bootstrap](https://getbootstrap.com/docs/5.3/components/navbar/#nav) and heavily modified to suit the site's needs.

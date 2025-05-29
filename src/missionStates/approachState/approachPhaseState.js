@@ -5,7 +5,7 @@ export class ApproachPhaseState extends MissionStateBase {
 		super(gameController, dskyInterface, key);
 		this.stateController = stateController;
 	}
-
+	onEnter() {}
 	exit() {
 		console.log('Exiting ApproachPhase state');
 	}

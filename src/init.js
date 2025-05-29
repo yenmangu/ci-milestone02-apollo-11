@@ -4,7 +4,7 @@ import { loadTimeline } from './data/timeline.js';
 import { GameController } from './game/gameController.js';
 import { DSKYInterface } from './DSKY/dskyInterface.js';
 import { registerStates } from './registerStates.js';
-import { InstrumentsController } from './DSKY/instruments/instrumentController.js';
+import { HudController } from './DSKY/hud/hudController.js';
 import { devNavEmitter } from './event/eventBus.js';
 import { AppStateKeys } from './types/missionTypes.js';
 
@@ -26,8 +26,8 @@ export async function initProgram() {
 		const timeline = await loadTimeline();
 
 		const dsky = new DSKYController(uiElements);
-		const instruments = new InstrumentsController(uiElements.instrumentsMap);
-		const dskyInterface = new DSKYInterface(dsky, instruments);
+		const hud = new HudController(uiElements.hudMap);
+		const dskyInterface = new DSKYInterface(dsky, hud);
 		const gameController = new GameController(timeline);
 
 		dskyInterface.initiate();

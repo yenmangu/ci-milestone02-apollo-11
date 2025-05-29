@@ -13,7 +13,9 @@ export const TelemetryKeys = {
 	velocity: 'velocity_fps',
 	altitude: 'lunar_altitude',
 	altitudeUnits: 'altitude_units',
-	fuel: 'fuel_percent'
+	fuel: 'fuel_percent',
+	phaseName: 'phase_name',
+	startTime: 'start_time'
 };
 
 /**
@@ -43,7 +45,23 @@ export const TelemetryKeys = {
  */
 
 /**
- * @typedef {Record<string,HTMLElement>} Instruments
+ * @typedef {Record<string,HTMLElement>} HudElement
+ */
+
+/**
+ * @typedef {Object} HudElements
+ * @property {HTMLElement} lunar_altitude - Displays the current altitude above the lunar surface.
+ * @property {HTMLElement} velocity_fps - Displays current descent velocity in feet per second.
+ * @property {HTMLElement} fuel_percent - Displays remaining fuel percentage.
+ * @property {HTMLElement} start_time - Displays the mission time since start (MM:SS or similar).
+ * @property {HTMLElement} phase_name - Displays the current mission phase label.
+ * @property {HTMLElement} altitude_units - Displays the current altitude units label (m or ft).
+ *
+ *
+ */
+
+/**
+ * @typedef {HudElements} hudMap
  */
 
 /**
@@ -53,7 +71,7 @@ export const TelemetryKeys = {
  * @property {Record<string, HTMLElement>} displayMap
  * @property {Array<NodeListOf<HTMLElement>>} pushButtons
  * @property {HTMLElement} progLight
- * @property {Record<string, HTMLElement>} instrumentsMap
+ * @property {Record<string, HTMLElement>} hudMap
  */
 
 /**
@@ -63,10 +81,6 @@ export const TelemetryKeys = {
 
 /**
  * @typedef {Record<string,HTMLElement>} lightsMap
- */
-
-/**
- * @typedef {Record<string,HTMLElement>} instrumentsMap
  */
 
 export {};

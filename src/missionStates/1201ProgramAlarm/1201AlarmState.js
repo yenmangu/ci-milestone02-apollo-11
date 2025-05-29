@@ -5,7 +5,7 @@ export class Alarm1201State extends MissionStateBase {
 		super(gameController, dskyInterface, key);
 		this.stateController = stateController;
 	}
-
+	onEnter() {}
 	exit() {
 		console.log('Exiting Alarm1201 state');
 	}

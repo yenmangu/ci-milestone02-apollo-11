@@ -39,9 +39,9 @@ export function registerStates(game, dskyInterface) {
 		[keys.approach_phase, createApproachPhaseModule],
 		[keys.program_alarm_1201, createAlarm1201Module],
 		[keys.final_descent, createFinalDescentModule],
-		[keys.landed, createLandedModule]
-		// [keys.failed, createFailedModule],
-		// [keys.paused, createPausedModule]
+		[keys.landed, createLandedModule],
+		[keys.failed, createFailedModule],
+		[keys.paused, createPausedModule]
 	];
 	// console.log('States in registerStates: ', states);
 
@@ -49,4 +49,5 @@ export function registerStates(game, dskyInterface) {
 		game.fsm.registerFactory(key, () => factory(game, dskyInterface));
 		// console.log(`State: ${key} added`);
 	}
+	console.log(game.fsm.factories);
 }

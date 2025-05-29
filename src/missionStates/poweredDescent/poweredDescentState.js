@@ -16,6 +16,8 @@ export class PoweredDescentState extends MissionStateBase {
 		this.stateController = stateController;
 	}
 
+	onEnter() {}
+
 	exit() {
 		console.log('Exiting PoweredDescent state');
 	}

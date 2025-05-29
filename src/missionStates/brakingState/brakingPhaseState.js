@@ -6,6 +6,8 @@ export class BrakingPhaseState extends MissionStateBase {
 		this.stateController = stateController;
 	}
 
+	onEnter() {}
+
 	exit() {
 		console.log('Exiting BrakingPhase state');
 	}

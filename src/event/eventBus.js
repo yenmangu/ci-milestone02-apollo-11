@@ -4,6 +4,7 @@ const pushButtonEmitter = new EventEmitter();
 const indicatorLightsEmitter = new EventEmitter();
 const stateEmitter = new EventEmitter();
 const actionEmitter = new EventEmitter();
+const phaseNameEmitter = new EventEmitter();
 
 // Dev emitter
 const devLightsEmitter = new EventEmitter();
@@ -14,6 +15,7 @@ export {
 	indicatorLightsEmitter,
 	stateEmitter,
 	actionEmitter,
+	phaseNameEmitter,
 	devLightsEmitter,
 	devNavEmitter
 };

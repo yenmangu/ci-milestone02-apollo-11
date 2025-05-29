@@ -23,29 +23,21 @@
  * @template {string} EventType
 
  * @typedef {{
-* 	on:
-* 		(event: string | '*',
-* 			listener:
-* 				(event: {
-* 					type: string | '*',
-* 					action?: any
-* 				} & Record<string,any>
-* 			) => void
-* 		) => void,
-* 	emit:
-* 		(eventObj: {
-* 			type: string | '*',
-* 			action?:any
-* 			} & Record <string, any>
-* 		) => void,
-* 	subscribe:
-* 		(listener:
-* 			(event: {
-* 				type: string | '*',
-* 				action?:any
-* 				} & Record<string, any>
-* 			) => void
-* 		) => Subscription
+*   on: (
+*     event: EventType | '*',
+*     listener: (payload: any) => void
+*   ) => { unsubscribe: () => void },
+*   emit: (
+*     type: EventType,
+*     payload?: any
+*   ) => void,
+*   subscribe: (
+*     listener: (event: { type: EventType, payload: any }) => void
+*   ) => { unsubscribe: () => void, log: () => any },
+*   off: (
+*     event: EventType | '*',
+*     listener: (payload: any) => void
+*   ) => void
 * }} EventEmitterInstance
 *
 */

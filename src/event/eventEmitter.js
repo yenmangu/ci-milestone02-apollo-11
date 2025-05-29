@@ -1,28 +1,25 @@
 import {} from '../types/globalTypes.js';
 
 /**
- * A simple event emitter, inspired by the Angular EventEmitter
  * @template {string} EventType
  * @typedef {import('../types/globalTypes.js').EventEmitterInstance<EventType>} EventEmitterInstance
  */
 
 /**
+ * A simple event emitter, inspired by the Angular EventEmitter
  * @template {string} EventType
  * @implements {EventEmitterInstance<EventType>}
  */
 export default class EventEmitter {
-	/**
-	 * @type {Record<string | '*', Function[]>}
-	 */
-	events;
+	/** @type {Record<EventType | '*', Function[]>} */ events;
 	constructor() {
 		this.events = /** @type {Record<string | '*', Function[]>} */ ({});
 		this.debug = true; // Set to true for debug
 	}
 
 	/**
-	 * @param {string | '*' } event
-	 * @param {(event: {type: string | '*', action?:any} & Record<string, any>) => void} listener
+	 * @param {EventType | '*' } event
+	 * @param {(payload:any) => void} listener
 	 * @returns {{unsubscribe: () => void}}
 	 */
 	on(event, listener) {
@@ -37,43 +34,45 @@ export default class EventEmitter {
 	}
 
 	/**
-	 * Emits an event object with a mandatory `type` property.
-	 * @param {{ type: string, action?:any } & Record<string, any>} eventObj
+	 * Emits an event to all listeners of the given type
+	 * @param {EventType} type
+	 * @param {any} [payload]
 	 */
-	emit(eventObj) {
-		console.log('eventObject: ', eventObj);
-		const eventType = eventObj.type;
+	emit(type, payload) {
+		if (this.debug) {
+			console.debug(`[EventEmitter] Emitting "${type}":`, payload);
+		}
 
 		// Emit to specific
-		if (this.events[eventType]) {
-			this.events[eventType].forEach(listener => listener(eventObj));
+		if (this.events[type]) {
+			this.events[type].forEach(listener => listener(payload));
 		}
 		// Emit to wildcard listeners
 		if (this.events['*']) {
-			this.events['*'].forEach(listener => listener(eventObj));
+			this.events['*'].forEach(listener => listener({ type, payload }));
 		}
 	}
 
 	/**
-	 * @param {(event:{type: string | '*', action?:any } & Record <string, any>) => void} listener
+	 * Shorthand for subscribing to all events
+	 * @param {(event: {type: EventType, payload: any})=> void} listener
 	 * @returns {({ unsubscribe: () => void, log: () => import('../types/globalTypes.js').Subscription })}
 	 */
 	subscribe(listener) {
-		const event = '*';
-		this.on(event, listener);
+		const wildcard = '*';
+		this.on(wildcard, listener);
 
 		const subscription = {
 			unsubscribe: () => {
-				this.events[event] =
-					this.events[event]?.filter(fn => fn !== listener) || [];
+				this.off(wildcard, listener);
 				if (this.debug) {
-					console.debug(`[EventEmitter] Unsubscribed from "${event}"`);
+					console.debug(`[EventEmitter] Unsubscribed from "${wildcard}"`);
 				}
 			},
 			log: () => {
 				console.log(
-					`[EventEmitter] Listeners for "${event}": `,
-					this.events[event]
+					`[EventEmitter] Listeners for "${wildcard}": `,
+					this.events[wildcard]
 				);
 				return subscription;
 			}
@@ -83,8 +82,8 @@ export default class EventEmitter {
 
 	/**
 	 * Remove the listener.
-	 * @param {string | '*'} event
-	 * @param {(event:{type: string |  '*', action?: any} & Record<string, any>) => void} listener
+	 * @param {EventType | '*'} event
+	 * @param {(payload:any) => void} listener
 	 */
 	off(event, listener) {
 		if (typeof listener !== 'function') return;

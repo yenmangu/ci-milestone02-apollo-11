@@ -81,39 +81,99 @@
 			<section id="lemAnimation-ui"
 							 data-running="false"
 							 class="hidden">
-				<div class="container">
+				<div class="container text-center">
 					<div class="row">
 						<div class="col">
-							<div class="landing-display"> Landing Display Placeholder 1 </div>
 						</div>
+						<h1 id="phaseName"></h1>
 					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div class="landing-display text-center"
+								 id="lemUI"> Landing Display Placeholder 1 </div>
+					</div>
+				</div>
 				</div>
 			</section>
 			<!-- landing ui section -->
 			<section id="landing-ui"
 							 data-running="false"
 							 class="hidden">
-				<div class="container">
-					<div class="row">
-						<div class="col-3">
-							<div class="col landing-ui"> Altitude<span id="instrument-lunar_altitude"></span>
+				<div class="hud-frame">
+					<div class="hud-container crt">
+						<!-- Top row: Altitude, Velocity, Fuel -->
+						<div class="hud-row">
+							<div class="hud-item">
+								<dl>
+									<dt>Altitude <span id="hud-altitude_units"></span></dt>
+									<dd>
+										<span id="hud-lunar_altitude"></span>
+									</dd>
+								</dl>
+							</div>
+							<div class="hud-item">
+								<dl>
+									<dt>Velocity </dt>
+									<dd><span id="hud-velocity_fps"></span></dd>
+								</dl>
+							</div>
+							<div class="hud-item">
+								<dl>
+									<dt>Fuel</dt>
+									<dd><span id="hud-fuel_percent"></span></dd>
+								</dl>
 							</div>
 						</div>
-						<div class="col-3">
-							<div class="col landing-ui"> Velocity<span id="instrument-velocity_fps"></span>
+						<!-- Bottom row: Mission Time, Phase -->
+						<div class="hud-row">
+							<div class="hud-item">
+								<dl>
+									<dt>Mission Time</dt>
+									<dd><span id="hud-start_time"></span></dd>
+								</dl>
 							</div>
-						</div>
-						<div class="col-3">
-							<div class="col landing-ui"> Fuel<span id="instrument-fuel_percent"></span>
-							</div>
-						</div>
-						<div class="col-3">
-							<div class="col  landing-ui"> Extras<span id="instrument-extras"></span>
+							<div class="hud-item">
+								<dl>
+									<dt>Phase</dt>
+									<dd><span id="hud-phase_name"></span></dd>
+								</dl>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>
+			<!-- <section id="landing-ui"
+							 data-running="false"
+							 class="hidden">
+				<div class="container text-center">
+					<div class="row">
+						<div class="col-4">
+							<div class="col landing-ui"> Altitude<span id="hud-lunar_altitude"></span><span
+											id="hud-altitude_units"></span>
+							</div>
+						</div>
+						<div class="col-4">
+							<div class="col landing-ui"> Velocity<span id="hud-velocity_fps"></span>
+							</div>
+						</div>
+						<div class="col-4">
+							<div class="col landing-ui"> Fuel<span id="hud-fuel_percent"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-6">
+							<div class="col  landing-ui"> Mission Time<span id="hud-start_time"></span>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="col  landing-ui"> Phase<span id="hud-phase_name"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section> -->
 			<!-- dsky section -->
 			<section id="dsky-ui"
 							 data-running="false"

@@ -9,6 +9,7 @@
 	/* Ensure text remains visible if loading times are apparent */
 	font-display: swap;
 }
+
 @font-face {
 	font-family: 'dseg7-mini';
 	src: url('../fonts/DSEG7ClassicMini-BoldItalic.woff2') format('woff2');
@@ -64,6 +65,10 @@ main {
 	flex-grow: 1;
 }
 
+section {
+	margin-bottom: 0.4rem;
+}
+
 .seven-segment {
 	font-family: 'dseg7-mini', sans-serif;
 	font-size: 1.4rem;
@@ -72,7 +77,9 @@ main {
 	text-align: center;
 	letter-spacing: 2px;
 	color: var(--dsky-display-blue);
+	text-shadow: 0 0 0 21px var(--dsky-display-blue);
 }
+
 /* Dev Styles */
 
 .container {
@@ -83,7 +90,7 @@ main {
 	/* border: 1px solid lightgreen; */
 }
 
-.col,
+/* .col,
 .col-1,
 .col-2,
 .col-3,
@@ -97,7 +104,7 @@ main {
 .col-11,
 .col-12 {
 	border: 1px solid lightskyblue;
-}
+} */
 
 /* Bootstrap Overides */
 
@@ -115,6 +122,116 @@ nav.navbar {
 header {
 	/* To accomodate fixed nav */
 	margin-top: 65px;
+}
+
+/* HUD Styles */
+
+/* Outer "monitor" frame */
+.hud-frame {
+	/* border: 4px solid #00ff00; */
+	padding: 1rem;
+	border-radius: 4px;
+	background: #001100;
+	box-shadow: 0 0 10px #00ff00, inset 0 0 30px #333333;
+	max-width: 80%;
+	margin: 0 auto;
+}
+
+/* Container styling */
+.crt {
+	/* scanlines */
+	background: linear-gradient(to bottom, #000000, #000000, #333333, #333333);
+	background-size: cover;
+	background-size: 100% 1px;
+	color: #00ff00;
+	font-family: 'Courier New', Courier, monospace;
+	text-shadow: 0 0 10px #00ff00;
+
+	padding: 1rem;
+	user-select: none;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+@media screen {
+	.crt {
+		animation: scanlines infinite 55s linear;
+	}
+}
+@keyframes scanlines {
+	from {
+		background-position: 0 0;
+	}
+	to {
+		background-position: 0 -10px;
+	}
+}
+
+/* Wrapper for rows */
+.hud-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+/* Each row is a flex container */
+.hud-row {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.2rem;
+	flex-wrap: wrap; /* allow wrapping on small screens */
+}
+
+/* Each HUD item */
+.hud-item {
+	flex: 1 1 45%; /* grow/shrink, basis 45% so two items per row on mobile */
+	min-width: 140px; /* prevent too narrow */
+	filter: blur(0.8px);
+}
+
+/* Description list styling */
+.hud-item dl {
+	margin: 0;
+}
+
+.hud-item dt {
+	font-weight: bold;
+	font-size: 1.1rem;
+	letter-spacing: 0.1rem;
+	/* text-shadow: 0 0 10px #00ff00, 0 0 10px #00ff00, 0 0 10px #00ff00; */
+	margin-bottom: 0.2rem;
+}
+
+/* Value styling */
+.hud-item dd {
+	margin: 0;
+	font-variant-numeric: tabular-nums;
+	font-size: 1.1rem;
+	border-left: 1px solid #00ff00;
+	padding-left: 0.5rem;
+	display: flex;
+	align-items: baseline;
+	gap: 0.2rem;
+}
+
+/* Units smaller and less bright */
+#hud-altitude_units {
+	font-size: 1rem;
+	opacity: 0.8;
+	border-left: none;
+	padding-left: 0;
+}
+
+/* Optional: blinking effect for critical values */
+
+.landing-ui span.blink {
+	animation: blink 1s step-start 0s infinite;
+}
+
+@keyframes blink {
+	50% {
+		opacity: 0;
+	}
 }
 
 /* DSKY styles */
@@ -268,3 +385,14 @@ span[id^='polarity'] {
 }
 
 /* Media Queries */
+/* Make layout stack vertically on very small screens */
+@media (max-width: 480px) {
+	.hud-row {
+		flex-direction: column;
+	}
+
+	.hud-item {
+		flex: 1 1 100%;
+		min-width: auto;
+	}
+}

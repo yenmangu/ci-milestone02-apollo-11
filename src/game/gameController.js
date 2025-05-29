@@ -1,4 +1,6 @@
 import { FSM } from '../FSM/fsm.js';
+import { LIFTOFF_EPOCH } from '../util/realMissionTime.js';
+import { MissionClock } from './missionClock.js';
 
 /**
  * @typedef {import('src/types/missionTypes.js').MissionTimeline} MissionTimeline
@@ -23,6 +25,7 @@ export class GameController {
 		this.startTime = null;
 		this.elapsedTime = 0;
 		this.currentPhaseIndex = 0;
+		this.clock = new MissionClock(LIFTOFF_EPOCH, timeline.metadata.time_scale || 1);
 
 		// Mission data
 

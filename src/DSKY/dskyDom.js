@@ -26,13 +26,14 @@ function queryDom() {
 	);
 
 	/** @type {{[key: string]: HTMLElement}} */
-	const instrumentsMap = Array.from(
-		document.querySelectorAll('span[id^="instrument-"]')
-	).reduce((map, element) => {
-		const key = element.id.slice(element.id.indexOf('-') + 1);
-		map[key] = cast(element);
-		return map;
-	}, {});
+	const hudMap = Array.from(document.querySelectorAll('span[id^="hud-"]')).reduce(
+		(map, element) => {
+			const key = element.id.slice(element.id.indexOf('-') + 1);
+			map[key] = cast(element);
+			return map;
+		},
+		{}
+	);
 
 	return {
 		sevenSegmentDisplays,
@@ -40,7 +41,7 @@ function queryDom() {
 		indicatorLights,
 		progLight,
 		pushButtons,
-		instrumentsMap
+		hudMap
 	};
 }
 

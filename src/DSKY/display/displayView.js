@@ -26,7 +26,7 @@ export class DisplayView {
 		this.devLightsSub = devLightsEmitter.subscribe(event => {
 			this.setLightViaEvent(event.id);
 		});
-		this.testLights();
+		this.testLights(false);
 	}
 
 	setDskyStateZero() {
@@ -74,7 +74,8 @@ export class DisplayView {
 	 * Show error
 	 */
 
-	testLights() {
+	testLights(on = true) {
+		if (!on) return;
 		/** @type {HTMLElement[]} */
 		let buttonArray = [];
 		Object.entries(this.lightsMap).forEach((entry, index) => {

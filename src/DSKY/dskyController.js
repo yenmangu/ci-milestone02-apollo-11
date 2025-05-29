@@ -1,5 +1,5 @@
 import { DisplayController } from './display/displayController.js';
-import { InstrumentsController } from './instruments/instrumentController.js';
+import { HudController } from './hud/hudController.js';
 import createKeypadStateManager from './keypad/keypadStateManager.js';
 import { pushButtonEmitter } from '../event/eventBus.js';
 import { KeypadController } from './keypad/keypadController.js';
@@ -10,7 +10,7 @@ export class DSKYController {
 	 */
 	constructor(uiElements) {
 		this.uiElements = uiElements;
-		this.instruments = uiElements.instrumentsMap;
+		this.instruments = uiElements.hudMap;
 
 		this.displayMap = uiElements.displayMap;
 		this.lightsMap = uiElements.indicatorLights;

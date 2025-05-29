@@ -24,4 +24,13 @@ export class MissionClock {
 		const ss = String(Math.floor(abs % 60)).padStart(2, '0');
 		return `T${sign}${hh}:${mm}:${ss}`;
 	}
+
+	pause() {
+		this.elapsedStart = this.secondsElapsed;
+		this.simStart = null;
+	}
+
+	resume() {
+		this.simStart = performance.now();
+	}
 }

@@ -3,6 +3,7 @@ import { actionEmitter } from '../event/eventBus.js';
 /**
  * Subscribes to all 'action' events untill 'actionsComplete' is received.
  * Automatically unsubscribes both listeners upon completion,
+ * Returns optional unsubscribe handle for early termination.
  *
  * @param {(event: {type: string, [key: string]: any}) => void} onAction
  * @param {(event: {type: string, [key: string]: any}) => void} onComplete

@@ -17,4 +17,16 @@ export class IdleView extends EventTarget {
 			}
 		});
 	}
+
+	showPhaseInto() {
+		console.log('Showing phase intro');
+		return new Promise((resolve, reject) => {
+			// Simulate an intro that takes 3 seconds
+			// Will replace with actual phase intro
+			setTimeout(() => {
+				console.log('Idle Phase intro finished');
+				resolve();
+			}, 3000);
+		});
+	}
 }

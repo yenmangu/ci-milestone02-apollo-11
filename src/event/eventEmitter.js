@@ -23,12 +23,17 @@ export default class EventEmitter {
 	/**
 	 * @param {string | '*' } event
 	 * @param {(event: {type: string | '*', action?:any} & Record<string, any>) => void} listener
+	 * @returns {{unsubscribe: () => void}}
 	 */
 	on(event, listener) {
 		if (!this.events[event]) {
 			this.events[event] = [];
 		}
 		this.events[event].push(listener);
+
+		return {
+			unsubscribe: () => this.off(event, listener)
+		};
 	}
 
 	/**
@@ -74,5 +79,17 @@ export default class EventEmitter {
 			}
 		};
 		return subscription;
+	}
+
+	/**
+	 * Remove the listener.
+	 * @param {string | '*'} event
+	 * @param {(event:{type: string |  '*', action?: any} & Record<string, any>) => void} listener
+	 */
+	off(event, listener) {
+		if (typeof listener !== 'function') return;
+		if (this.events[event]) {
+			this.events[event] = this.events[event].filter(fn => fn !== listener);
+		}
 	}
 }

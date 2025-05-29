@@ -1,3 +1,4 @@
+import { AppStateKeys } from '../../../src/types/missionTypes.js';
 import { DSKYInterface } from '../../DSKY/dskyInterface.js';
 import { GameController } from '../../game/gameController.js';
 import { MissionStateBase } from '../missionStateBase.js';
@@ -23,6 +24,9 @@ export class IdleState extends MissionStateBase {
 		 * @type {IdleController}
 		 */
 		this.controller = stateController;
+		this.onAllCompleted = () => {
+			this.game.fsm.transitionTo(AppStateKeys.descent_orbit);
+		};
 	}
 
 	/**
@@ -30,7 +34,21 @@ export class IdleState extends MissionStateBase {
 	 * @param {MissionPhase} phase
 	 */
 	onEnter(phase) {
-		this.controller.onEnter();
+		this.controller.onEnter().then(() => {
+			this.requiredActions = ['ready'];
+			this.actionsCompleted.clear();
+
+			this.watchUntilComplete(
+				event => this.handleActionEvent(event),
+				() => {
+					console.log('Idle phase completed');
+					this.onAllCompleted();
+				}
+			);
+		});
+	}
+	handleActionEvent(event) {
+		throw new Error('Method not implemented.');
 	}
 
 	exit() {

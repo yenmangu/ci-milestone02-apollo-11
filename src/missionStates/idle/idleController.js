@@ -19,9 +19,14 @@ export class IdleController {
 		console.log('on idle enter');
 
 		this.view.showElements(this.uiElements);
+		return this.view.showPhaseInto();
+	}
+
+	async startIntro() {
+		await this.view.renderCountdown(3);
 	}
 
 	showElements() {
-		const {} = this.dsky.dskyController.uiElements;
+		this.dsky.dskyController.uiElements;
 	}
 }

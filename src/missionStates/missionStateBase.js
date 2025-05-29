@@ -1,12 +1,18 @@
-import { DSKYInterface } from '../DSKY/dskyInterface.js';
-import { stateEmitter } from '../event/eventBus.js';
-import EventEmitter from '../event/eventEmitter.js';
-import { GameController } from '../game/gameController.js';
+/**
+ * @template {string} T
+ * @typedef {{type: T, [key: string]: any}} EventType
+ */
 
 /**
  * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
  * @typedef {import('src/types/missionTypes.js').AppStateKey} StateKey
  */
+
+import { DSKYInterface } from '../DSKY/dskyInterface.js';
+import { stateEmitter } from '../event/eventBus.js';
+import EventEmitter from '../event/eventEmitter.js';
+import { GameController } from '../game/gameController.js';
+import watchUntilComplete from '../util/watchUntilComplete.js';
 
 /**
  * Creates the MissionStateBase class,
@@ -29,6 +35,9 @@ export class MissionStateBase {
 		/** @type {DSKYInterface} */ this.dskyInterface = dskyInterface;
 		/** @type {StateKey} */ this.stateKey = stateKey;
 		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
+		/** @type {Object[]} */ this.requiredActions = [];
+		/** @type {Set<string>} */ this.actionsCompleted = new Set();
+		this.actionWatcher = null;
 
 		/**
 		 * Single point of truth for pause status.
@@ -36,6 +45,13 @@ export class MissionStateBase {
 		 * @type {boolean}
 		 */
 		this.isPaused = false;
+
+		/**
+		 * Optional hook method that can be implemented in subclasses.
+		 * Called when all actions are completed
+		 * @type {(() => void | undefined)}
+		 */
+		this.onAllCompleted = undefined;
 	}
 
 	// Abstract Methods all child classes must implement
@@ -97,6 +113,12 @@ export class MissionStateBase {
 		if (phase.failure_state) {
 			this.dskyInterface.dskyController.failureState = phase.failure_state;
 		}
+
+		if (required_action) {
+			this.requiredActions = Array.isArray(required_action)
+				? [...required_action]
+				: [];
+		}
 	}
 
 	/**
@@ -108,8 +130,37 @@ export class MissionStateBase {
 		throw new Error('Subclass must implement onEnter()');
 	}
 
+	/**
+	 *
+	 * @protected
+	 */
+	watchUntillComplete(onAction, onComplete) {
+		this.actionWatcher = watchUntilComplete(onAction, onComplete);
+	}
+
+	/**
+	 *
+	 * @param {string} actionKey
+	 */
+	markActionComplete(actionKey) {
+		this.actionsCompleted.add(actionKey);
+		const allComplete = this.requiredActions.every(action => {
+			this.actionsCompleted.has(action);
+		});
+
+		if (allComplete) {
+			// Ignored because this is an optional hook the subclass can implement
+			this.onAllCompleted?.();
+			this.stateEmitter.emit({ type: 'actions', action: 'complete' });
+		}
+	}
+
+	onExit() {
+		console.warn('SubClass does not implement onExit()');
+	}
+
 	exit() {
-		throw new Error('Subclass must implement exit()');
+		this.actionWatcher?.unsubscribe();
 	}
 
 	/**

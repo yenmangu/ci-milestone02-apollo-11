@@ -41,6 +41,7 @@ export class MissionStateBase {
 		/** @type {Object[]} */ this.dskyActions = [];
 		/** @type {Set<string>} */ this.requiredActions = new Set();
 		/** @type {Set<string>} */ this.actionsCompleted = new Set();
+		this.timelineCues = {};
 		this.actionWatcher = null;
 		this.phaseHeadingEl = document.getElementById('phaseName');
 
@@ -74,26 +75,36 @@ export class MissionStateBase {
 	}
 
 	bindTickHandler() {
-		this.tickHandler = currentTime => {
+		/**
+		 *
+		 * @param {import('../types/clockTypes.js').TickPayload} tick
+		 * @returns
+		 */
+		this.tickHandler = tick => {
 			if (this.isPaused) {
+				return;
+			}
+
+			const currentGet = typeof tick === 'object' && tick?.get;
+			if (currentGet == null) {
 				return;
 			}
 
 			// First tick
 			if (this.lastTick === null) {
-				this.lastTick = currentTime;
+				this.lastTick = currentGet;
 				return;
 			}
 
-			const deltaTime = currentTime - this.lastTick;
-			this.lastTick = currentTime;
+			const deltaTime = currentGet - this.lastTick;
+			this.lastTick = currentGet;
 
-			this.onTickUpdate(deltaTime);
+			this.onTickUpdate(deltaTime, tick.getFormatted);
 		};
 		this.tickEmitter.on('tick', this.tickHandler);
 	}
 
-	onTickUpdate(deltaTime) {
+	onTickUpdate(deltaTime, getFormatted) {
 		console.warn('Subclass does not implement onTickUpdate()');
 	}
 

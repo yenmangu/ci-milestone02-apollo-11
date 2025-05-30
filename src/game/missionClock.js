@@ -1,3 +1,7 @@
+/**
+ * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
+ */
+
 import { tickEmitter } from '../event/eventBus.js';
 
 export class MissionClock {
@@ -62,11 +66,14 @@ export class MissionClock {
 		this.elapsedMissionTime += realDelta * this.timeScale;
 		this.lastRealTime = now;
 
-		tickEmitter.emit('tick', {
+		/** @type {TickPayload} */
+		const tick = {
 			elapsed: this.elapsedMissionTime,
 			get: this.currentGETSeconds,
 			getFormatted: this.currentGET
-		});
+		};
+
+		tickEmitter.emit('tick', tick);
 		this.frame = requestAnimationFrame(this._loop);
 	};
 

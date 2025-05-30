@@ -24,9 +24,4 @@ export class PoweredDescentState extends MissionStateBase {
 	handleInput() {
 		console.log('Input in PoweredDescent detected');
 	}
-
-	update(deltaTime) {
-		// Use superclass method to check pause
-		super.update(deltaTime);
-	}
 }

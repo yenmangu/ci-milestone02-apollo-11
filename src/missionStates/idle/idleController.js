@@ -16,7 +16,7 @@ export class IdleController {
 		this.actionEmitter = actionEmitter;
 		this.uiElements = document.querySelectorAll('section[id$="-ui"]');
 		this.view.addEventListener('phaseIntroComplete', () => {
-			this.actionEmitter.emit({ type: 'actionsComplete' });
+			this.actionEmitter.emit('actionsComplete', 'complete');
 		});
 	}
 

@@ -14,7 +14,7 @@ export class DSKYInterface {
 	 */
 	constructor(dskyController, instrumentsController) {
 		this.dskyController = dskyController;
-		this.instrumentsController = instrumentsController;
+		this.hudController = instrumentsController;
 	}
 
 	write(id, value) {

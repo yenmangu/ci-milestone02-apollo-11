@@ -54,9 +54,4 @@ export class IdleState extends MissionStateBase {
 	handleInput() {
 		console.log('Input in IdleState detected');
 	}
-
-	update(deltaTime) {
-		// Use superclass method to check pause
-		super.update(deltaTime);
-	}
 }

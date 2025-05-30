@@ -71,7 +71,7 @@ export const TelemetryKeys = {
  * @property {Record<string, HTMLElement>} displayMap
  * @property {Array<NodeListOf<HTMLElement>>} pushButtons
  * @property {HTMLElement} progLight
- * @property {Record<string, HTMLElement>} hudMap
+ * @property {hudMap} hudMap
  */
 
 /**

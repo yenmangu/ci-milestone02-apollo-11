@@ -14,9 +14,4 @@ export class LandedState extends MissionStateBase {
 	handleInput() {
 		console.log('Input in Landed detected');
 	}
-
-	update(deltaTime) {
-		// Use superclass method to check pause
-		super.update(deltaTime);
-	}
 }

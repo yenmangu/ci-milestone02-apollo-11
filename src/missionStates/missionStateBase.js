@@ -9,7 +9,7 @@
  */
 
 import { DSKYInterface } from '../DSKY/dskyInterface.js';
-import { stateEmitter, phaseNameEmitter } from '../event/eventBus.js';
+import { tickEmitter, stateEmitter, phaseNameEmitter } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
 import watchUntilComplete from '../util/watchUntilComplete.js';
@@ -30,10 +30,11 @@ export class MissionStateBase {
 	 * @param {DSKYInterface} dskyInterface
 	 * @param {StateKey} stateKey
 	 */
-	constructor(gameController, dskyInterface, stateKey) {
+	constructor(gameController, dskyInterface, stateKey, previousTelemetry) {
 		/** @type {GameController} */ this.game = gameController;
 		/** @type {DSKYInterface} */ this.dskyInterface = dskyInterface;
 		/** @type {StateKey} */ this.stateKey = stateKey;
+		/** @type {MissionPhase} */ this.currentPhase = null;
 		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
 		/** @type {EventEmitter} */ this.phaseNameEmitter = phaseNameEmitter;
 		/** @type {Object[]} */ this.requiredActions = [];
@@ -41,6 +42,9 @@ export class MissionStateBase {
 		this.actionWatcher = null;
 		this.phaseHeadingEl = document.getElementById('phaseName');
 
+		this.tickEmitter = tickEmitter;
+		this.lastTick = null;
+		this.tickHandler = null;
 		/**
 		 * Single point of truth for pause status.
 		 * All child state classes inherit this.
@@ -54,8 +58,47 @@ export class MissionStateBase {
 		 * @type {(() => void | undefined)}
 		 */
 		this.onAllCompleted = undefined;
+		this.previousTelemetry = null;
 	}
 
+	setPreviousTelemetry(telemetry) {
+		this.previousTelemetry = telemetry;
+	}
+
+	getTelemetrySnapshot() {
+		return this.telemetry;
+	}
+
+	bindTickHandler() {
+		this.tickHandler = currentTime => {
+			if (this.isPaused) {
+				return;
+			}
+
+			// First tick
+			if (this.lastTick === null) {
+				this.lastTick = currentTime;
+				return;
+			}
+
+			const deltaTime = currentTime - this.lastTick;
+			this.lastTick = currentTime;
+
+			this.onTickUpdate(deltaTime);
+		};
+		this.tickEmitter.on('tick', this.tickHandler);
+	}
+
+	onTickUpdate(deltaTime) {
+		console.warn('Subclass does not implement onTickUpdate()');
+	}
+
+	unsubscribeFromTicks() {
+		if (this.tickHandler) {
+			this.tickEmitter.off('tick', this.tickHandler);
+			this.tickHandler = null;
+		}
+	}
 	// Abstract Methods all child classes must implement
 
 	/**
@@ -76,6 +119,7 @@ export class MissionStateBase {
 		if (!phase) {
 			console.log('Non Mission Critical state found');
 		} else {
+			this.currentPhase = phase;
 			this.updatePhaseHeading(phase.phase_name);
 			this.onMissionCritical(phase);
 		}
@@ -84,7 +128,7 @@ export class MissionStateBase {
 
 	updatePhaseHeading(phaseName) {
 		console.log('PhaseName: ', phaseName);
-		this.phaseNameEmitter.emit({ type: phaseName });
+		this.phaseNameEmitter.emit('phaseName', phaseName);
 
 		if (this.phaseHeadingEl) {
 			this.phaseHeadingEl.innerText = phaseName;
@@ -106,17 +150,21 @@ export class MissionStateBase {
 			fuel_percent,
 			required_action,
 			audio_ref,
-			dsky_actions
+			dsky_actions,
+			state
 		} = phase;
 
-		this.dskyInterface.instrumentsController.updateHud({
-			altitude_units,
+		const telemetry = {
+			start_time,
 			lunar_altitude,
+			altitude_units,
 			velocity_fps,
 			fuel_percent,
-			start_time,
 			phase_name
-		});
+		};
+
+		this.dskyInterface.hudController.updateHud(telemetry);
+		this.telemetry = { ...telemetry, state };
 
 		this.dskyInterface.dskyController.expectedActions = dsky_actions;
 		this.dskyInterface.dskyController.requiredActions = required_action;
@@ -165,7 +213,7 @@ export class MissionStateBase {
 		if (allComplete) {
 			// Ignored because this is an optional hook the subclass can implement
 			this.onAllCompleted?.();
-			this.stateEmitter.emit({ type: 'actions', action: 'complete' });
+			this.stateEmitter.emit('actions', 'complete');
 		}
 	}
 
@@ -175,19 +223,9 @@ export class MissionStateBase {
 
 	exit() {
 		this.actionWatcher?.unsubscribe();
-	}
-
-	/**
-	 *
-	 * @param {number} deltaTime - Time elapsed since last frame (in seconds)
-	 * @throws {Error} If not implemented by subclass
-	 */
-	update(deltaTime) {
-		if (this.isPaused) {
-			return;
+		this.unsubscribeFromTicks();
+		if (typeof this.onExit === 'function') {
+			this.onExit();
 		}
-		throw new Error('subclass must implement update()');
 	}
-
-	handleInput(input) {}
 }

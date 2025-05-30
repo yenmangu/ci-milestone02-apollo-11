@@ -19,6 +19,9 @@ export class DescentOrbitState extends MissionStateBase {
 		this.onAllCompleted = () => {
 			this.game.fsm.transitionTo(AppStateKeys.powered_descent);
 		};
+		this.fuel = undefined;
+		this.altitude = undefined;
+		this.prevTelemetry = null;
 	}
 
 	// Defining the callback needed for the handleActionEvent
@@ -33,6 +36,51 @@ export class DescentOrbitState extends MissionStateBase {
 		);
 		this.controller.view.showPhaseIntro();
 		this.controller.view.enableUserInput();
+		this.prevTelemetry = this.previousTelemetry || null;
+		console.log('onEnter: ', this.previousTelemetry);
+		console.log('onEnter: ', this.prevTelemetry);
+		this.bindTickHandler();
+	}
+
+	onTickUpdate(deltaTimeMs) {
+		if (!this.prevTelemetry) {
+			return;
+		}
+
+		const deltaTime = deltaTimeMs / 1000;
+
+		const currentTelemetry = this.getTelemetrySnapshot();
+
+		if (!currentTelemetry) {
+			return;
+		}
+
+		const altitudeDiff =
+			currentTelemetry.lunar_altitude - this.prevTelemetry.lunar_altitude;
+		const altitudeRate = altitudeDiff / deltaTime;
+
+		const velocityDiff =
+			currentTelemetry.velocity_fps - this.prevTelemetry.velocity_fps;
+		const velocityRate = velocityDiff / deltaTime;
+
+		const fuelDiff =
+			currentTelemetry.fuel_percent - this.prevTelemetry.fuel_percent;
+		const fuelRate = fuelDiff / deltaTime;
+
+		this.altitudeRate = altitudeRate;
+		this.velocityRate = velocityRate;
+		this.fuelRate = fuelRate;
+
+		this.prevTelemetry = currentTelemetry;
+
+		this.controller.updateRates({ altitudeRate, velocityRate, fuelRate });
+	}
+
+	computeDescent(deltaTime) {
+		throw new Error('Method not implemented.');
+	}
+	computeFuelBurn(deltaTime) {
+		throw new Error('Method not implemented.');
 	}
 
 	handleActionEvent(event) {
@@ -51,10 +99,5 @@ export class DescentOrbitState extends MissionStateBase {
 	}
 	handleInput() {
 		console.log('Input in DescentOrbit detected');
-	}
-
-	update(deltaTime) {
-		// Use superclass method to check pause
-		super.update(deltaTime);
 	}
 }

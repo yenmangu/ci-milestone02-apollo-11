@@ -39,7 +39,7 @@ export default class EventEmitter {
 	 * @param {any} [payload]
 	 */
 	emit(type, payload) {
-		if (this.debug) {
+		if (this.debug && type !== 'tick') {
 			console.debug(`[EventEmitter] Emitting "${type}":`, payload);
 		}
 
@@ -70,10 +70,11 @@ export default class EventEmitter {
 				}
 			},
 			log: () => {
-				console.log(
-					`[EventEmitter] Listeners for "${wildcard}": `,
-					this.events[wildcard]
-				);
+				if (wildcard)
+					console.log(
+						`[EventEmitter] Listeners for "${wildcard}": `,
+						this.events[wildcard]
+					);
 				return subscription;
 			}
 		};

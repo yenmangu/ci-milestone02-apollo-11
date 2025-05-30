@@ -23,6 +23,7 @@ export class FSM {
 		// Maybe needed, maybe not
 		this.controllers = new Map();
 		this.views = new Map();
+		this.previousTelemetry = null;
 
 		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
 	}
@@ -71,34 +72,62 @@ export class FSM {
 	transitionTo(key) {
 		console.log('Key: ', key);
 
+		// Capture telemetry before switching out
+
+		if (this.currentState?.getTelemetrySnapshot) {
+			this.previousTelemetry = this.currentState.getTelemetrySnapshot();
+		}
+
 		// const state = this.states.get(AppStates[key]);
 		const stateKey = AppStates[key];
 
 		// Lazily create the state if not yet constructed
 
 		if (!this.states.has(stateKey)) {
-			// console.log('Factories: ', this.factories);
+			const entry = this.factories[key];
+			// Yes its unnecessary but its here for future implementation
+			const { factoryFn, meta } = entry;
 
-			const { factoryFn: factory, meta } = this.factories[key];
-			if (!factory) {
+			if (!entry || !entry.factoryFn) {
 				throw new Error(`No state or factory found for key "${key}"`);
 			}
 
-			const { view, controller, state } = factory();
+			const { view, controller, state } = entry.factoryFn();
+
 			if (!(state instanceof MissionStateBase)) {
 				throw new TypeError(
 					`Factory for "${key}" must return a state extending MissionStateBase`
 				);
 			}
 
+			// If supported by class, inject previousTelemetry
+			if (state.setPreviousTelemetry && this.previousTelemetry) {
+				console.log(
+					'State not yet created. creating now. Prev Telemetry: ',
+					this.previousTelemetry
+				);
+
+				state.setPreviousTelemetry(this.previousTelemetry);
+			}
+
 			this.states.set(stateKey, state);
 			// Added even if not needed
 			this.views.set(stateKey, view);
 			this.controllers.set(stateKey, controller);
+		} else {
+			// If state already constructed, inject previousTelemetry directly
+			const /** @type {MissionStateBase} */ state = this.states.get(stateKey);
+			if (state.setPreviousTelemetry && this.previousTelemetry) {
+				console.log('In FSM: ', this.previousTelemetry);
+
+				state.setPreviousTelemetry(this.previousTelemetry);
+			}
 		}
-		if (this.currentState) this.currentState.exit();
+		if (this.currentState) {
+			this.currentState.exit();
+		}
 		this.currentState = this.states.get(stateKey);
-		this.stateEmitter.emit({ type: stateKey });
+		this.stateEmitter.emit('state', stateKey);
 		this.currentState.enter();
 	}
 }

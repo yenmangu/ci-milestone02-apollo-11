@@ -14,9 +14,4 @@ export class BrakingPhaseState extends MissionStateBase {
 	handleInput() {
 		console.log('Input in BrakingPhase detected');
 	}
-
-	update(deltaTime) {
-		// Use superclass method to check pause
-		super.update(deltaTime);
-	}
 }

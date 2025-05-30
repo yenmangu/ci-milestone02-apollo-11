@@ -26,7 +26,7 @@ export class GameController {
 		this.elapsedTime = 0;
 		this.currentPhaseIndex = 0;
 		this.clock = new MissionClock(LIFTOFF_EPOCH, timeline.metadata.time_scale || 1);
-
+		this.frame = null;
 		// Mission data
 
 		/** @type {MissionTimeline} */ this.timeLine = timeline;
@@ -46,68 +46,15 @@ export class GameController {
 		this.resumeGame = undefined;
 	}
 
-	// Start time-based game loop
-
 	start() {
-		if (this.isRunning) return;
-		this.isRunning = true;
-		this.startTime = Date.now();
-		this.gameLoop();
+		// this.clock.on('tick', secondsElapsed => {});
+		this.clock.start();
 	}
 
-	gameLoop() {
-		if (!this.isRunning) return;
-
-		// Calculate elapsed mission time
-
-		const now = Date.now();
-		// Get the current elapsed time since the loop started
-		// 'Divide by 1000 in order to convert ms to s'
-		const realElapsed = (now - this.startTime) / 1000;
-
-		/**
-		 * Apply a time scale factor to accelerate or
-		 * decelerate the mission simulation.
-		 * Uses time_scale factor from JSON timeline
-		 * Fallback to '1' (real time speed) if no time_scale factor
-		 */
-		this.elapsedTime = realElapsed * (this.timeLine.metadata?.time_scale || 1);
-
-		// PauseFunction
-		if (this.pauseGame) {
-			while (!this.resumeGame) {
-				this.pause();
-			}
-			this.resume();
-		}
-
-		// Check phase transitions
-		this.checkPhases();
-
-		// Update game state
-		this.updateState();
-
-		// Check failures
-		this.checkFailures();
-
-		// Request animation frame
-		requestAnimationFrame(() => this.gameLoop());
-	}
 	resume() {
-		throw new Error('Method not implemented.');
+		this.clock.start();
 	}
 	pause() {
-		throw new Error('Method not implemented.');
-	}
-	checkFailures() {
-		throw new Error('Method not implemented.');
-	}
-	updateState() {
-		throw new Error('Method not implemented.');
-	}
-	checkPhases() {
-		// Check if game needs to advance to next phase
-
-		throw new Error('Method not implemented.');
+		this.clock.pause();
 	}
 }

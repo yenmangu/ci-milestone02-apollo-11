@@ -19,8 +19,6 @@ export class HudController {
 	}
 
 	updateHud(telemetry) {
-		console.log('sanity check: ', telemetry);
-
 		for (const [key, value] of Object.entries(telemetry)) {
 			/**
 			 * @type {string}
@@ -38,6 +36,9 @@ export class HudController {
 				this.hudView.setUnits(writableValue);
 			}
 		}
+	}
+	updateTelemetry(rates) {
+		throw new Error('Method not implemented.');
 	}
 
 	updateVelocity(value) {

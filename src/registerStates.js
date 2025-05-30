@@ -46,7 +46,7 @@ export function registerStates(game, dskyInterface) {
 	// console.log('States in registerStates: ', states);
 
 	for (const [key, factory] of states) {
-		game.fsm.registerFactory(key, () => factory(game, dskyInterface));
+		game.fsm.registerFactory(key, () => factory(game, dskyInterface), {});
 		// console.log(`State: ${key} added`);
 	}
 	console.log(game.fsm.factories);

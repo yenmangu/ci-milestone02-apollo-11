@@ -12,9 +12,4 @@ export class Alarm1202State extends MissionStateBase {
 	handleInput() {
 		console.log('Input in Alarm1202 detected');
 	}
-
-	update(deltaTime) {
-		// Use superclass method to check pause
-		super.update(deltaTime);
-	}
 }

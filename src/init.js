@@ -29,6 +29,7 @@ export async function initProgram() {
 		const hud = new HudController(uiElements.hudMap);
 		const dskyInterface = new DSKYInterface(dsky, hud);
 		const gameController = new GameController(timeline);
+		gameController.start();
 
 		dskyInterface.initiate();
 

@@ -12,9 +12,4 @@ export class ApproachPhaseState extends MissionStateBase {
 	handleInput() {
 		console.log('Input in ApproachPhase detected');
 	}
-
-	update(deltaTime) {
-		// Use superclass method to check pause
-		super.update(deltaTime);
-	}
 }

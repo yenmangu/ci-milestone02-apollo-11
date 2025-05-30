@@ -1,5 +1,6 @@
 import EventEmitter from './eventEmitter.js';
 
+const tickEmitter = new EventEmitter();
 const pushButtonEmitter = new EventEmitter();
 const indicatorLightsEmitter = new EventEmitter();
 const stateEmitter = new EventEmitter();
@@ -11,6 +12,7 @@ const devLightsEmitter = new EventEmitter();
 const devNavEmitter = new EventEmitter();
 
 export {
+	tickEmitter,
 	pushButtonEmitter,
 	indicatorLightsEmitter,
 	stateEmitter,

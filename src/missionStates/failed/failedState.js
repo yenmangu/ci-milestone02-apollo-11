@@ -14,9 +14,4 @@ export class FailedState extends MissionStateBase {
 	handleInput() {
 		console.log('Input in Failed detected');
 	}
-
-	update(deltaTime) {
-		// Use superclass method to check pause
-		super.update(deltaTime);
-	}
 }

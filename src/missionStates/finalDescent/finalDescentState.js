@@ -12,9 +12,4 @@ export class FinalDescentState extends MissionStateBase {
 	handleInput() {
 		console.log('Input in FinalDescent detected');
 	}
-
-	update(deltaTime) {
-		// Use superclass method to check pause
-		super.update(deltaTime);
-	}
 }

@@ -12,6 +12,7 @@ import { DSKYInterface } from '../DSKY/dskyInterface.js';
 import { tickEmitter, stateEmitter, phaseNameEmitter } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
+import { actionKeyFor } from '../util/actionKey.js';
 import watchUntilComplete from '../util/watchUntilComplete.js';
 
 /**
@@ -37,7 +38,8 @@ export class MissionStateBase {
 		/** @type {MissionPhase} */ this.currentPhase = null;
 		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
 		/** @type {EventEmitter} */ this.phaseNameEmitter = phaseNameEmitter;
-		/** @type {Object[]} */ this.requiredActions = [];
+		/** @type {Object[]} */ this.dskyActions = [];
+		/** @type {Set<string>} */ this.requiredActions = new Set();
 		/** @type {Set<string>} */ this.actionsCompleted = new Set();
 		this.actionWatcher = null;
 		this.phaseHeadingEl = document.getElementById('phaseName');
@@ -59,6 +61,8 @@ export class MissionStateBase {
 		 */
 		this.onAllCompleted = undefined;
 		this.previousTelemetry = null;
+		/** @type {string[]} */ this.actionKeys = [];
+		this.actionMetaData = {};
 	}
 
 	setPreviousTelemetry(telemetry) {
@@ -163,7 +167,7 @@ export class MissionStateBase {
 			phase_name
 		};
 
-		this.dskyInterface.hudController.updateHud(telemetry);
+		// this.dskyInterface.hud.updateHud(telemetry);
 		this.telemetry = { ...telemetry, state };
 
 		this.dskyInterface.dskyController.expectedActions = dsky_actions;
@@ -177,10 +181,26 @@ export class MissionStateBase {
 		}
 
 		if (required_action) {
-			this.requiredActions = Array.isArray(required_action)
-				? [...required_action]
-				: [];
+			console.log('required action found: ', required_action);
+			this.requiredActions.add(required_action);
 		}
+		if (dsky_actions) {
+			this.actionMetaData = dsky_actions;
+			for (const action of dsky_actions) {
+				if (action.program) {
+					this.requiredActions.add(action.program);
+				}
+				if (Array.isArray(action.verb_noun)) {
+					for (const pair of action.verb_noun) {
+						const key = actionKeyFor(pair.verb, pair.noun);
+						this.requiredActions.add(key);
+					}
+				}
+			}
+		}
+
+		console.log('requiredActions in super: ', this.requiredActions);
+		console.log('dskyActions in super: ', this.dskyActions);
 	}
 
 	/**
@@ -206,7 +226,7 @@ export class MissionStateBase {
 	 */
 	markActionComplete(actionKey) {
 		this.actionsCompleted.add(actionKey);
-		const allComplete = this.requiredActions.every(action =>
+		const allComplete = [...this.requiredActions].every(action =>
 			this.actionsCompleted.has(action)
 		);
 

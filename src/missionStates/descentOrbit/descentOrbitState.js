@@ -5,6 +5,10 @@ import { AppStateKeys } from '../../types/missionTypes.js';
 import { MissionStateBase } from '../missionStateBase.js';
 import { DescentOrbitController } from './descentOrbitController.js';
 
+/**
+ * Descent Orbit state requires one user input: initiate_burn.
+ * When burn has completed, then we mark as complete using the markAsComplete()
+ */
 export class DescentOrbitState extends MissionStateBase {
 	/**
 	 *
@@ -22,11 +26,13 @@ export class DescentOrbitState extends MissionStateBase {
 		this.fuel = undefined;
 		this.altitude = undefined;
 		this.prevTelemetry = null;
+		this.burnInitiated = false;
 	}
 
 	// Defining the callback needed for the handleActionEvent
 
 	onEnter() {
+		console.log('Sub class required actions: ', this.requiredActions);
 		this.watchUntilComplete(
 			event => this.handleActionEvent(event),
 			event => {
@@ -37,6 +43,7 @@ export class DescentOrbitState extends MissionStateBase {
 		this.controller.view.showPhaseIntro();
 		this.controller.view.enableUserInput();
 		this.prevTelemetry = this.previousTelemetry || null;
+		this.controller.updateDisplay(this.prevTelemetry);
 		console.log('onEnter: ', this.previousTelemetry);
 		console.log('onEnter: ', this.prevTelemetry);
 		this.bindTickHandler();
@@ -55,17 +62,17 @@ export class DescentOrbitState extends MissionStateBase {
 			return;
 		}
 
-		const altitudeDiff =
+		const altitudeDelta =
 			currentTelemetry.lunar_altitude - this.prevTelemetry.lunar_altitude;
-		const altitudeRate = altitudeDiff / deltaTime;
+		const altitudeRate = altitudeDelta / deltaTime;
 
-		const velocityDiff =
+		const velocityDelta =
 			currentTelemetry.velocity_fps - this.prevTelemetry.velocity_fps;
-		const velocityRate = velocityDiff / deltaTime;
+		const velocityRate = velocityDelta / deltaTime;
 
-		const fuelDiff =
+		const fuelDelta =
 			currentTelemetry.fuel_percent - this.prevTelemetry.fuel_percent;
-		const fuelRate = fuelDiff / deltaTime;
+		const fuelRate = fuelDelta / deltaTime;
 
 		this.altitudeRate = altitudeRate;
 		this.velocityRate = velocityRate;
@@ -73,7 +80,7 @@ export class DescentOrbitState extends MissionStateBase {
 
 		this.prevTelemetry = currentTelemetry;
 
-		this.controller.updateRates({ altitudeRate, velocityRate, fuelRate });
+		this.controller.updateRates({ altitudeDelta, velocityDelta, fuelDelta });
 	}
 
 	computeDescent(deltaTime) {

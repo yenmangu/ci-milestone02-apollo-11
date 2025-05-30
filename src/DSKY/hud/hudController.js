@@ -1,5 +1,6 @@
 import { TelemetryKeys } from '../../types/uiTypes.js';
 import { HudView } from './hudView.js';
+import { tickEmitter } from '../../event/eventBus.js';
 
 export class HudController {
 	/**
@@ -12,6 +13,15 @@ export class HudController {
 		this.instruments = instruments;
 		this.telemetry = {};
 		console.log('Instruments: ', instruments);
+		this.subscribeToTicks();
+	}
+	subscribeToTicks() {
+		tickEmitter.on(
+			'tick',
+			/** @param {import('../../types/clockTypes.js').TickPayload} tick */ tick => {
+				this.hudView.writeTime(tick.getFormatted);
+			}
+		);
 	}
 
 	setUnits(altitude_units) {
@@ -26,6 +36,10 @@ export class HudController {
 			const writableValue = typeof value === 'string' ? value : value.toString();
 			this.telemetry[key] = writableValue;
 
+			if (key === TelemetryKeys.state || key === TelemetryKeys.getStamp) {
+				continue;
+			}
+
 			if (key === TelemetryKeys.phaseName) {
 				this.hudView.setPhase(writableValue);
 			}
@@ -37,8 +51,10 @@ export class HudController {
 			}
 		}
 	}
-	updateTelemetry(rates) {
-		throw new Error('Method not implemented.');
+	updateTelemetry(rates) {}
+
+	displayTranscript(message) {
+		this.hudView.updateTranscript(message);
 	}
 
 	updateVelocity(value) {

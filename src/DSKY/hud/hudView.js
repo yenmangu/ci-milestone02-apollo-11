@@ -1,11 +1,11 @@
 export class HudView {
 	/**
 	 *
-	 * @param {import("../../types/uiTypes.js").hudMap} hudMap
+	 * @param {import("../../types/uiTypes.js").HudMap} hudMap
 	 */
 	constructor(hudMap) {
 		/**
-		 * @type {import("../../types/uiTypes.js").hudMap}
+		 * @type {import("../../types/uiTypes.js").HudMap}
 		 */
 		this.hudMap = hudMap;
 		this.telemetry = {};
@@ -21,6 +21,14 @@ export class HudView {
 		this.telemetry[instrument] = value;
 		const formattedString = `: ${value}`;
 		this.hudMap[instrument].innerText = value;
+	}
+
+	writeTime(value) {
+		this.hudMap.get_stamp.innerText = value;
+	}
+
+	updateTranscript(value) {
+		this.hudMap.transcript.innerText = value;
 	}
 
 	setUnits(altitude_units) {

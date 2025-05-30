@@ -21,7 +21,7 @@ export class IdleView extends EventTarget {
 		document.getElementById('pre-start').classList.add('hidden');
 	}
 
-	showPhaseInto() {
+	showPhaseIntro() {
 		// For now just show the dev count down below
 		return this.renderCountdown();
 	}

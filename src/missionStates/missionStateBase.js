@@ -6,6 +6,7 @@
 /**
  * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
  * @typedef {import('src/types/missionTypes.js').AppStateKey} StateKey
+ * @typedef {import('src/types/missionTypes.js').TimelineCueRuntime} TimelineCueRuntime
  */
 
 import { DSKYInterface } from '../DSKY/dskyInterface.js';
@@ -13,6 +14,7 @@ import { tickEmitter, stateEmitter, phaseNameEmitter } from '../event/eventBus.j
 import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
 import { actionKeyFor } from '../util/actionKey.js';
+import getSecondsFromGET from '../util/getSecondsFromGet.js';
 import watchUntilComplete from '../util/watchUntilComplete.js';
 
 /**
@@ -41,7 +43,7 @@ export class MissionStateBase {
 		/** @type {Object[]} */ this.dskyActions = [];
 		/** @type {Set<string>} */ this.requiredActions = new Set();
 		/** @type {Set<string>} */ this.actionsCompleted = new Set();
-		this.timelineCues = {};
+		/** @type {TimelineCueRuntime[]} */ this.timelineCues = [];
 		this.actionWatcher = null;
 		this.phaseHeadingEl = document.getElementById('phaseName');
 
@@ -169,8 +171,23 @@ export class MissionStateBase {
 			state
 		} = phase;
 
+		if (phase.timeline_cues) {
+			if (Array.isArray(phase.timeline_cues)) {
+				this.timelineCues = phase.timeline_cues.map((cue, index) => {
+					const seconds = getSecondsFromGET(cue.time);
+					const actionKey = `cue_${index}`;
+					this.requiredActions.add(actionKey);
+					return {
+						...cue,
+						seconds,
+						shown: false,
+						actionKey
+					};
+				});
+			}
+		}
+
 		const telemetry = {
-			start_time,
 			lunar_altitude,
 			altitude_units,
 			velocity_fps,
@@ -212,6 +229,29 @@ export class MissionStateBase {
 
 		console.log('requiredActions in super: ', this.requiredActions);
 		console.log('dskyActions in super: ', this.dskyActions);
+	}
+
+	checkTimelineCues(currentGETSeconds) {
+		for (const cue of this.timelineCues) {
+			if (!cue.shown && currentGETSeconds >= cue.seconds) {
+				this.runCue(cue);
+				cue.shown = true;
+
+				this.markActionComplete(cue.actionKey);
+			}
+		}
+	}
+	runCue(cue) {
+		this.showCueOnHUD(cue);
+	}
+	/**
+	 *
+	 * @param {TimelineCueRuntime} cue
+	 */
+	showCueOnHUD(cue) {
+		const { speaker, text, time } = cue;
+		const message = [`${time} ${speaker}: ${text}`];
+		this.dskyInterface.hud.displayTranscript(message);
 	}
 
 	/**

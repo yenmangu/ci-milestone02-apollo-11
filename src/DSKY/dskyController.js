@@ -15,7 +15,7 @@ export class DSKYController {
 		this.displayMap = uiElements.displayMap;
 		this.lightsMap = uiElements.indicatorLights;
 		this.expectedActions = {};
-		this.requiredActions = '';
+		/** @type {any | any[]} */ this.requiredActions = [];
 		this.phaseName = '';
 		this.phaseDescription = '';
 		this.failureState = {};

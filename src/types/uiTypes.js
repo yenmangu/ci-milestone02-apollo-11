@@ -15,7 +15,8 @@ export const TelemetryKeys = {
 	altitudeUnits: 'altitude_units',
 	fuel: 'fuel_percent',
 	phaseName: 'phase_name',
-	startTime: 'start_time'
+	getStamp: 'get_stamp',
+	state: 'state'
 };
 
 /**
@@ -53,15 +54,15 @@ export const TelemetryKeys = {
  * @property {HTMLElement} lunar_altitude - Displays the current altitude above the lunar surface.
  * @property {HTMLElement} velocity_fps - Displays current descent velocity in feet per second.
  * @property {HTMLElement} fuel_percent - Displays remaining fuel percentage.
- * @property {HTMLElement} start_time - Displays the mission time since start (MM:SS or similar).
+ * @property {HTMLElement} get_stamp - Displays the mission time since start (MM:SS or similar).
  * @property {HTMLElement} phase_name - Displays the current mission phase label.
  * @property {HTMLElement} altitude_units - Displays the current altitude units label (m or ft).
- *
+ * @property {HTMLElement} transcript - Displays the current audio transcript
  *
  */
 
 /**
- * @typedef {HudElements} hudMap
+ * @typedef {HudElements} HudMap
  */
 
 /**
@@ -71,7 +72,7 @@ export const TelemetryKeys = {
  * @property {Record<string, HTMLElement>} displayMap
  * @property {Array<NodeListOf<HTMLElement>>} pushButtons
  * @property {HTMLElement} progLight
- * @property {hudMap} hudMap
+ * @property {HudMap} hudMap
  */
 
 /**

@@ -154,8 +154,10 @@ export const AppStateKeys = {
  * @property {string} altitude_units
  * @property {number} velocity_fps
  * @property {number} fuel_percent
- * @property {string} required_action
+ * @property {string } required_action
  * @property {string} audio_ref
+ * @property {string} get_stamp
+ * @property {Object} [timeline_cues]
  * @property {number} [timeout]
  * @property {Object|null|undefined} [failure_state]
  * @property {DSKYActions|null|undefined} [dsky_actions]
@@ -190,6 +192,21 @@ export const AppStateKeys = {
  * @property {MissionPhase[]} mission_phases
  * @property {TimelineMetadata} metadata
  * @property {(state: MissionStateKey|string) => MissionPhase | undefined} getPhase
+ */
+
+/**
+ * @typedef {Object} TimelineCue
+ * @property {string} time
+ * @property {string} speaker
+ * @property {string} text
+ */
+
+/**
+ * @typedef {TimelineCue & {
+ * seconds: number,
+ * shown: boolean,
+ * actionKey: string
+ * }} TimelineCueRuntime
  */
 
 export { AppStates };

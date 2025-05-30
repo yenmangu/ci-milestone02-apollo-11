@@ -24,6 +24,7 @@ export class IdleState extends MissionStateBase {
 		 * @type {IdleController}
 		 */
 		this.controller = stateController;
+
 		this.onAllCompleted = () => {
 			this.game.fsm.transitionTo(AppStateKeys.descent_orbit);
 		};
@@ -35,11 +36,13 @@ export class IdleState extends MissionStateBase {
 	 */
 	onEnter(phase) {
 		this.controller.onEnter().then(() => {
-			this.requiredActions = [];
+			// this.requiredActions = ;
 			this.actionsCompleted.clear();
 
 			this.watchUntilComplete(
-				event => {},
+				event => {
+					console.log('event: ', event);
+				},
 				() => {
 					console.log('Idle phase completed');
 					this.onAllCompleted();

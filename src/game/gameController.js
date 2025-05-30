@@ -26,7 +26,7 @@ export class GameController {
 		this.startTime = null;
 		this.elapsedTime = 0;
 		this.currentPhaseIndex = 0;
-		this.startGetSeconds = getSecondsFromGET(timeline.mission_phases[0].start_get);
+		this.startGetSeconds = getSecondsFromGET(timeline.mission_phases[0].get_stamp);
 		this.clock = new MissionClock(
 			LIFTOFF_EPOCH,
 			timeline.metadata.time_scale || 1,

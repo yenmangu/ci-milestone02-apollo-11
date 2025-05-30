@@ -25,7 +25,7 @@ function queryDom() {
 		'nodeList'
 	);
 
-	/** @type {{[key: string]: HTMLElement}} */
+	/** @type {any} */
 	const hudMap = Array.from(document.querySelectorAll('span[id^="hud-"]')).reduce(
 		(map, element) => {
 			const key = element.id.slice(element.id.indexOf('-') + 1);
@@ -35,13 +35,29 @@ function queryDom() {
 		{}
 	);
 
+	const requiredHudKeys = [
+		'lunar_altitude',
+		'velocity_fps',
+		'fuel_percent',
+		'get_stamp',
+		'phase_name',
+		'altitude_units',
+		'transcript'
+	];
+	for (const key of requiredHudKeys) {
+		if (!hudMap[key]) {
+			throw new Error(`Missing HUD element for ${key}`);
+		}
+	}
+	const hudMapTyped = /** @type {import('../types/uiTypes.js').HudMap} */ (hudMap);
+
 	return {
 		sevenSegmentDisplays,
 		displayMap,
 		indicatorLights,
 		progLight,
 		pushButtons,
-		hudMap
+		hudMap: hudMapTyped
 	};
 }
 

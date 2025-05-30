@@ -1,511 +1,476 @@
 {
-    "mission_phases": [
-        {
-            "state": "idle",
-            "phase_name": "Lunar Orbit (CSM Separation)",
-            "start_time": 0,
-            "description": "Eagle separates from Columbia in lunar orbit",
-            "lunar_altitude": 60,
-            "altitude_units": "miles",
-            "velocity_fps": 5320,
-            "fuel_percent": 100,
-            "required_action": "none",
-            "audio_ref": "nasa/comm_checks.mp3",
-            "failure_state": null,
-            "dsky_actions": [],
-            "timeline_cues": [
-                {
-                    "time": "101:16:45",
-                    "speaker": "CAPCOM",
-                    "text": "Eagle, Houston. How do you read?"
-                },
-                {
-                    "time": "101:16:49",
-                    "speaker": "Eagle",
-                    "text": "Loud and clear, Houston. Columbia undocked, all systems nominal."
-                }
-            ],
-            "start_get": "101:36:00"
+  "mission_phases": [{
+      "state": "idle",
+      "phase_name": "Lunar Orbit (CSM Separation)",
+      "start_time": 0,
+      "description": "Eagle separates from Columbia in lunar orbit",
+      "lunar_altitude": 60,
+      "altitude_units": "miles",
+      "velocity_fps": 5320,
+      "fuel_percent": 100,
+      "required_action": "none",
+      "audio_ref": "nasa/comm_checks.mp3",
+      "failure_state": null,
+      "dsky_actions": [],
+      "timeline_cues": [{
+          "time": "101:16:45",
+          "speaker": "CAPCOM",
+          "text": "Eagle, Houston. How do you read?"
         },
         {
-            "state": "descent_orbit",
-            "phase_name": "Descent Orbit Insertion (DOI)",
-            "start_time": 300,
-            "description": "30-second burn to lower perilune",
-            "lunar_altitude": 15,
-            "altitude_units": "miles",
-            "velocity_fps": 5280,
-            "fuel_percent": 98,
-            "required_action": "verify_burn",
-            "audio_ref": "nasa/doi_go.mp3",
-            "timeline_cues": [
-                {
-                    "time": "101:17:31",
-                    "speaker": "Flight",
-                    "text": "Gal, flight controllers, going around the horn, gonna go for DOI."
-                },
-                {
-                    "time": "101:17:38",
-                    "speaker": "Retro",
-                    "text": "Go."
-                },
-                {
-                    "time": "101:17:39",
-                    "speaker": "FIDO",
-                    "text": "Go."
-                },
-                {
-                    "time": "101:17:40",
-                    "speaker": "Guidance",
-                    "text": "Go, after P-52."
-                },
-                {
-                    "time": "101:17:43",
-                    "speaker": "Control",
-                    "text": "Go."
-                },
-                {
-                    "time": "101:17:43",
-                    "speaker": "TELCOM",
-                    "text": "Go."
-                },
-                {
-                    "time": "101:17:44",
-                    "speaker": "GNC",
-                    "text": "Go."
-                },
-                {
-                    "time": "101:17:45",
-                    "speaker": "ECOM",
-                    "text": "Go."
-                },
-                {
-                    "time": "101:17:48",
-                    "speaker": "Flight",
-                    "text": "CAPCOM, we're go for DOI. We're gonna continue watching this P-52 here."
-                },
-                {
-                    "time": "101:17:55",
-                    "speaker": "CAPCOM",
-                    "text": "Eagle, Houston. You're go for DOI. Over."
-                }
-            ],
-            "failure_state": {
-                "type": "ABORT_ENGINE_FAILURE",
-                "condition": "throttle < 5% for >10s",
-                "audio_ref": "nasa/abort_doi.mp3",
-                "historical_context": "Actual DOI achieved 10.2% thrust (102:33:05 GET)"
-            },
-            "dsky_actions": [
-                {
-                    "program": "P63",
-                    "description": "Braking phase program, used to kill horizontal velocity after DOI burn",
-                    "verb_noun": []
-                }
-            ],
-            "start_get": "101:37:00"
-        },
-        {
-            "state": "powered_descent",
-            "phase_name": "Powered Descent Initiation (PDI)",
-            "start_time": 1020,
-            "description": "DPS ignition at 10% throttle",
-            "lunar_altitude": 50000,
-            "altitude_units": "feet",
-            "velocity_fps": 5500,
-            "fuel_percent": 95,
-            "required_action": "throttle_up",
-            "audio_ref": "nasa/pdi_ignition.mp3",
-            "failure_state": {
-                "type": "ABORT_NO_IGNITION",
-                "condition": "throttle_activation_time >8s",
-                "audio_ref": "nasa/abort_pdi.mp3",
-                "historical_context": "DPS had triple redundancy - never failed"
-            },
-            "dsky_actions": [
-                {
-                    "program": "P63",
-                    "description": "Initiates powered descent engine burn",
-                    "verb_noun": [
-                        {
-                            "verb": "37",
-                            "noun": "11",
-                            "description": "Throttle Control - set throttle percentage"
-                        },
-                        {
-                            "verb": "16",
-                            "noun": "14",
-                            "description": "Rendezvous radar enable/disable (used for descent radar check)"
-                        }
-                    ]
-                }
-            ],
-            "timeline_cues": [
-                {
-                    "time": "102:45:40",
-                    "speaker": "Flight",
-                    "text": "Go for powered descent. Initiate PDI now."
-                },
-                {
-                    "time": "102:45:42",
-                    "speaker": "CAPCOM",
-                    "text": "Eagle, Houston. You are go for PDI."
-                },
-                {
-                    "time": "102:45:52",
-                    "speaker": "Eagle",
-                    "text": "Roger, go for powered descent."
-                }
-            ],
-            "start_get": "102:45:00"
-        },
-        {
-            "state": "braking_phase",
-            "phase_name": "Braking Phase (P63)",
-            "start_time": 1080,
-            "description": "Full throttle to kill horizontal velocity",
-            "lunar_altitude": 33000,
-            "altitude_units": "feet",
-            "velocity_fps": 2000,
-            "fuel_percent": 85,
-            "required_action": "maintain_attitude",
-            "audio_ref": "nasa/braking_phase.mp3",
-            "failure_state": {
-                "type": "GIMBAL_LOCK",
-                "condition": "pitch >12\u00b0 || yaw >12\u00b0",
-                "audio_ref": "nasa/gimbal_lock.mp3",
-                "historical_context": "Aldrin monitored ACA for corrections (104:02:25)"
-            },
-            "dsky_actions": [
-                {
-                    "program": "P63",
-                    "description": "Braking burn program continues",
-                    "verb_noun": [
-                        {
-                            "verb": "06",
-                            "noun": "22",
-                            "description": "Control Attitude - manual control"
-                        },
-                        {
-                            "verb": "37",
-                            "noun": "11",
-                            "description": "Throttle adjustment during braking"
-                        }
-                    ]
-                }
-            ],
-            "timeline_cues": [
-                {
-                    "time": "103:40:22",
-                    "speaker": "CAPCOM",
-                    "text": "Eagle, you're looking great. All systems go."
-                },
-                {
-                    "time": "103:40:45",
-                    "speaker": "Aldrin",
-                    "text": "ACA out of detent. Auto."
-                },
-                {
-                    "time": "103:40:47",
-                    "speaker": "Armstrong",
-                    "text": "We're picking up some horizontal velocity."
-                }
-            ],
-            "start_get": "103:40:00"
-        },
-        {
-            "state": "program_alarm_1202",
-            "phase_name": "1202 Program Alarm",
-            "start_time": 1125,
-            "description": "Computer overload at 33,500 ft",
-            "lunar_altitude": 33500,
-            "altitude_units": "feet",
-            "velocity_fps": 1800,
-            "fuel_percent": 82,
-            "required_action": "acknowledge_alarm",
-            "timeout": 5,
-            "audio_ref": "nasa/1202_alarm.mp3",
-            "failure_state": {
-                "type": "ABORT_1202_TIMEOUT",
-                "condition": "!acknowledged && timeout<=0",
-                "audio_ref": "nasa/abort_1202.mp3",
-                "historical_context": "Armstrong: 'We're Go on that alarm' (104:01:26)"
-            },
-            "dsky_actions": [
-                {
-                    "program": "P63",
-                    "description": "Running descent program when alarm occurs",
-                    "verb_noun": [
-                        {
-                            "verb": "33",
-                            "noun": "13",
-                            "description": "Acknowledge alarm input on DSKY"
-                        },
-                        {
-                            "verb": "06",
-                            "noun": "22",
-                            "description": "Maintain control inputs"
-                        }
-                    ]
-                }
-            ],
-            "timeline_cues": [
-                {
-                    "time": "104:01:26",
-                    "speaker": "Armstrong",
-                    "text": "Program alarm. It's a 1202."
-                },
-                {
-                    "time": "104:01:28",
-                    "speaker": "CAPCOM",
-                    "text": "Roger. We're go on that alarm."
-                }
-            ],
-            "start_get": "104:01:26"
-        },
-        {
-            "state": "approach_phase",
-            "phase_name": "Approach Phase (P64)",
-            "start_time": 1200,
-            "description": "Manual control at ~2,000 ft",
-            "lunar_altitude": 2000,
-            "altitude_units": "feet",
-            "velocity_fps": 100,
-            "fuel_percent": 45,
-            "required_action": "manual_attitude",
-            "audio_ref": "nasa/manual_control.mp3",
-            "failure_state": {
-                "type": "CRATER_COLLISION",
-                "condition": "horizontal_velocity >20fps",
-                "audio_ref": "nasa/collision_warning.mp3",
-                "historical_context": "Armstrong overflew West Crater at 104:16"
-            },
-            "dsky_actions": [
-                {
-                    "program": "P64",
-                    "description": "Final approach and landing guidance program",
-                    "verb_noun": [
-                        {
-                            "verb": "06",
-                            "noun": "22",
-                            "description": "Manual attitude control"
-                        },
-                        {
-                            "verb": "32",
-                            "noun": "01",
-                            "description": "Display current vertical velocity"
-                        },
-                        {
-                            "verb": "33",
-                            "noun": "01",
-                            "description": "Display current horizontal velocity"
-                        }
-                    ]
-                }
-            ],
-            "timeline_cues": [
-                {
-                    "time": "104:15:00",
-                    "speaker": "CAPCOM",
-                    "text": "Eagle, Houston. You\u2019re go at 2,000 feet."
-                },
-                {
-                    "time": "104:15:25",
-                    "speaker": "Armstrong",
-                    "text": "Forward velocity\u2019s a little high. Looking for a good spot."
-                }
-            ],
-            "start_get": "104:14:00"
-        },
-        {
-            "state": "program_alarm_1201",
-            "phase_name": "1201 Program Alarm",
-            "start_time": 1260,
-            "description": "Second computer overload at 1,600 ft",
-            "lunar_altitude": 1600,
-            "altitude_units": "feet",
-            "velocity_fps": 40,
-            "fuel_percent": 30,
-            "required_action": "acknowledge_alarm",
-            "timeout": 3,
-            "audio_ref": "nasa/1201_alarm.mp3",
-            "failure_state": {
-                "type": "ABORT_1201_TIMEOUT",
-                "condition": "!acknowledged && timeout<=0",
-                "audio_ref": "nasa/abort_1201.mp3",
-                "historical_context": "Guidance system rebooted successfully"
-            },
-            "dsky_actions": [
-                {
-                    "program": "P64",
-                    "description": "Landing guidance continues during alarm",
-                    "verb_noun": [
-                        {
-                            "verb": "33",
-                            "noun": "13",
-                            "description": "Acknowledge alarm"
-                        },
-                        {
-                            "verb": "06",
-                            "noun": "22",
-                            "description": "Maintain manual control"
-                        }
-                    ]
-                }
-            ],
-            "timeline_cues": [
-                {
-                    "time": "104:16:00",
-                    "speaker": "Armstrong",
-                    "text": "Another alarm. 1201 this time."
-                },
-                {
-                    "time": "104:16:03",
-                    "speaker": "CAPCOM",
-                    "text": "Roger. We're go. Same as before."
-                }
-            ],
-            "start_get": "104:16:00"
-        },
-        {
-            "state": "final_descent",
-            "phase_name": "Final Descent (P66)",
-            "start_time": 1320,
-            "description": "Manual landing (104:17:00 GET)",
-            "lunar_altitude": 500,
-            "altitude_units": "feet",
-            "velocity_fps": 40,
-            "fuel_percent": 15,
-            "required_action": "manual_throttle",
-            "audio_ref": "nasa/final_descent.mp3",
-            "failure_state": {
-                "type": "CRASH_EXCESS_VELOCITY",
-                "condition": "vertical_velocity>3fps || horizontal_velocity>5fps",
-                "audio_ref": "nasa/crash.mp3",
-                "historical_context": "Actual touchdown: 1.7fps vertical, 0.5fps horizontal"
-            },
-            "dsky_actions": [
-                {
-                    "program": "P66",
-                    "description": "Final landing program for descent monitoring and throttle control",
-                    "verb_noun": [
-                        {
-                            "verb": "37",
-                            "noun": "11",
-                            "description": "Throttle input adjustment"
-                        },
-                        {
-                            "verb": "06",
-                            "noun": "22",
-                            "description": "Manual attitude control"
-                        },
-                        {
-                            "verb": "34",
-                            "noun": "02",
-                            "description": "Display altitude"
-                        }
-                    ]
-                }
-            ],
-            "timeline_cues": [
-                {
-                    "time": "104:17:00",
-                    "speaker": "Aldrin",
-                    "text": "Altitude 400 feet, down at 9."
-                },
-                {
-                    "time": "104:17:10",
-                    "speaker": "Armstrong",
-                    "text": "Okay. 200 feet, 4.5 down."
-                },
-                {
-                    "time": "104:17:30",
-                    "speaker": "Aldrin",
-                    "text": "30 seconds of fuel remaining."
-                }
-            ],
-            "start_get": "104:17:00"
-        },
-        {
-            "state": "landed",
-            "phase_name": "Lunar Touchdown",
-            "start_time": 1380,
-            "description": "Contact light at 104:17:39 GET",
-            "lunar_altitude": 0,
-            "altitude_units": "feet",
-            "velocity_fps": 0,
-            "fuel_percent": 2,
-            "required_action": "engine_stop",
-            "audio_ref": "nasa/contact_light.mp3",
-            "failure_state": null,
-            "dsky_actions": [
-                {
-                    "program": null,
-                    "description": "Post landing shutdown and system checks",
-                    "verb_noun": [
-                        {
-                            "verb": "10",
-                            "noun": "21",
-                            "description": "Engine stop command"
-                        },
-                        {
-                            "verb": "36",
-                            "noun": "00",
-                            "description": "Display system status"
-                        }
-                    ]
-                }
-            ],
-            "timeline_cues": [
-                {
-                    "time": "104:17:40",
-                    "speaker": "Aldrin",
-                    "text": "Contact light."
-                },
-                {
-                    "time": "104:17:42",
-                    "speaker": "Armstrong",
-                    "text": "Shutdown."
-                },
-                {
-                    "time": "104:17:45",
-                    "speaker": "CAPCOM",
-                    "text": "We copy you down, Eagle."
-                },
-                {
-                    "time": "104:17:49",
-                    "speaker": "Armstrong",
-                    "text": "Houston, Tranquility Base here. The Eagle has landed."
-                }
-            ],
-            "start_get": "104:17:39"
+          "time": "101:16:49",
+          "speaker": "Eagle",
+          "text": "Loud and clear, Houston. Columbia undocked, all systems nominal."
         }
-    ],
-    "metadata": {
-        "time_scale": 1.5,
-        "velocity_units": "fps",
-        "global_failures": [
-            {
-                "type": "FUEL_EXHAUSTED",
-                "condition": "fuel_percent <=0",
-                "audio_ref": "nasa/fuel_exhausted.mp3",
-                "applies_to": [
-                    "powered_descent",
-                    "braking_phase",
-                    "approach_phase",
-                    "final_descent"
-                ],
-                "historical_context": "Real mission had 25s fuel remaining at touchdown"
-            }
-        ],
-        "historical_references": {
-            "time_format": "GET (Ground Elapsed Time)",
-            "primary_source": "Apollo 11 Flight Journal (NASA)",
-            "key_events": {
-                "pdi_actual": "102:45:00 GET",
-                "1202_alarm": "104:01:26 GET",
-                "touchdown": "104:17:39 GET"
-            }
+      ],
+      "get_stamp": "101:36:00"
+    },
+    {
+      "state": "descent_orbit",
+      "phase_name": "Descent Orbit Insertion (DOI)",
+      "start_time": 300,
+      "description": "30-second burn to lower perilune",
+      "lunar_altitude": 15,
+      "altitude_units": "miles",
+      "velocity_fps": 5280,
+      "fuel_percent": 98,
+      "required_action": "verify_burn",
+      "audio_ref": "nasa/doi_go.mp3",
+      "timeline_cues": [{
+          "time": "101:17:31",
+          "speaker": "Flight",
+          "text": "Gal, flight controllers, going around the horn, gonna go for DOI."
+        },
+        {
+          "time": "101:17:38",
+          "speaker": "Retro",
+          "text": "Go."
+        },
+        {
+          "time": "101:17:39",
+          "speaker": "FIDO",
+          "text": "Go."
+        },
+        {
+          "time": "101:17:40",
+          "speaker": "Guidance",
+          "text": "Go, after P-52."
+        },
+        {
+          "time": "101:17:43",
+          "speaker": "Control",
+          "text": "Go."
+        },
+        {
+          "time": "101:17:43",
+          "speaker": "TELCOM",
+          "text": "Go."
+        },
+        {
+          "time": "101:17:44",
+          "speaker": "GNC",
+          "text": "Go."
+        },
+        {
+          "time": "101:17:45",
+          "speaker": "ECOM",
+          "text": "Go."
+        },
+        {
+          "time": "101:17:48",
+          "speaker": "Flight",
+          "text": "CAPCOM, we're go for DOI. We're gonna continue watching this P-52 here."
+        },
+        {
+          "time": "101:17:55",
+          "speaker": "CAPCOM",
+          "text": "Eagle, Houston. You're go for DOI. Over."
         }
+      ],
+      "failure_state": {
+        "type": "ABORT_ENGINE_FAILURE",
+        "condition": "throttle < 5% for >10s",
+        "audio_ref": "nasa/abort_doi.mp3",
+        "historical_context": "Actual DOI achieved 10.2% thrust (102:33:05 GET)"
+      },
+      "dsky_actions": [{
+        "program": "P63",
+        "description": "Braking phase program, used to kill horizontal velocity after DOI burn",
+        "verb_noun": []
+      }],
+      "get_stamp": "101:37:00"
+    },
+    {
+      "state": "powered_descent",
+      "phase_name": "Powered Descent Initiation (PDI)",
+      "start_time": 1020,
+      "description": "DPS ignition at 10% throttle",
+      "lunar_altitude": 50000,
+      "altitude_units": "feet",
+      "velocity_fps": 5500,
+      "fuel_percent": 95,
+      "required_action": "throttle_up",
+      "audio_ref": "nasa/pdi_ignition.mp3",
+      "failure_state": {
+        "type": "ABORT_NO_IGNITION",
+        "condition": "throttle_activation_time >8s",
+        "audio_ref": "nasa/abort_pdi.mp3",
+        "historical_context": "DPS had triple redundancy - never failed"
+      },
+      "dsky_actions": [{
+        "program": "P63",
+        "description": "Initiates powered descent engine burn",
+        "verb_noun": [{
+            "verb": "37",
+            "noun": "11",
+            "description": "Throttle Control - set throttle percentage"
+          },
+          {
+            "verb": "16",
+            "noun": "14",
+            "description": "Rendezvous radar enable/disable (used for descent radar check)"
+          }
+        ]
+      }],
+      "timeline_cues": [{
+          "time": "102:45:40",
+          "speaker": "Flight",
+          "text": "Go for powered descent. Initiate PDI now."
+        },
+        {
+          "time": "102:45:42",
+          "speaker": "CAPCOM",
+          "text": "Eagle, Houston. You are go for PDI."
+        },
+        {
+          "time": "102:45:52",
+          "speaker": "Eagle",
+          "text": "Roger, go for powered descent."
+        }
+      ],
+      "get_stamp": "102:45:00"
+    },
+    {
+      "state": "braking_phase",
+      "phase_name": "Braking Phase (P63)",
+      "start_time": 1080,
+      "description": "Full throttle to kill horizontal velocity",
+      "lunar_altitude": 33000,
+      "altitude_units": "feet",
+      "velocity_fps": 2000,
+      "fuel_percent": 85,
+      "required_action": "maintain_attitude",
+      "audio_ref": "nasa/braking_phase.mp3",
+      "failure_state": {
+        "type": "GIMBAL_LOCK",
+        "condition": "pitch >12\u00b0 || yaw >12\u00b0",
+        "audio_ref": "nasa/gimbal_lock.mp3",
+        "historical_context": "Aldrin monitored ACA for corrections (104:02:25)"
+      },
+      "dsky_actions": [{
+        "program": "P63",
+        "description": "Braking burn program continues",
+        "verb_noun": [{
+            "verb": "06",
+            "noun": "22",
+            "description": "Control Attitude - manual control"
+          },
+          {
+            "verb": "37",
+            "noun": "11",
+            "description": "Throttle adjustment during braking"
+          }
+        ]
+      }],
+      "timeline_cues": [{
+          "time": "103:40:22",
+          "speaker": "CAPCOM",
+          "text": "Eagle, you're looking great. All systems go."
+        },
+        {
+          "time": "103:40:45",
+          "speaker": "Aldrin",
+          "text": "ACA out of detent. Auto."
+        },
+        {
+          "time": "103:40:47",
+          "speaker": "Armstrong",
+          "text": "We're picking up some horizontal velocity."
+        }
+      ],
+      "get_stamp": "103:40:00"
+    },
+    {
+      "state": "program_alarm_1202",
+      "phase_name": "1202 Program Alarm",
+      "start_time": 1125,
+      "description": "Computer overload at 33,500 ft",
+      "lunar_altitude": 33500,
+      "altitude_units": "feet",
+      "velocity_fps": 1800,
+      "fuel_percent": 82,
+      "required_action": "acknowledge_alarm",
+      "timeout": 5,
+      "audio_ref": "nasa/1202_alarm.mp3",
+      "failure_state": {
+        "type": "ABORT_1202_TIMEOUT",
+        "condition": "!acknowledged && timeout<=0",
+        "audio_ref": "nasa/abort_1202.mp3",
+        "historical_context": "Armstrong: 'We're Go on that alarm' (104:01:26)"
+      },
+      "dsky_actions": [{
+        "program": "P63",
+        "description": "Running descent program when alarm occurs",
+        "verb_noun": [{
+            "verb": "33",
+            "noun": "13",
+            "description": "Acknowledge alarm input on DSKY"
+          },
+          {
+            "verb": "06",
+            "noun": "22",
+            "description": "Maintain control inputs"
+          }
+        ]
+      }],
+      "timeline_cues": [{
+          "time": "104:01:26",
+          "speaker": "Armstrong",
+          "text": "Program alarm. It's a 1202."
+        },
+        {
+          "time": "104:01:28",
+          "speaker": "CAPCOM",
+          "text": "Roger. We're go on that alarm."
+        }
+      ],
+      "get_stamp": "104:01:26"
+    },
+    {
+      "state": "approach_phase",
+      "phase_name": "Approach Phase (P64)",
+      "start_time": 1200,
+      "description": "Manual control at ~2,000 ft",
+      "lunar_altitude": 2000,
+      "altitude_units": "feet",
+      "velocity_fps": 100,
+      "fuel_percent": 45,
+      "required_action": "manual_attitude",
+      "audio_ref": "nasa/manual_control.mp3",
+      "failure_state": {
+        "type": "CRATER_COLLISION",
+        "condition": "horizontal_velocity >20fps",
+        "audio_ref": "nasa/collision_warning.mp3",
+        "historical_context": "Armstrong overflew West Crater at 104:16"
+      },
+      "dsky_actions": [{
+        "program": "P64",
+        "description": "Final approach and landing guidance program",
+        "verb_noun": [{
+            "verb": "06",
+            "noun": "22",
+            "description": "Manual attitude control"
+          },
+          {
+            "verb": "32",
+            "noun": "01",
+            "description": "Display current vertical velocity"
+          },
+          {
+            "verb": "33",
+            "noun": "01",
+            "description": "Display current horizontal velocity"
+          }
+        ]
+      }],
+      "timeline_cues": [{
+          "time": "104:15:00",
+          "speaker": "CAPCOM",
+          "text": "Eagle, Houston. You\u2019re go at 2,000 feet."
+        },
+        {
+          "time": "104:15:25",
+          "speaker": "Armstrong",
+          "text": "Forward velocity\u2019s a little high. Looking for a good spot."
+        }
+      ],
+      "get_stamp": "104:14:00"
+    },
+    {
+      "state": "program_alarm_1201",
+      "phase_name": "1201 Program Alarm",
+      "start_time": 1260,
+      "description": "Second computer overload at 1,600 ft",
+      "lunar_altitude": 1600,
+      "altitude_units": "feet",
+      "velocity_fps": 40,
+      "fuel_percent": 30,
+      "required_action": "acknowledge_alarm",
+      "timeout": 3,
+      "audio_ref": "nasa/1201_alarm.mp3",
+      "failure_state": {
+        "type": "ABORT_1201_TIMEOUT",
+        "condition": "!acknowledged && timeout<=0",
+        "audio_ref": "nasa/abort_1201.mp3",
+        "historical_context": "Guidance system rebooted successfully"
+      },
+      "dsky_actions": [{
+        "program": "P64",
+        "description": "Landing guidance continues during alarm",
+        "verb_noun": [{
+            "verb": "33",
+            "noun": "13",
+            "description": "Acknowledge alarm"
+          },
+          {
+            "verb": "06",
+            "noun": "22",
+            "description": "Maintain manual control"
+          }
+        ]
+      }],
+      "timeline_cues": [{
+          "time": "104:16:00",
+          "speaker": "Armstrong",
+          "text": "Another alarm. 1201 this time."
+        },
+        {
+          "time": "104:16:03",
+          "speaker": "CAPCOM",
+          "text": "Roger. We're go. Same as before."
+        }
+      ],
+      "get_stamp": "104:16:00"
+    },
+    {
+      "state": "final_descent",
+      "phase_name": "Final Descent (P66)",
+      "start_time": 1320,
+      "description": "Manual landing (104:17:00 GET)",
+      "lunar_altitude": 500,
+      "altitude_units": "feet",
+      "velocity_fps": 40,
+      "fuel_percent": 15,
+      "required_action": "manual_throttle",
+      "audio_ref": "nasa/final_descent.mp3",
+      "failure_state": {
+        "type": "CRASH_EXCESS_VELOCITY",
+        "condition": "vertical_velocity>3fps || horizontal_velocity>5fps",
+        "audio_ref": "nasa/crash.mp3",
+        "historical_context": "Actual touchdown: 1.7fps vertical, 0.5fps horizontal"
+      },
+      "dsky_actions": [{
+        "program": "P66",
+        "description": "Final landing program for descent monitoring and throttle control",
+        "verb_noun": [{
+            "verb": "37",
+            "noun": "11",
+            "description": "Throttle input adjustment"
+          },
+          {
+            "verb": "06",
+            "noun": "22",
+            "description": "Manual attitude control"
+          },
+          {
+            "verb": "34",
+            "noun": "02",
+            "description": "Display altitude"
+          }
+        ]
+      }],
+      "timeline_cues": [{
+          "time": "104:17:00",
+          "speaker": "Aldrin",
+          "text": "Altitude 400 feet, down at 9."
+        },
+        {
+          "time": "104:17:10",
+          "speaker": "Armstrong",
+          "text": "Okay. 200 feet, 4.5 down."
+        },
+        {
+          "time": "104:17:30",
+          "speaker": "Aldrin",
+          "text": "30 seconds of fuel remaining."
+        }
+      ],
+      "get_stamp": "104:17:00"
+    },
+    {
+      "state": "landed",
+      "phase_name": "Lunar Touchdown",
+      "start_time": 1380,
+      "description": "Contact light at 104:17:39 GET",
+      "lunar_altitude": 0,
+      "altitude_units": "feet",
+      "velocity_fps": 0,
+      "fuel_percent": 2,
+      "required_action": "engine_stop",
+      "audio_ref": "nasa/contact_light.mp3",
+      "failure_state": null,
+      "dsky_actions": [{
+        "program": null,
+        "description": "Post landing shutdown and system checks",
+        "verb_noun": [{
+            "verb": "10",
+            "noun": "21",
+            "description": "Engine stop command"
+          },
+          {
+            "verb": "36",
+            "noun": "00",
+            "description": "Display system status"
+          }
+        ]
+      }],
+      "timeline_cues": [{
+          "time": "104:17:40",
+          "speaker": "Aldrin",
+          "text": "Contact light."
+        },
+        {
+          "time": "104:17:42",
+          "speaker": "Armstrong",
+          "text": "Shutdown."
+        },
+        {
+          "time": "104:17:45",
+          "speaker": "CAPCOM",
+          "text": "We copy you down, Eagle."
+        },
+        {
+          "time": "104:17:49",
+          "speaker": "Armstrong",
+          "text": "Houston, Tranquility Base here. The Eagle has landed."
+        }
+      ],
+      "get_stamp": "104:17:39"
     }
+  ],
+  "metadata": {
+    "time_scale": 1.5,
+    "velocity_units": "fps",
+    "global_failures": [{
+      "type": "FUEL_EXHAUSTED",
+      "condition": "fuel_percent <=0",
+      "audio_ref": "nasa/fuel_exhausted.mp3",
+      "applies_to": [
+        "powered_descent",
+        "braking_phase",
+        "approach_phase",
+        "final_descent"
+      ],
+      "historical_context": "Real mission had 25s fuel remaining at touchdown"
+    }],
+    "historical_references": {
+      "time_format": "GET (Ground Elapsed Time)",
+      "primary_source": "Apollo 11 Flight Journal (NASA)",
+      "key_events": {
+        "pdi_actual": "102:45:00 GET",
+        "1202_alarm": "104:01:26 GET",
+        "touchdown": "104:17:39 GET"
+      }
+    }
+  }
 }

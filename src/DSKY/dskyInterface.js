@@ -10,11 +10,11 @@ import { HudController } from './hud/hudController.js';
 export class DSKYInterface {
 	/**
 	 *  @param {DSKYController} dskyController
-	 *  @param {HudController} instrumentsController
+	 *  @param {HudController} hudController
 	 */
-	constructor(dskyController, instrumentsController) {
+	constructor(dskyController, hudController) {
 		this.dskyController = dskyController;
-		this.hudController = instrumentsController;
+		this.hud = hudController;
 	}
 
 	write(id, value) {

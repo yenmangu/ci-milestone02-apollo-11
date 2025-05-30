@@ -1,12 +1,12 @@
 import { tickEmitter } from '../event/eventBus.js';
 
 export class MissionClock {
-	constructor(startEpochMs, timeScale = 1) {
+	constructor(startEpochMs, timeScale = 1, startGetSeconds = 0) {
 		this.startEpoch = startEpochMs;
 		this.lastRealTime = null; // Last real timestamp
 		this.elapsedMissionTime = 0; // Accumulated mission time so far
 		this.timeScale = timeScale;
-
+		this.startGetSeconds = startGetSeconds;
 		this.isRunning = false;
 		this.frame = null;
 	}
@@ -19,6 +19,18 @@ export class MissionClock {
 		const now = performance.now();
 		const realDelta = this.getRealDelta(now);
 		return this.elapsedMissionTime + realDelta * this.timeScale;
+	}
+
+	get currentGETSeconds() {
+		return this.startGetSeconds + this.secondsElapsed;
+	}
+
+	get currentGET() {
+		const total = this.currentGETSeconds;
+		const hh = String(Math.floor(total / 3600)).padStart(2, '0');
+		const mm = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+		const ss = String(Math.floor(total % 60)).padStart(2, '0');
+		return `${hh}:${mm}:${ss}`;
 	}
 
 	get missionDate() {
@@ -50,7 +62,11 @@ export class MissionClock {
 		this.elapsedMissionTime += realDelta * this.timeScale;
 		this.lastRealTime = now;
 
-		tickEmitter.emit('tick', this.elapsedMissionTime);
+		tickEmitter.emit('tick', {
+			elapsed: this.elapsedMissionTime,
+			get: this.currentGETSeconds,
+			getFormatted: this.currentGET
+		});
 		this.frame = requestAnimationFrame(this._loop);
 	};
 

@@ -1,4 +1,5 @@
 import { FSM } from '../FSM/fsm.js';
+import getSecondsFromGET from '../util/getSecondsFromGet.js';
 import { LIFTOFF_EPOCH } from '../util/realMissionTime.js';
 import { MissionClock } from './missionClock.js';
 
@@ -25,7 +26,12 @@ export class GameController {
 		this.startTime = null;
 		this.elapsedTime = 0;
 		this.currentPhaseIndex = 0;
-		this.clock = new MissionClock(LIFTOFF_EPOCH, timeline.metadata.time_scale || 1);
+		this.startGetSeconds = getSecondsFromGET(timeline.mission_phases[0].start_get);
+		this.clock = new MissionClock(
+			LIFTOFF_EPOCH,
+			timeline.metadata.time_scale || 1,
+			this.startGetSeconds
+		);
 		this.frame = null;
 		// Mission data
 

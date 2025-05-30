@@ -95,7 +95,7 @@ export class DescentOrbitState extends MissionStateBase {
 		if (!event.action) {
 			return;
 		}
-		if (this.requiredActions.includes(event.action)) {
+		if (this.requiredActions.has(event.action)) {
 			this.markActionComplete(event.action);
 		}
 	}

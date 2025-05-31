@@ -4,11 +4,16 @@
  */
 
 /**
+ * @typedef {{[Key in StateKey]?: {start_get: string}}} PhaseGetMap
+ */
+
+/**
  * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
  * @typedef {import('src/types/missionTypes.js').AppStateKey} StateKey
  * @typedef {import('src/types/missionTypes.js').TimelineCueRuntime} TimelineCueRuntime
  */
 
+import { AppStateKeys } from 'src/types/missionTypes.js';
 import { DSKYInterface } from '../DSKY/dskyInterface.js';
 import { tickEmitter, stateEmitter, phaseNameEmitter } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
@@ -28,6 +33,13 @@ import watchUntilComplete from '../util/watchUntilComplete.js';
  * @class
  */
 export class MissionStateBase {
+	/**
+	 * @private
+	 * @static
+	 * @type {PhaseGetMap}
+	 */
+	static _phaseGetMap;
+
 	/**
 	 * @param {GameController} gameController
 	 * @param {DSKYInterface} dskyInterface
@@ -66,6 +78,31 @@ export class MissionStateBase {
 		this.previousTelemetry = null;
 		/** @type {string[]} */ this.actionKeys = [];
 		this.actionMetaData = {};
+
+		if (!MissionStateBase._phaseGetMap) {
+			const map = /** @type {PhaseGetMap} */ (this.buildStartGetMap());
+			Object.freeze(map);
+			MissionStateBase._phaseGetMap = map;
+		}
+	}
+
+	/**
+	 *
+	 * @returns {PhaseGetMap}
+	 */
+	buildStartGetMap() {
+		/** @type {PhaseGetMap} */
+		const map = {};
+		for (const key of Object.values(AppStateKeys)) {
+			const phase = this.game.timeLine.getPhase(key);
+			if (phase && typeof phase.get_stamp === 'string') {
+				const entry = { start_get: phase.get_stamp };
+				Object.freeze(entry);
+				map[key] = entry;
+			}
+		}
+		Object.freeze(map);
+		return map;
 	}
 
 	setPreviousTelemetry(telemetry) {
@@ -159,6 +196,7 @@ export class MissionStateBase {
 	onMissionCritical(phase) {
 		const {
 			start_time,
+			start_get,
 			phase_name,
 			description,
 			lunar_altitude,
@@ -210,7 +248,9 @@ export class MissionStateBase {
 
 		if (required_action) {
 			console.log('required action found: ', required_action);
-			this.requiredActions.add(required_action);
+			if (required_action !== 'none') {
+				this.requiredActions.add(required_action);
+			}
 		}
 		if (dsky_actions) {
 			this.actionMetaData = dsky_actions;

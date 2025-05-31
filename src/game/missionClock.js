@@ -3,6 +3,7 @@
  */
 
 import { tickEmitter } from '../event/eventBus.js';
+import getSecondsFromGET from '../util/getSecondsFromGet.js';
 
 export class MissionClock {
 	constructor(startEpochMs, timeScale = 1, startGetSeconds = 0) {
@@ -132,12 +133,17 @@ export class MissionClock {
 		this.elapsedMissionTime = 0;
 	}
 
+	jumpTo(targetGET) {
+		const targetSeconds = getSecondsFromGET(targetGET);
+		this.jumpToTES(targetSeconds);
+	}
+
 	/**
 	 * Jump the mission clock to that `secondsElapsed === target`.
 	 * Emits a fully formed `tick` event so subscribers get expected payload.
 	 * @param {*} targetElapsedSeconds
 	 */
-	jumpTo(targetElapsedSeconds) {
+	jumpToTES(targetElapsedSeconds) {
 		if (this.isRunning) {
 			const now = performance.now();
 			const realDelta = this.getRealDelta(now);

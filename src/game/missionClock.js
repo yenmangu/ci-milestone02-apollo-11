@@ -132,6 +132,38 @@ export class MissionClock {
 		this.elapsedMissionTime = 0;
 	}
 
+	/**
+	 * Jump the mission clock to that `secondsElapsed === target`.
+	 * Emits a fully formed `tick` event so subscribers get expected payload.
+	 * @param {*} targetElapsedSeconds
+	 */
+	jumpTo(targetElapsedSeconds) {
+		if (this.isRunning) {
+			const now = performance.now();
+			const realDelta = this.getRealDelta(now);
+			this.elapsedMissionTime += realDelta * this.timeScale;
+			this.isRunning = false;
+			this.lastRealTime = null;
+			if (this.frame) {
+				cancelAnimationFrame(this.frame);
+				this.frame = null;
+			}
+		}
+
+		this.elapsedMissionTime = targetElapsedSeconds;
+
+		this.lastRealTime = performance.now();
+		this.isRunning = true;
+		this._loop();
+
+		const payload = {
+			elapsed: this.elapsedMissionTime,
+			get: this.currentGETSeconds,
+			getFormatted: this.currentGET
+		};
+		tickEmitter.emit('tick', payload);
+	}
+
 	// For Debugging purposes
 	step(deltaSeconds, emit = true) {
 		if (this.isRunning) {

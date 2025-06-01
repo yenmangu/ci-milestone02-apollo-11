@@ -2,6 +2,7 @@
   "mission_phases": [{
       "state": "idle",
       "phase_name": "Lunar Orbit (CSM Separation)",
+      "start_get": "100:14:22",
       "start_time": 0,
       "description": "Eagle separates from Columbia in lunar orbit",
       "lunar_altitude": 60,
@@ -13,21 +14,22 @@
       "failure_state": null,
       "dsky_actions": [],
       "timeline_cues": [{
-          "time": "101:16:45",
+          "time": "100:40:32",
           "speaker": "CAPCOM",
-          "text": "Eagle, Houston. How do you read?"
+          "text": "Roger. Copy. Columbia, it looks good to us. Over."
         },
         {
-          "time": "101:16:49",
-          "speaker": "Eagle",
-          "text": "Loud and clear, Houston. Columbia undocked, all systems nominal."
+          "time": "100:40:36",
+          "speaker": "Columbia",
+          "text": "Thanks."
         }
       ],
-      "get_stamp": "101:36:00"
+      "get_stamp": "100:39:50"
     },
     {
       "state": "descent_orbit",
       "phase_name": "Descent Orbit Insertion (DOI)",
+      "start_get": "101:17:07",
       "start_time": 300,
       "description": "30-second burn to lower perilune",
       "lunar_altitude": 15,
@@ -37,24 +39,64 @@
       "required_action": "verify_burn",
       "audio_ref": "nasa/doi_go.mp3",
       "timeline_cues": [{
-          "time": "101:17:31",
+          "time": "101:17:07",
+          "speaker": "Duke",
+          "text": "Eagle, Houston. It appeared to us when you're doing the P-52 maneuvering, the S-band— the High Gain went into the stop. Verify that both S-band breakers are in. Over."
+        },
+        {
+          "time": "101:17:23",
+          "speaker": "Aldrin",
+          "text": "Rog. I think I'd got it to 90.0 before it went there. The one on this side is in, and I'll check the other later."
+        },
+        {
+          "time": "101:17:29",
+          "speaker": "Duke",
+          "text": "Okay. Thank you, Buzz."
+        },
+        {
+          "time": "101:17:34",
           "speaker": "Flight",
           "text": "Gal, flight controllers, going around the horn, gonna go for DOI."
         },
         {
           "time": "101:17:38",
-          "speaker": "Retro",
-          "text": "Go."
+          "speaker": "Flight",
+          "text": "Retro?"
+        },
+        {
+          "time": "101:17:38",
+          "speaker": "Flight",
+          "text": "Gal."
         },
         {
           "time": "101:17:39",
-          "speaker": "FIDO",
+          "speaker": "Flight",
+          "text": "Fido?"
+        },
+        {
+          "time": "101:17:39",
+          "speaker": "Fido",
           "text": "Go."
         },
         {
           "time": "101:17:40",
-          "speaker": "Guidance",
+          "speaker": "Flight",
+          "text": "Guide?"
+        },
+        {
+          "time": "101:17:40",
+          "speaker": "Guide",
           "text": "Go, after P-52."
+        },
+        {
+          "time": "101:17:41",
+          "speaker": "Flight",
+          "text": "Barrage?"
+        },
+        {
+          "time": "101:17:42",
+          "speaker": "Flight",
+          "text": "Control?"
         },
         {
           "time": "101:17:43",
@@ -63,8 +105,18 @@
         },
         {
           "time": "101:17:43",
-          "speaker": "TELCOM",
+          "speaker": "Flight",
+          "text": "Telcom?"
+        },
+        {
+          "time": "101:17:43",
+          "speaker": "Telcom",
           "text": "Go."
+        },
+        {
+          "time": "101:17:44",
+          "speaker": "Flight",
+          "text": "GNC?"
         },
         {
           "time": "101:17:44",
@@ -73,18 +125,38 @@
         },
         {
           "time": "101:17:45",
+          "speaker": "Flight",
+          "text": "ECOM?"
+        },
+        {
+          "time": "101:17:45",
           "speaker": "ECOM",
+          "text": "Go."
+        },
+        {
+          "time": "101:17:45",
+          "speaker": "Flight",
+          "text": "Surgeon?"
+        },
+        {
+          "time": "101:17:46",
+          "speaker": "Surgeon",
           "text": "Go."
         },
         {
           "time": "101:17:48",
           "speaker": "Flight",
-          "text": "CAPCOM, we're go for DOI. We're gonna continue watching this P-52 here."
+          "text": "Okay."
         },
         {
-          "time": "101:17:55",
-          "speaker": "CAPCOM",
-          "text": "Eagle, Houston. You're go for DOI. Over."
+          "time": "101:17:48",
+          "speaker": "Flight",
+          "text": "Capcom, we're go for DOI, we're gonna continue watching this P-52 here."
+        },
+        {
+          "time": "101:36:14",
+          "speaker": "AGC/DSKY",
+          "text": "Program P63 start—DOI burn ignition."
         }
       ],
       "failure_state": {
@@ -98,11 +170,12 @@
         "description": "Braking phase program, used to kill horizontal velocity after DOI burn",
         "verb_noun": []
       }],
-      "get_stamp": "101:37:00"
+      "get_stamp": "101:36:14"
     },
     {
       "state": "powered_descent",
       "phase_name": "Powered Descent Initiation (PDI)",
+      "start_get": "102:45:40",
       "start_time": 1020,
       "description": "DPS ignition at 10% throttle",
       "lunar_altitude": 50000,
@@ -148,11 +221,12 @@
           "text": "Roger, go for powered descent."
         }
       ],
-      "get_stamp": "102:45:00"
+      "get_stamp": "102:33:04"
     },
     {
       "state": "braking_phase",
       "phase_name": "Braking Phase (P63)",
+      "start_get": "102:33:04",
       "start_time": 1080,
       "description": "Full throttle to kill horizontal velocity",
       "lunar_altitude": 33000,
@@ -163,7 +237,7 @@
       "audio_ref": "nasa/braking_phase.mp3",
       "failure_state": {
         "type": "GIMBAL_LOCK",
-        "condition": "pitch >12\u00b0 || yaw >12\u00b0",
+        "condition": "pitch >12° || yaw >12°",
         "audio_ref": "nasa/gimbal_lock.mp3",
         "historical_context": "Aldrin monitored ACA for corrections (104:02:25)"
       },
@@ -198,11 +272,12 @@
           "text": "We're picking up some horizontal velocity."
         }
       ],
-      "get_stamp": "103:40:00"
+      "get_stamp": "102:33:04"
     },
     {
       "state": "program_alarm_1202",
       "phase_name": "1202 Program Alarm",
+      "start_get": "102:38:22",
       "start_time": 1125,
       "description": "Computer overload at 33,500 ft",
       "lunar_altitude": 33500,
@@ -244,11 +319,12 @@
           "text": "Roger. We're go on that alarm."
         }
       ],
-      "get_stamp": "104:01:26"
+      "get_stamp": "102:38:22"
     },
     {
       "state": "approach_phase",
       "phase_name": "Approach Phase (P64)",
+      "start_get": "102:41:24",
       "start_time": 1200,
       "description": "Manual control at ~2,000 ft",
       "lunar_altitude": 2000,
@@ -286,19 +362,20 @@
       "timeline_cues": [{
           "time": "104:15:00",
           "speaker": "CAPCOM",
-          "text": "Eagle, Houston. You\u2019re go at 2,000 feet."
+          "text": "Eagle, Houston. You’re go at 2,000 feet."
         },
         {
           "time": "104:15:25",
           "speaker": "Armstrong",
-          "text": "Forward velocity\u2019s a little high. Looking for a good spot."
+          "text": "Forward velocity’s a little high. Looking for a good spot."
         }
       ],
-      "get_stamp": "104:14:00"
+      "get_stamp": "102:41:24"
     },
     {
       "state": "program_alarm_1201",
       "phase_name": "1201 Program Alarm",
+      "start_get": "102:42:05",
       "start_time": 1260,
       "description": "Second computer overload at 1,600 ft",
       "lunar_altitude": 1600,
@@ -340,11 +417,12 @@
           "text": "Roger. We're go. Same as before."
         }
       ],
-      "get_stamp": "104:16:00"
+      "get_stamp": "102:42:05"
     },
     {
       "state": "final_descent",
       "phase_name": "Final Descent (P66)",
+      "start_get": "104:17:00",
       "start_time": 1320,
       "description": "Manual landing (104:17:00 GET)",
       "lunar_altitude": 500,
@@ -400,6 +478,7 @@
     {
       "state": "landed",
       "phase_name": "Lunar Touchdown",
+      "start_get": "104:17:38",
       "start_time": 1380,
       "description": "Contact light at 104:17:39 GET",
       "lunar_altitude": 0,

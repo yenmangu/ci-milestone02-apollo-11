@@ -55,6 +55,7 @@ const createKeypadStateManager = displayInterface => {
 			});
 			state.mode = null;
 			state.buffer = '';
+			pushButtonEmitter.emit('finalise', state);
 		},
 		reset() {
 			console.log('From keypadStateManager: reset selected');
@@ -65,7 +66,7 @@ const createKeypadStateManager = displayInterface => {
 			state.buffer = '';
 			state.polarity = null;
 			displayInterface.clearVerbNoun();
-			pushButtonEmitter.emit('reset');
+			pushButtonEmitter.emit('reset', state);
 		},
 
 		getState() {

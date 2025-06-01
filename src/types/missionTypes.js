@@ -137,6 +137,26 @@ export const AppStateKeys = {
  */
 
 /**
+ * @typedef {Object} VerbNounRuntime
+ * @property {string} verb
+ * @property {string} noun
+ * @property {string} key
+ * @property {boolean} complete
+ */
+
+/**
+ * @typedef {Object} ProgramRuntime
+ * @property {string} program
+ * @property {boolean} complete
+ */
+
+/**
+ * @typedef {Object} DSKYActionRuntime
+ * @property {VerbNounRuntime[]} verbNoun
+ * @property {ProgramRuntime[]} program
+ */
+
+/**
  * @typedef {Object} FailureState
  * @property {string} type
  * @property {string} condition

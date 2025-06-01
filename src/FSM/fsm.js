@@ -106,6 +106,7 @@ export class FSM {
 					'State not yet created. creating now. Prev Telemetry: ',
 					this.previousTelemetry
 				);
+				console.log('Setting previous telemetry');
 
 				state.setPreviousTelemetry(this.previousTelemetry);
 			}

@@ -1,6 +1,7 @@
 import { AppStateKeys } from '../../../src/types/missionTypes.js';
 import { DSKYInterface } from '../../DSKY/dskyInterface.js';
 import { GameController } from '../../game/gameController.js';
+import calculateDeltas from '../../util/calculateDeltas.js';
 import { MissionStateBase } from '../missionStateBase.js';
 import { IdleController } from './idleController.js';
 /**
@@ -26,6 +27,10 @@ export class IdleState extends MissionStateBase {
 		this.controller = stateController;
 		this.key = key;
 
+		this.prevTelemetry = null;
+		this.fuel = undefined;
+		this.altitude = undefined;
+
 		this.onAllCompleted = () => {
 			this.game.fsm.transitionTo(AppStateKeys.descent_orbit);
 		};
@@ -36,26 +41,20 @@ export class IdleState extends MissionStateBase {
 	 * @param {MissionPhase} phase
 	 */
 	onEnter(phase) {
-		this.controller.onEnter().then(() => {
-			// this.requiredActions = ;
-			this.actionsCompleted.clear();
+		this.controller.onEnter();
+		// this.requiredActions = ;
+		this.actionsCompleted.clear();
 
-			this.bindTickHandler();
+		this.bindTickHandler();
 
-			this.watchUntilComplete(
-				event => {
-					console.log('event: ', event);
-				},
-				() => {
-					console.log('Idle phase completed');
-					this.onAllCompleted();
-				}
-			);
-		});
+		this.prevTelemetry = this.previousTelemetry || null;
+		this.controller.updateDisplay(this.getTelemetrySnapshot());
+		this.controller.updatePhase(this.getTelemetrySnapshot().phase_name);
 	}
 
 	onTickUpdate(deltaTimeSeconds, getFormatted) {
 		const currentGETSeconds = this.lastTick;
+
 		this.checkTimelineCues(currentGETSeconds);
 	}
 

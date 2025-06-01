@@ -24,6 +24,10 @@ export class DescentOrbitController {
 		this.dsky.hud.updateTelemetry(diff);
 	}
 
+	updatePhase(phaseName) {
+		this.dsky.hud.updatePhase(phaseName);
+	}
+
 	updateDisplay(telemetry) {
 		this.dsky.hud.updateHud(telemetry);
 	}

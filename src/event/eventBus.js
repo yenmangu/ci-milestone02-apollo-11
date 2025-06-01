@@ -6,6 +6,7 @@ const indicatorLightsEmitter = new EventEmitter();
 const stateEmitter = new EventEmitter();
 const actionEmitter = new EventEmitter();
 const phaseNameEmitter = new EventEmitter();
+const agcEmitter = new EventEmitter();
 
 // Dev emitter
 const devLightsEmitter = new EventEmitter();
@@ -18,6 +19,7 @@ export {
 	stateEmitter,
 	actionEmitter,
 	phaseNameEmitter,
+	agcEmitter,
 	devLightsEmitter,
 	devNavEmitter
 };

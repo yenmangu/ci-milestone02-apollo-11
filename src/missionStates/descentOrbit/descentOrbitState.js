@@ -20,9 +20,7 @@ export class DescentOrbitState extends MissionStateBase {
 	constructor(gameController, dskyInterface, stateController, key) {
 		super(gameController, dskyInterface, key);
 		this.controller = stateController;
-		this.onAllCompleted = () => {
-			this.game.fsm.transitionTo(AppStateKeys.powered_descent);
-		};
+
 		this.fuel = undefined;
 		this.altitude = undefined;
 		this.prevTelemetry = null;
@@ -34,19 +32,23 @@ export class DescentOrbitState extends MissionStateBase {
 	onEnter() {
 		console.log('Sub class required actions: ', this.requiredActions);
 		this.watchUntilComplete(
-			event => this.handleActionEvent(event),
+			event => {
+				console.log('tracing event: ', event);
+				this.handleActionEvent(event);
+			},
 			event => {
 				console.log('Descent Orbit actions completed');
 				this.game.fsm.transitionTo(AppStateKeys.powered_descent);
 			}
 		);
-		this.controller.view.showPhaseIntro();
+
 		this.controller.view.enableUserInput();
+
 		this.prevTelemetry = this.previousTelemetry || null;
 		this.controller.updateDisplay(this.prevTelemetry);
-		console.log('onEnter: ', this.previousTelemetry);
-		console.log('onEnter: ', this.prevTelemetry);
+		this.controller.updatePhase(this.getTelemetrySnapshot().phase_name);
 		this.bindTickHandler();
+		this.bindKeypadStateHandler();
 	}
 
 	onTickUpdate(deltaTimeMs) {
@@ -83,6 +85,10 @@ export class DescentOrbitState extends MissionStateBase {
 		this.controller.updateRates({ altitudeDelta, velocityDelta, fuelDelta });
 		const currentGETSeconds = this.lastTick;
 		this.checkTimelineCues(currentGETSeconds);
+	}
+
+	onKeypadUpdate(keypadState) {
+		this.checkDSKYStatus(keypadState);
 	}
 
 	computeDescent(deltaTime) {

@@ -20,6 +20,10 @@
 	"editor.fontFamily": "SF Mono",
 	"autoOpenPreviewPanel.extensionEnabled": true,
 	"autoOpenPreviewPanel.openPreviewToSide": true,
+
+	// Force all auto-imports—JSDoc or real—to be relative
 	"javascript.preferences.importModuleSpecifier": "relative",
 	"javascript.preferences.importModuleSpecifierEnding": "js"
+	// "typescript.preferences.importModuleSpecifier": "relative",
+	// "typescript.preferences.importModuleSpecifierEnding": "js"
 }

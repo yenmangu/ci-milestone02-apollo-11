@@ -43,7 +43,7 @@ export class KeypadController {
 			btn.addEventListener('click', e => {
 				e.preventDefault();
 				const target = /** @type {HTMLButtonElement} */ (e.currentTarget);
-				console.log('Button clicked: ', e.currentTarget);
+				// console.log('Button clicked: ', e.currentTarget);
 				handler(target.dataset.dsky);
 			});
 		});

@@ -28,7 +28,6 @@ export class DevTools {
 		this.gameController = gameController;
 		this.nonNavigableStates = ['FAILED', 'PAUSED'];
 
-		this.fsm.transitionTo(AppStateKeys.idle);
 		this.devPanel = this.showDevPanel();
 		/**
 		 * @type {import('../types/missionTypes.js').AppStateKey}
@@ -69,7 +68,7 @@ export class DevTools {
 	subscribe() {
 		this.stateEmitter.subscribe(event => {
 			if (this.event !== event) {
-				console.log('Event chage detected: ', event);
+				// console.trace('Event chage detected: ', event);
 				this.event = event;
 
 				this.setStateName();
@@ -77,7 +76,7 @@ export class DevTools {
 		});
 	}
 	setStateName() {
-		console.log('this.fsm.currentState.stateKey: ', this.fsm.currentState.stateKey);
+		// console.log('this.fsm.currentState.stateKey: ', this.fsm.currentState.stateKey);
 		const currentStateKey = Object.entries(AppStates).find(([key]) => {
 			// console.log('key: ', key);
 			return key === this.fsm.currentState.stateKey;
@@ -88,7 +87,7 @@ export class DevTools {
 				/** @type {import('../types/missionTypes.js').AppStateKey} */ (
 					currentStateKey
 				);
-			console.log('currentStateKey found: ', currentStateKey);
+			// console.log('currentStateKey found: ', currentStateKey);
 			this.currentStateIndex = this.factories.findIndex(([key]) => {
 				return key === currentStateKey;
 			});

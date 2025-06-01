@@ -25,9 +25,14 @@ export class IdleController {
 
 		this.view.showElements(this.uiElements);
 		// return this.view.showPhaseIntro();
-		return new Promise(resolve => {
-			resolve();
-		});
+	}
+
+	updateDisplay(telemetry) {
+		this.dsky.hud.updateHud(telemetry);
+	}
+
+	updatePhase(phaseName) {
+		this.dsky.hud.updatePhase(phaseName);
 	}
 
 	async startIntro() {

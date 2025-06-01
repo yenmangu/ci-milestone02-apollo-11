@@ -36,12 +36,12 @@ export class HudController {
 			const writableValue = typeof value === 'string' ? value : value.toString();
 			this.telemetry[key] = writableValue;
 
-			if (key === TelemetryKeys.state || key === TelemetryKeys.getStamp) {
+			if (
+				key === TelemetryKeys.state ||
+				key === TelemetryKeys.getStamp ||
+				key === TelemetryKeys.phaseName
+			) {
 				continue;
-			}
-
-			if (key === TelemetryKeys.phaseName) {
-				this.hudView.setPhase(writableValue);
 			}
 
 			if (key !== TelemetryKeys.altitudeUnits) {
@@ -51,6 +51,11 @@ export class HudController {
 			}
 		}
 	}
+
+	updatePhase(phaseName) {
+		this.hudView.setPhase(phaseName);
+	}
+
 	updateTelemetry(rates) {}
 
 	displayTranscript(message) {

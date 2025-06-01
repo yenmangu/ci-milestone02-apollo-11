@@ -17,6 +17,8 @@ import {
 import { cast } from '../util/cast.js';
 
 export class DevTools {
+	/** @type {number} */
+	jumpSeconds;
 	/**
 	 *
 	 * @param {DevParams} param0
@@ -106,6 +108,22 @@ export class DevTools {
 		this.resetButton.addEventListener('click', e => {
 			this.handleReset();
 		});
+
+		this.secondsInput.addEventListener('change', e => {
+			e.preventDefault();
+			this.jumpSeconds = 0;
+			this.jumpSeconds = this.secondsInput.valueAsNumber;
+			this.jumpButton.innerText = `Jump ${this.jumpSeconds}s`;
+		});
+		this.jumpButton.addEventListener('click', e => {
+			e.preventDefault();
+			this.handleJump();
+		});
+	}
+	handleJump() {
+		console.log(`Jumping by ${this.jumpSeconds}s`);
+
+		this.gameController.clock.jumpBy(this.jumpSeconds);
 	}
 	handleReset() {
 		this.fsm.transitionTo(AppStateKeys.pre_start);
@@ -117,28 +135,42 @@ export class DevTools {
 		this.prevButton = cast(document.querySelector('button#prevBtn'));
 		this.nextButton = cast(document.querySelector('button#nextBtn'));
 		this.resetButton = cast(document.querySelector('button#resetBtn'));
+		/** @type  {HTMLInputElement} */
+		this.secondsInput = cast(document.querySelector('input#seconds'));
+		/** @type {HTMLButtonElement} */
+		this.jumpButton = document.querySelector('button#jump');
 	}
 
 	showDevPanel() {
 		const devPanel = document.createElement('section');
 		devPanel.innerHTML = `
-				<div class="container-fluid text-center">
+				<div class="container-fluid text-center dev-panel">
 				<div class="row">
 					<div class="col-6">Dev Panel</div>
 					<div class="col-6" id="stateName"></div>
 				</row>
-					<div class="row">
-						<div class="col-4">
+					<div class="row justify-content-evenly">
+						<div class="col-3">
 							<button id="prevBtn"
 											class="btn btn-primary">Prev</button>
 						</div>
-						<div class="col-4">
+						<div class="col-3">
 							<button id="resetBtn"
 											class="btn btn-primary">Reset</button>
 						</div>
-						<div class="col-4">
+
+						<div class="col-3">
 							<button id="nextBtn"
 											class="btn btn-primary">Next</button>
+						</div>
+					</div>
+					<div class="row justify-content-center mt-1">
+					<div class="col-2 align-self-center">
+							<input id="seconds" type="number" />
+						</div>
+						<div class="col-2">
+							<button id="jump"
+											class="btn btn-primary">Jump</button>
 						</div>
 					</div>
 				</div>

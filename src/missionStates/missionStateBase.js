@@ -37,6 +37,7 @@ import { GameController } from '../game/gameController.js';
 import { actionKeyFor } from '../util/actionKey.js';
 import getSecondsFromGET from '../util/getSecondsFromGet.js';
 import watchUntilComplete from '../util/watchUntilComplete.js';
+import { Modal } from '../modal/modalView.js';
 
 /**
  * Creates the MissionStateBase class,
@@ -97,6 +98,8 @@ export class MissionStateBase {
 		/** @type {import('../types/missionTypes.js').DSKYActions} */ this.actionMetaData =
 			[];
 
+		this.modal = new Modal();
+
 		if (!MissionStateBase._phaseGetMap) {
 			const map = /** @type {PhaseGetMap} */ (this.buildStartGetMap());
 			Object.freeze(map);
@@ -107,7 +110,44 @@ export class MissionStateBase {
 		 * Expose the frozen map on every instance.
 		 */
 		this.phaseGetMap = MissionStateBase._phaseGetMap;
-		console.log('PhaseMap: ', MissionStateBase._phaseGetMap);
+	}
+
+	/**
+	 *
+	 * @param {MissionPhase} phase
+	 * 	JSON data for this phase or undefined if missing.
+	 */
+	onEnter(phase) {
+		throw new Error('Subclass must implement onEnter()');
+	}
+
+	/**
+	 *
+	 * @protected
+	 */
+	watchUntilComplete(onAction, onComplete) {
+		this.actionWatcher = watchUntilComplete(onAction, onComplete);
+	}
+
+	/**
+	 *
+	 * @param {string} actionKey
+	 */
+	markActionComplete(actionKey) {
+		this.actionsCompleted.add(actionKey);
+		const allComplete = [...this.requiredActions].every(action =>
+			this.actionsCompleted.has(action)
+		);
+
+		if (allComplete) {
+			// Ignored because this is an optional hook the subclass can implement
+			const isRunning = this.game.clock.pause();
+
+			this.modal.waitForNextClick().then(() => {
+				this.onAllCompleted?.();
+				this.game.clock.resume;
+			});
+		}
 	}
 
 	/**
@@ -204,6 +244,7 @@ export class MissionStateBase {
 	 * Fetches the JSON phase and delegates to onEnter.
 	 */
 	enter() {
+		// console.trace('enter being called on : ', this.stateKey);
 		if (!this.game.timeLine?.getPhase) {
 			console.warn(
 				`Skipping enter logic: getPhase not available for state ${this.stateKey}`
@@ -215,7 +256,6 @@ export class MissionStateBase {
 		const phase = this.game.timeLine.getPhase(this.stateKey);
 
 		if (!phase) {
-			console.log('Non Mission Critical state found');
 		} else {
 			this.currentPhase = phase;
 			this.updatePhaseHeading(phase.phase_name);
@@ -244,7 +284,6 @@ export class MissionStateBase {
 	}
 
 	updatePhaseHeading(phaseName) {
-		console.log('PhaseName: ', phaseName);
 		this.phaseNameEmitter.emit('phaseName', phaseName);
 
 		if (this.phaseHeadingEl) {
@@ -310,7 +349,6 @@ export class MissionStateBase {
 		}
 
 		if (required_action) {
-			console.log('required action found: ', required_action);
 			if (required_action !== 'none') {
 				this.requiredActions.add(required_action);
 			}
@@ -356,9 +394,6 @@ export class MissionStateBase {
 				}
 			}
 		}
-
-		console.log('requiredActions in super: ', this.requiredActions);
-		console.log('dskyActions in super: ', this.dskyActions);
 	}
 
 	checkProgramStatus(program) {}
@@ -399,40 +434,6 @@ export class MissionStateBase {
 		const { speaker, text, time } = cue;
 		const message = [`${time} ${speaker}: ${text}`];
 		this.dskyInterface.hud.displayTranscript(message);
-	}
-
-	/**
-	 *
-	 * @param {MissionPhase} phase
-	 * 	JSON data for this phase or undefined if missing.
-	 */
-	onEnter(phase) {
-		throw new Error('Subclass must implement onEnter()');
-	}
-
-	/**
-	 *
-	 * @protected
-	 */
-	watchUntilComplete(onAction, onComplete) {
-		this.actionWatcher = watchUntilComplete(onAction, onComplete);
-	}
-
-	/**
-	 *
-	 * @param {string} actionKey
-	 */
-	markActionComplete(actionKey) {
-		this.actionsCompleted.add(actionKey);
-		const allComplete = [...this.requiredActions].every(action =>
-			this.actionsCompleted.has(action)
-		);
-
-		if (allComplete) {
-			// Ignored because this is an optional hook the subclass can implement
-			this.onAllCompleted?.();
-			this.stateEmitter.emit('actions', 'complete');
-		}
 	}
 
 	onExit() {

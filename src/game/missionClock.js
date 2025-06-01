@@ -119,6 +119,7 @@ export class MissionClock {
 			cancelAnimationFrame(this.frame);
 			this.frame = null;
 		}
+		return this.isRunning;
 	}
 
 	resume() {

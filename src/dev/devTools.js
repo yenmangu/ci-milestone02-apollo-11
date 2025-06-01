@@ -79,7 +79,7 @@ export class DevTools {
 	setStateName() {
 		console.log('this.fsm.currentState.stateKey: ', this.fsm.currentState.stateKey);
 		const currentStateKey = Object.entries(AppStates).find(([key]) => {
-			console.log('key: ', key);
+			// console.log('key: ', key);
 			return key === this.fsm.currentState.stateKey;
 		})?.[0];
 

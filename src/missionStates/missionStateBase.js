@@ -10,13 +10,28 @@
 /**
  * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
  * @typedef {import('src/types/missionTypes.js').AppStateKey} StateKey
+ * @typedef {import('../types/missionTypes.js').DSKYActionItem } DSKYActionItem
+ * @typedef {DSKYActionItem[]} DSKYActions
+ * @typedef {import('../types/dskyTypes.js').KeypadState} KeypadState
  * @typedef {import('src/types/missionTypes.js').TimelineCueRuntime} TimelineCueRuntime
+ */
+
+/**
+ * @typedef {import('../types/missionTypes.js').DSKYActionRuntime} DSKYActionRuntime
+ * @typedef {import('../types/missionTypes.js').VerbNounRuntime[]} VerbNounRuntimeArray
+ * @typedef {import('../types/missionTypes.js').ProgramRuntime[]} ProgramRuntimeArray
+ *
  */
 
 import { AppStateKeys } from '../types/missionTypes.js';
 
 import { DSKYInterface } from '../DSKY/dskyInterface.js';
-import { tickEmitter, stateEmitter, phaseNameEmitter } from '../event/eventBus.js';
+import {
+	tickEmitter,
+	stateEmitter,
+	phaseNameEmitter,
+	pushButtonEmitter
+} from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
 import { actionKeyFor } from '../util/actionKey.js';
@@ -53,13 +68,14 @@ export class MissionStateBase {
 		/** @type {MissionPhase} */ this.currentPhase = null;
 		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
 		/** @type {EventEmitter} */ this.phaseNameEmitter = phaseNameEmitter;
-		/** @type {Object[]} */ this.dskyActions = [];
+		/** @type {DSKYActionRuntime | null} */ this.dskyActions = null;
 		/** @type {Set<string>} */ this.requiredActions = new Set();
 		/** @type {Set<string>} */ this.actionsCompleted = new Set();
 		/** @type {TimelineCueRuntime[]} */ this.timelineCues = [];
 		this.actionWatcher = null;
 		this.phaseHeadingEl = document.getElementById('phaseName');
-
+		this.keypadEmitter = pushButtonEmitter;
+		/** @type {KeypadState | null} */ this.keypadState = null;
 		this.tickEmitter = tickEmitter;
 		this.lastTick = null;
 		this.tickHandler = null;
@@ -78,7 +94,8 @@ export class MissionStateBase {
 		this.onAllCompleted = undefined;
 		this.previousTelemetry = null;
 		/** @type {string[]} */ this.actionKeys = [];
-		this.actionMetaData = {};
+		/** @type {import('../types/missionTypes.js').DSKYActions} */ this.actionMetaData =
+			[];
 
 		if (!MissionStateBase._phaseGetMap) {
 			const map = /** @type {PhaseGetMap} */ (this.buildStartGetMap());
@@ -160,6 +177,26 @@ export class MissionStateBase {
 			this.tickHandler = null;
 		}
 	}
+
+	bindKeypadStateHandler() {
+		/**
+		 *
+		 * @param {import('../types/dskyTypes.js').KeypadState} state
+		 */
+		this.keypadStateHandler = state => {
+			if (this.keypadState) {
+				this.keypadState = null;
+			}
+			this.keypadState = state;
+
+			this.onKeypadUpdate(state);
+		};
+		this.keypadEmitter.on('finalise', this.keypadStateHandler);
+	}
+
+	onKeypadUpdate(state) {
+		console.warn('Subclass does not implement onKeypadUpdate()');
+	}
 	// Abstract Methods all child classes must implement
 
 	/**
@@ -184,8 +221,26 @@ export class MissionStateBase {
 			this.updatePhaseHeading(phase.phase_name);
 			this.onMissionCritical(phase);
 			this.game.clock.jumpTo(this.phaseGetMap[this.stateKey].start_get);
+			this.resetCues();
+			this.resetDskyActions();
 		}
 		this.onEnter(phase);
+	}
+	resetDskyActions() {
+		if (this.dskyActions) {
+			this.dskyActions.program.forEach(program => (program.complete = false));
+			this.dskyActions.verbNoun.forEach(vn => (vn.complete = false));
+		}
+	}
+	resetCues() {
+		if (this.timelineCues) {
+			this.timelineCues.forEach(cue => {
+				if (cue.shown) {
+					cue.shown = false;
+				}
+			});
+		}
+		this.dskyInterface.hud.displayTranscript('');
 	}
 
 	updatePhaseHeading(phaseName) {
@@ -260,7 +315,34 @@ export class MissionStateBase {
 				this.requiredActions.add(required_action);
 			}
 		}
-		if (dsky_actions) {
+		if (dsky_actions.length) {
+			// Clear any remaining actions
+			this.dskyActions = null;
+			/** @type {VerbNounRuntimeArray} */ const verbNoun = [];
+			/** @type {ProgramRuntimeArray} */ const program = [];
+			dsky_actions.forEach((action, index) => {
+				if (action.program) {
+					this.requiredActions.add(action.program);
+					program.push({
+						program: action.program,
+						complete: false
+					});
+				}
+				if (Array.isArray(action.verb_noun)) {
+					for (const pair of action.verb_noun) {
+						const key = actionKeyFor(pair.verb, pair.noun);
+						verbNoun.push({
+							verb: pair.verb,
+							noun: pair.noun,
+							key: key,
+							complete: false
+						});
+						this.requiredActions.add(key);
+					}
+				}
+			});
+			this.dskyActions = { verbNoun, program };
+
 			this.actionMetaData = dsky_actions;
 			for (const action of dsky_actions) {
 				if (action.program) {
@@ -277,6 +359,23 @@ export class MissionStateBase {
 
 		console.log('requiredActions in super: ', this.requiredActions);
 		console.log('dskyActions in super: ', this.dskyActions);
+	}
+
+	checkProgramStatus(program) {}
+
+	/**
+	 *
+	 * @param {KeypadState} state
+	 */
+	checkDSKYStatus(state) {
+		for (const action of this.dskyActions.verbNoun) {
+			if (!action.complete) {
+				if (state.noun === action.noun && state.verb === action.verb) {
+					action.complete = true;
+					this.markActionComplete(action.key);
+				}
+			}
+		}
 	}
 
 	checkTimelineCues(currentGETSeconds) {

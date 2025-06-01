@@ -44,10 +44,11 @@ const createKeypadStateManager = displayInterface => {
 
 		finalise() {
 			if (state.mode === 'verb') {
-				state.verb = state.buffer;
+				state.verb = state.buffer !== '' ? state.buffer : '00';
 			} else if (state.mode === 'noun') {
-				state.noun = state.buffer;
+				state.noun = state.buffer !== '' ? state.buffer : '00';
 			}
+			logState('finalise');
 			displayInterface.bulkWrite({
 				verb: state.verb ?? '00',
 				noun: state.noun ?? '00'

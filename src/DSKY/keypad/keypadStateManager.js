@@ -22,10 +22,14 @@ const createKeypadStateManager = displayInterface => {
 	};
 
 	const manager = {
+		/** @param {import('../../types/dskyTypes.js').Mode} mode  */
 		setMode(mode) {
 			console.log('Invoked set mode');
-
 			state.mode = mode;
+			if (state.mode === 'noun') {
+				state.verb = state.buffer;
+			}
+
 			state.buffer = '';
 			logState('setMode');
 			pushButtonEmitter.emit(mode, 'enable');
@@ -66,7 +70,7 @@ const createKeypadStateManager = displayInterface => {
 			state.buffer = '';
 			state.polarity = null;
 			displayInterface.clearVerbNoun();
-			pushButtonEmitter.emit('reset', state);
+			pushButtonEmitter.emit('keypad', state);
 		},
 
 		getState() {

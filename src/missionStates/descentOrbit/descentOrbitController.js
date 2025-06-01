@@ -19,16 +19,12 @@ export class DescentOrbitController {
 		// this.tickHandler
 	}
 
-	updateRates({ altitudeRate, velocityRate, fuelRate }) {
-		this.view.updateTelemetry({ altitudeRate, velocityRate, fuelRate });
-		this.dsky.hudController.updateTelemetry({
-			altitudeRate,
-			velocityRate,
-			fuelRate
-		});
+	updateRates(diff) {
+		this.view.updateTelemetry(diff);
+		this.dsky.hud.updateTelemetry(diff);
 	}
 
-	updateDisplay(deltaTime) {
-		throw new Error('Method not implemented.');
+	updateDisplay(telemetry) {
+		this.dsky.hud.updateHud(telemetry);
 	}
 }

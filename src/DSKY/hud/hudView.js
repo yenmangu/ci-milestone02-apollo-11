@@ -31,8 +31,8 @@ export class HudView {
 		this.hudMap.transcript.innerText = value;
 	}
 
-	setUnits(altitude_units) {
-		this.units = altitude_units;
+	setUnits(altitudeUnits) {
+		this.units = altitudeUnits;
 		this.hudMap.altitude_units.innerText = this.units;
 	}
 

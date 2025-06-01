@@ -26,6 +26,9 @@ export class MissionClock {
 		return this.elapsedMissionTime + realDelta * this.timeScale;
 	}
 
+	/**
+	 * startGETSeconds + secondsElapsed
+	 */
 	get currentGETSeconds() {
 		return this.startGetSeconds + this.secondsElapsed;
 	}
@@ -133,9 +136,19 @@ export class MissionClock {
 		this.elapsedMissionTime = 0;
 	}
 
+	jumpBy(seconds) {
+		console.log(`[DEV]: jumping by ${seconds}s`);
+
+		const target = this.currentGETSeconds + seconds;
+		const newElapsedTime = target - this.startGetSeconds;
+
+		this.jumpToTES(newElapsedTime);
+	}
+
 	jumpTo(targetGET) {
-		const targetSeconds = getSecondsFromGET(targetGET);
-		this.jumpToTES(targetSeconds);
+		const targetAbsoluteSeconds = getSecondsFromGET(targetGET);
+		const newElapsedTime = targetAbsoluteSeconds - this.startGetSeconds;
+		this.jumpToTES(newElapsedTime);
 	}
 
 	/**

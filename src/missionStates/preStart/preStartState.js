@@ -26,6 +26,7 @@ export class PreStartState extends MissionStateBase {
 		this.stateController.onExit();
 	}
 	_onUserStarted() {
-		this.game.fsm.transitionTo(AppStateKeys.idle);
+		const idleKey = AppStateKeys.idle;
+		this.game.fsm.transitionTo(idleKey);
 	}
 }

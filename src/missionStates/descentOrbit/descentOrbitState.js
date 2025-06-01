@@ -81,6 +81,8 @@ export class DescentOrbitState extends MissionStateBase {
 		this.prevTelemetry = currentTelemetry;
 
 		this.controller.updateRates({ altitudeDelta, velocityDelta, fuelDelta });
+		const currentGETSeconds = this.lastTick;
+		this.checkTimelineCues(currentGETSeconds);
 	}
 
 	computeDescent(deltaTime) {
@@ -96,7 +98,7 @@ export class DescentOrbitState extends MissionStateBase {
 			return;
 		}
 		if (this.requiredActions.has(event.action)) {
-			this.markActionComplete(event.action);
+			if (event.action === 'verify_burn') this.markActionComplete(event.action);
 		}
 	}
 

@@ -1,7 +1,5 @@
 export class DescentOrbitView {
-	updateTelemetry(rates) {
-		throw new Error('Method not implemented.');
-	}
+	updateTelemetry(rates) {}
 	enableUserInput() {
 		console.log('Enabling user input');
 	}

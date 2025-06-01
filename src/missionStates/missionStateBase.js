@@ -13,7 +13,8 @@
  * @typedef {import('src/types/missionTypes.js').TimelineCueRuntime} TimelineCueRuntime
  */
 
-import { AppStateKeys } from 'src/types/missionTypes.js';
+import { AppStateKeys } from '../types/missionTypes.js';
+
 import { DSKYInterface } from '../DSKY/dskyInterface.js';
 import { tickEmitter, stateEmitter, phaseNameEmitter } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
@@ -84,6 +85,12 @@ export class MissionStateBase {
 			Object.freeze(map);
 			MissionStateBase._phaseGetMap = map;
 		}
+		/**
+		 * @type {PhaseGetMap}
+		 * Expose the frozen map on every instance.
+		 */
+		this.phaseGetMap = MissionStateBase._phaseGetMap;
+		console.log('PhaseMap: ', MissionStateBase._phaseGetMap);
 	}
 
 	/**
@@ -95,8 +102,8 @@ export class MissionStateBase {
 		const map = {};
 		for (const key of Object.values(AppStateKeys)) {
 			const phase = this.game.timeLine.getPhase(key);
-			if (phase && typeof phase.get_stamp === 'string') {
-				const entry = { start_get: phase.get_stamp };
+			if (phase && typeof phase.start_get === 'string') {
+				const entry = { start_get: phase.start_get };
 				Object.freeze(entry);
 				map[key] = entry;
 			}
@@ -176,6 +183,7 @@ export class MissionStateBase {
 			this.currentPhase = phase;
 			this.updatePhaseHeading(phase.phase_name);
 			this.onMissionCritical(phase);
+			this.game.clock.jumpTo(this.phaseGetMap[this.stateKey].start_get);
 		}
 		this.onEnter(phase);
 	}

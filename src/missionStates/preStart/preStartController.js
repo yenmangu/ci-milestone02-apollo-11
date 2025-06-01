@@ -44,13 +44,9 @@ export class PreStartController {
 	}
 
 	onUserStarted() {
+		console.log('controller pre start onUserStarted invoked');
 		this.view.onStart();
-		// console.log('this.gameController: ', this.gameController);
-		// console.log('this.gameController.fsm: ', this.gameController?.fsm);
 
-		// console.log('Event captured: ', event);
-		// console.log('Starting simulation with key: ', MissionStatesKeys.idle);
-		// Check for any state changes
 		this.gameController.fsm.transitionTo(AppStateKeys.idle);
 	}
 	onExit() {

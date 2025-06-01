@@ -24,6 +24,7 @@ export class IdleState extends MissionStateBase {
 		 * @type {IdleController}
 		 */
 		this.controller = stateController;
+		this.key = key;
 
 		this.onAllCompleted = () => {
 			this.game.fsm.transitionTo(AppStateKeys.descent_orbit);
@@ -39,6 +40,8 @@ export class IdleState extends MissionStateBase {
 			// this.requiredActions = ;
 			this.actionsCompleted.clear();
 
+			this.bindTickHandler();
+
 			this.watchUntilComplete(
 				event => {
 					console.log('event: ', event);
@@ -49,6 +52,11 @@ export class IdleState extends MissionStateBase {
 				}
 			);
 		});
+	}
+
+	onTickUpdate(deltaTimeSeconds, getFormatted) {
+		const currentGETSeconds = this.lastTick;
+		this.checkTimelineCues(currentGETSeconds);
 	}
 
 	exit() {

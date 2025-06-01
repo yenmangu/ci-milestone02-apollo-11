@@ -147,6 +147,7 @@ export const AppStateKeys = {
 /**
  * @typedef {Object} MissionPhase
  * @property {string} state
+ * @property {string} start_get
  * @property {number} start_time
  * @property {string} phase_name
  * @property {string} description

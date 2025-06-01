@@ -24,7 +24,10 @@ export class IdleController {
 		console.log('on idle enter');
 
 		this.view.showElements(this.uiElements);
-		return this.view.showPhaseIntro();
+		// return this.view.showPhaseIntro();
+		return new Promise(resolve => {
+			resolve();
+		});
 	}
 
 	async startIntro() {

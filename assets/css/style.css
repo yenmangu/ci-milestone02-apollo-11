@@ -146,7 +146,7 @@ header {
 	color: #00ff00;
 	font-family: 'Courier New', Courier, monospace;
 	text-shadow: 0 0 10px #00ff00;
-
+	min-height: 360px;
 	padding: 1rem;
 	user-select: none;
 	max-width: 100%;
@@ -206,7 +206,7 @@ header {
 .hud-item dd {
 	margin: 0;
 	font-variant-numeric: tabular-nums;
-	font-size: 1.1rem;
+	font-size: 1rem;
 	border-left: 1px solid #00ff00;
 	padding-left: 0.5rem;
 	display: flex;
@@ -220,6 +220,10 @@ header {
 	opacity: 0.8;
 	border-left: none;
 	padding-left: 0;
+}
+
+#hud-transcript {
+	font-size: 0.8rem;
 }
 
 /* Optional: blinking effect for critical values */
@@ -395,4 +399,13 @@ span[id^='polarity'] {
 		flex: 1 1 100%;
 		min-width: auto;
 	}
+}
+
+/* Dev Panel Styles */
+
+.dev-panel input {
+	width: 4rem;
+}
+.dev-panel button.btn {
+	text-wrap: nowrap;
 }

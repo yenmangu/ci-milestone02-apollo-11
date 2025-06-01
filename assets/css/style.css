@@ -71,7 +71,7 @@ section {
 
 .seven-segment {
 	font-family: 'dseg7-mini', sans-serif;
-	font-size: 1.4rem;
+	font-size: 1rem;
 	font-weight: bold;
 	font-style: normal;
 	text-align: center;
@@ -259,6 +259,7 @@ header {
 	flex-wrap: nowrap;
 	gap: 0.5em;
 	background-color: rgba(var(--dsky-display-bg-values), 1);
+	font-size: 0.8rem;
 }
 
 .light.yellow {
@@ -305,11 +306,11 @@ button.btn.pressed {
 }
 
 .row.verb-noun {
-	height: 2.2rem;
+	height: 1.6rem;
 }
 
 span[id^='register_'] {
-	height: 1.6rem;
+	height: 1rem;
 }
 
 [class^='col-'].polarity {
@@ -318,7 +319,7 @@ span[id^='register_'] {
 	color: var(--dsky-display-blue);
 	padding: 0;
 	/* line-height: normal; */
-	font-size: 1.6rem;
+	font-size: 1rem;
 	/* padding-left: 6px; */
 	justify-content: center;
 	align-items: center;

@@ -1,5 +1,6 @@
 /**
- * @typedef {import('../../types/telemetryTypes.js').Telemetry}Telemetry
+ * @typedef {import('../../types/telemetryTypes.js').Telemetry | null}Telemetry
+ * @typedef {import('../../types/telemetryTypes.js').TelemetryRates | null} TelemetryRates
  * @typedef {import('../../types/missionTypes.js').TimelineCueRuntime} CueData
  * @typedef {import('../../types/clockTypes.js').TickPayload} TickPayload
  */
@@ -15,18 +16,31 @@ export class DescentOrbitController {
 	 * @param {GameController} gameController
 	 * @param {DSKYInterface} dskyInterface
 	 * @param {DescentOrbitView} view
-	 * @param {import('../missionStateBase.js').MissionPhase} phase
 	 */
-	constructor(gameController, dskyInterface, view, phase) {
+	constructor(gameController, dskyInterface, view) {
 		this.gameController = gameController;
 		this.dsky = dskyInterface;
 		this.view = view;
-		this.phase = phase;
 		this.modal = new Modal();
 		this.started = false;
-		/** @type {number|null} */ this.burnTargetGET = null;
-		this.hasInitiatedBurn = false;
-		// this.tickHandler
+		/** @type {number | null} */ this.burnTargetGET = null;
+		/** @type {number | null} */ this.ingitionStartGET = null;
+		/** @type {number | null} */ this.burnFinishGET = null;
+		/** @type {number} */ this.burnTime = 0;
+		/** @type {boolean} */ this.burnInProgress = false;
+
+		this.initiatedPreBurn = false;
+		this.ignitionTriggered = false;
+
+		this.normalScale = 1;
+
+		/** @type {Telemetry} */ this.initialTelemetry = null;
+		/** @type {Telemetry} */ this.targetTelemetry = null;
+		/** @type {TelemetryRates}*/ this.burnRates = null;
+		/** @type {() => void} */ this.burnTickUnsub = null;
+
+		this.burnStartRealTime = null;
+		this.burnEndRealTime = null;
 	}
 
 	/**
@@ -38,53 +52,134 @@ export class DescentOrbitController {
 			return;
 		}
 
-		if (this.hasInitiatedBurn) {
+		if (this.ignitionTriggered) {
+			return;
+		}
+
+		if (this.initiatedPreBurn) {
 			return;
 		}
 
 		if (tickPayload.get >= this.burnTargetGET) {
-			this.hasInitiatedBurn = true;
+			this.initiatedPreBurn = true;
 			this.burnTargetGET = null;
 
 			this.gameController.clock.pause();
 			const lineOne = doi.line_1;
 			const lineTwo = doi.line_2;
 
+			// OPEN MODAL AND WAIT FOR CLICK
 			await this.modal.waitForNextClick(true, 'Verify', lineOne, lineTwo);
 
 			// NOW SKIP TO CORRECT TIME
-			this.gameController.clock.jumpTo('101:36:00');
+			this.gameController.clock.jumpTo('101:36:10');
 			this.gameController.clock.resume();
-			// INITIATE p63
-			this.dsky.writeProgram('P63');
+
 			// Add COMP ACTY LIGHT FLASH
 		}
+		// IGNITION ROUTINE
 	}
 
 	/**
 	 *
 	 * @param {Telemetry} prev
 	 * @param {Telemetry} current
-	 * @param {number} deltaTimeMs
+	 * @param {TickPayload} lastTickPayload
 	 */
 
-	handleTelemetryTick(prev, current, deltaTimeMs) {
-		const dt = deltaTimeMs / 1000;
-		const altitudeDelta = current.lunar_altitude - prev.lunar_altitude;
-		const velocityDelta = current.velocity_fps - prev.velocity_fps;
-		const fuelDelta = current.fuel_percent - prev.fuel_percent;
+	handleTelemetryTick(prev, current, lastTickPayload) {
+		if (!this.ignitionTriggered) {
+			return;
+		}
 
-		const rates = {
-			altitudeRate: altitudeDelta / dt,
-			velocityRate: velocityDelta / dt,
-			fuelRate: fuelDelta / dt
+		if (this.burnInProgress && this.initialTelemetry === null) {
+			this.initialTelemetry = {
+				lunar_altitude: prev.lunar_altitude,
+				velocity_fps: prev.velocity_fps,
+				fuel_percent: prev.fuel_percent,
+				altitude_units: prev.altitude_units
+			};
+		}
+
+		const actualBurnTimeSec = this.burnFinishGET - this.ingitionStartGET;
+
+		this.burnRates = {
+			altitudeRate:
+				(this.targetTelemetry.lunar_altitude -
+					this.initialTelemetry.lunar_altitude) /
+				actualBurnTimeSec,
+			velocityRate:
+				(this.targetTelemetry.velocity_fps - this.initialTelemetry.velocity_fps) /
+				actualBurnTimeSec,
+			fuelRate:
+				(this.targetTelemetry.fuel_percent - this.initialTelemetry.fuel_percent) /
+				actualBurnTimeSec
 		};
 
-		// this.dsky.hud.updateTelemetry({
-		// 	lunar_altitude: altitudeDelta,
-		// 	velocity_fps: velocityDelta,
-		// 	fuel_percent: fuelDelta
-		// });
+		if (this.burnInProgress && this.burnRates && this.initialTelemetry != null) {
+			const currentGET = lastTickPayload.get;
+			// How many sim-seconds we are into the burn
+			// (Clamped to as to never exceed total burn duration)
+			const elapsedSimTime = Math.min(
+				currentGET - this.ingitionStartGET,
+				this.burnFinishGET - this.ingitionStartGET
+			);
+
+			// Interpolate the values
+
+			const newAlt =
+				this.initialTelemetry.lunar_altitude +
+				this.burnRates.altitudeRate * elapsedSimTime;
+
+			const newVelocity =
+				this.initialTelemetry.lunar_altitude +
+				this.burnRates.altitudeRate * elapsedSimTime;
+
+			const newFuel =
+				this.initialTelemetry.fuel_percent +
+				this.burnRates.fuelRate * elapsedSimTime;
+
+			this.updateDisplay({
+				lunar_altitude: newAlt.toFixed(2),
+				velocity_fps: newVelocity.toFixed(2),
+				fuel_percent: newFuel.toFixed(2)
+			});
+
+			if (currentGET >= this.burnFinishGET) {
+				this.updateDisplay(this.targetTelemetry);
+				this.burnEndRealTime = performance.now();
+				const realDurationMs = this.burnEndRealTime - this.burnStartRealTime;
+				const realDurationS = realDurationMs / 1000;
+				console.log(`Burn wall-clock time: ${realDurationMs.toFixed(1)} ms`);
+				console.log(`(≈ ${realDurationS.toFixed(2)} s)`);
+				this.gameController.clock.setTimeScale(this.normalScale);
+				this.burnInProgress = false;
+			}
+		}
+	}
+
+	handleIgnitionCue(cueData, phase) {
+		this.ignitionTriggered = true;
+		const { meta } = cueData;
+		const targetDuration = 10;
+		// Duration (29.8s)
+		this.burnTime = meta.burn_time;
+		this.ingitionStartGET = cueData.seconds;
+		this.burnFinishGET = cueData.seconds + this.burnTime;
+
+		this.targetTelemetry = {
+			lunar_altitude: phase.lunar_altitude,
+			velocity_fps: phase.velocity_fps,
+			fuel_percent: phase.fuel_percent,
+			altitude_units: phase.altitude_units
+		};
+		this.normalScale = this.gameController.clock.timeScale;
+		this.burnTimeScale = this.normalScale * (this.burnTime / targetDuration);
+		this.gameController.clock.setTimeScale(this.burnTimeScale);
+
+		this.dsky.writeProgram('P63');
+		this.burnInProgress = true;
+		this.burnStartRealTime = performance.now();
 	}
 
 	/**
@@ -93,7 +188,8 @@ export class DescentOrbitController {
 	 */
 	handleBurnInitiation(cueData) {
 		this.burnTargetGET = cueData.seconds + 3;
-		this.hasInitiatedBurn = false;
+
+		this.initiatedPreBurn = false;
 	}
 
 	updatePhase(phaseName) {

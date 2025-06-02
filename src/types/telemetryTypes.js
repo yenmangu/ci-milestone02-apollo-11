@@ -7,4 +7,11 @@
  * @property {string} [phase_name]
  */
 
+/**
+ * @typedef {Object} TelemetryRates
+ * @property {number} altitudeRate
+ * @property {number} velocityRate
+ * @property {number} fuelRate
+ */
+
 export {};

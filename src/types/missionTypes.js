@@ -220,6 +220,7 @@ export const AppStateKeys = {
  * @property {string} time
  * @property {string} speaker
  * @property {string} text
+ * @property {object} [meta]
  */
 
 /**

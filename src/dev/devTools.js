@@ -110,7 +110,7 @@ export class DevTools {
 
 		this.secondsInput.addEventListener('change', e => {
 			e.preventDefault();
-			this.jumpSeconds = 0;
+			// this.jumpSeconds = 0;
 			this.jumpSeconds = this.secondsInput.valueAsNumber;
 			this.jumpButton.innerText = `Jump ${this.jumpSeconds}s`;
 		});
@@ -136,8 +136,10 @@ export class DevTools {
 		this.resetButton = cast(document.querySelector('button#resetBtn'));
 		/** @type  {HTMLInputElement} */
 		this.secondsInput = cast(document.querySelector('input#seconds'));
+		this.secondsInput.setAttribute('value', '2');
 		/** @type {HTMLButtonElement} */
 		this.jumpButton = document.querySelector('button#jump');
+		this.jumpButton.innerText = `Jump ${this.secondsInput.value}s`;
 	}
 
 	showDevPanel() {
@@ -165,7 +167,7 @@ export class DevTools {
 					</div>
 					<div class="row justify-content-center mt-1">
 					<div class="col-2 align-self-center">
-							<input id="seconds" type="number" />
+							<input id="seconds" type="number"/>
 						</div>
 						<div class="col-2">
 							<button id="jump"

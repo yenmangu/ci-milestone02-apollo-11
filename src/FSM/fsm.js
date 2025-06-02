@@ -74,8 +74,8 @@ export class FSM {
 
 		// Capture telemetry before switching out
 
-		if (this.currentState?.getTelemetrySnapshot) {
-			this.previousTelemetry = this.currentState.getTelemetrySnapshot();
+		if (this.currentState?.telemetry) {
+			this.previousTelemetry = this.currentState.telemetry;
 		}
 
 		// const state = this.states.get(AppStates[key]);

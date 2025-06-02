@@ -35,7 +35,8 @@ import {
 	stateEmitter,
 	phaseNameEmitter,
 	pushButtonEmitter,
-	actionEmitter
+	actionEmitter,
+	globalEmitter
 } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
@@ -351,7 +352,14 @@ export class MissionStateBase {
 		};
 
 		// this.dskyInterface.hud.updateHud(telemetry);
-		this.telemetry = { ...telemetry, state };
+		if (!this.previousTelemetry || this.previousTelemetry === 'null') {
+			this.telemetry = { ...telemetry, state };
+		} else {
+			this.telemetry = {
+				...this.previousTelemetry,
+				state
+			};
+		}
 
 		this.dskyInterface.dskyController.expectedActions = dsky_actions;
 		this.dskyInterface.dskyController.requiredActions = required_action;

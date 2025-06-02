@@ -61,7 +61,7 @@ export class DescentOrbitState extends MissionStateBase {
 			this.controller.handleTelemetryTick(
 				this.prevTelemetry,
 				currentTelemetry,
-				deltaTimeMs
+				this.lastTickPayload
 			);
 		} else {
 			this.prevTelemetry = currentTelemetry;
@@ -84,30 +84,11 @@ export class DescentOrbitState extends MissionStateBase {
 		const { name, data } = event;
 		if (name === 'cue_22') {
 			this.controller.handleBurnInitiation(data);
-
-			// const targetGET = data.seconds + 3;
-
-			// /**
-			//  *
-			//  * @param {import('../../types/clockTypes.js').TickPayload} tickPayload
-			//  */
-			// const checkForTarget = tickPayload => {
-			// 	if (tickPayload.get >= targetGET) {
-			// 		this.game.clock.pause();
-			// 		// Refactor this out!!!
-			// 		// SEPARATION OF CONCERNS!!!
-			// 		const lineOne = `The crew are now awaiting the Apollo Guidance Computer (AGC)
-			// 		to initiate the Descent Orbit Insertion burn`;
-			// 		const lineTwo = `Please verify the burn below, which will skip forward
-			// 		to a few seconds before the actual Burn Ignition Ground Elapsed Time (GET)
-			// 		of "101:36:14",
-			// 		 and watch the DSKY initiate Program 63 (P63)`;
-
-			// 		this.tickEmitter.off('tick', checkForTarget);
-			// 	}
-			// };
-			// this.tickEmitter.on('tick', checkForTarget);
 		}
+		if (name === 'cue_23') {
+			this.controller.handleIgnitionCue(data, this.currentPhase);
+		}
+
 		if (this.requiredActions.has(event.action)) {
 			if (event.action === 'verify_burn') this.markActionComplete(event.action);
 		}

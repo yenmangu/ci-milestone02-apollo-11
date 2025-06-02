@@ -15,16 +15,16 @@ export class KeypadController {
 		/**
 		 * @type {import('../../types/dskyTypes.js').keypadStateManager}
 		 */
-		console.log(
-			'Received keypadStateManager in KeypadController:',
-			keypadStateManager
-		);
+		// console.log(
+		// 	'Received keypadStateManager in KeypadController:',
+		// 	keypadStateManager
+		// );
 
 		/** @type {keypadStateManager} */ this.keypadStateManager = keypadStateManager;
 
 		/** @type {HTMLButtonElement[]} */
 		this.buttons = Array.from(document.querySelectorAll('button.push-button'));
-		console.log('SANITY BUTTON CHECK', this.buttons);
+		// console.log('SANITY BUTTON CHECK', this.buttons);
 	}
 	/**
 	 *

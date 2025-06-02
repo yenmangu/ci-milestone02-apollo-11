@@ -8,4 +8,5 @@ const instructionData = {
 	}
 };
 
-export { instructionData };
+const { doi } = instructionData;
+export { doi };

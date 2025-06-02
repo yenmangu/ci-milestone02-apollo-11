@@ -41,7 +41,7 @@ export async function initProgram() {
 		gameController.fsm.transitionTo(state);
 
 		if (dev) {
-			console.log('Dev time!');
+			console.log('>>>> DEV MODE ENABLED');
 
 			const { DevTools } = await import('./dev/devTools.js');
 			new DevTools({

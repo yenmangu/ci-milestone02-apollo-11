@@ -12,7 +12,7 @@ export class HudController {
 		this.hudView = new HudView(instruments);
 		this.instruments = instruments;
 		this.telemetry = {};
-		console.log('Instruments: ', instruments);
+		// console.log('Instruments: ', instruments);
 		this.subscribeToTicks();
 	}
 	subscribeToTicks() {

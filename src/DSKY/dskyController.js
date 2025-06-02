@@ -32,10 +32,10 @@ export class DSKYController {
 			clearVerbNoun: () => this.displayController.clearVerbNoun()
 		};
 
-		console.log('Creating keypadStateManager...');
+		// console.log('Creating keypadStateManager...');
 
 		this.keypad = createKeypadStateManager(displayInterface);
-		console.log('Keypad manager created:', this.keypad);
+		// console.log('Keypad manager created:', this.keypad);
 
 		/** @type {KeypadController} */
 		this.keypadController = new KeypadController(

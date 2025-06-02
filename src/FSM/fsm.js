@@ -70,7 +70,7 @@ export class FSM {
 	 * @param {AppStatesKey} key
 	 */
 	transitionTo(key) {
-		console.log('Key: ', key);
+		// console.log('Key: ', key);
 
 		// Capture telemetry before switching out
 
@@ -102,11 +102,11 @@ export class FSM {
 
 			// If supported by class, inject previousTelemetry
 			if (state.setPreviousTelemetry && this.previousTelemetry) {
-				console.log(
-					'State not yet created. creating now. Prev Telemetry: ',
-					this.previousTelemetry
-				);
-				console.log('Setting previous telemetry');
+				// console.log(
+				// 	'State not yet created. creating now. Prev Telemetry: ',
+				// 	this.previousTelemetry
+				// );
+				// console.log('Setting previous telemetry');
 
 				state.setPreviousTelemetry(this.previousTelemetry);
 			}
@@ -119,7 +119,7 @@ export class FSM {
 			// If state already constructed, inject previousTelemetry directly
 			const /** @type {MissionStateBase} */ state = this.states.get(stateKey);
 			if (state.setPreviousTelemetry && this.previousTelemetry) {
-				console.log('In FSM: ', this.previousTelemetry);
+				// console.log('In FSM: ', this.previousTelemetry);
 
 				state.setPreviousTelemetry(this.previousTelemetry);
 			}

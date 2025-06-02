@@ -14,7 +14,7 @@ export default class EventEmitter {
 	/** @type {Record<EventType | '*', Function[]>} */ events;
 	constructor() {
 		this.events = /** @type {Record<string | '*', Function[]>} */ ({});
-		this.debug = true; // Set to true for debug
+		this.debug = false; // Set to true for debug
 	}
 
 	/**

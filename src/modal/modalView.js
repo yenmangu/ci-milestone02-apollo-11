@@ -1,67 +1,42 @@
+/**
+ *
+ * @param {HTMLElement} element
+ * @param {'click'} eventName
+ * @returns {Promise<MouseEvent>}
+ */
+function waitForEvent(element, eventName) {
+	// console.log(
+	// 	`${Date.now()} >> Attaching waitForEvent on`,
+	// 	element,
+	// 	'for',
+	// 	eventName
+	// );
+
+	return new Promise(resolve => {
+		element.addEventListener(
+			eventName,
+			(/** @type {MouseEvent} */ evt) => {
+				// console.log(`${Date.now()} >> evt: , clicked`);
+				resolve(evt);
+			},
+			{ once: true }
+		);
+	});
+}
+
 export class Modal {
 	constructor() {
 		this.nextModal = document.getElementById('next_Modal');
 		this.instructionModal = document.getElementById('instruction_Modal');
 		this.verifyButton = document.getElementById('verifyButton');
 		this.nextPhase = document.getElementById('nextPhase');
-		this.onceHandler = () => {
-			this.hideModal();
-		};
+		this.currentButton = null;
+		// this.onceHandler = () => {
+		// 	this.hideModal();
+		// };
 	}
 
-	showNextModal() {
-		if (this.nextModal) {
-			console.log('Modal found');
-			this.currentModal = this.nextModal;
-
-			this.currentModal.classList.remove('hidden');
-			this.currentModal.style.display = 'flex';
-		}
-	}
-
-	hideModal() {
-		if (this.currentModal) {
-			this.currentModal.classList.add('hidden');
-			this.currentModal.style.display = 'none';
-		}
-	}
-
-	waitForNextClick(instructions = false, buttonText = '', ...args) {
-		return new Promise(resolve => {
-			if (!instructions) {
-				if (!this.nextPhase) {
-					this.hideModal();
-					resolve();
-					return;
-				}
-
-				const handler = () => {
-					this.hideModal();
-					this.nextPhase.removeEventListener('click', handler);
-					resolve();
-				};
-
-				this.showNextModal();
-				this.nextPhase.addEventListener('click', handler);
-			} else {
-				const handler = () => {
-					this.hideModal();
-					this.verifyButton.removeEventListener('click', handler);
-					resolve();
-				};
-				this.buildInstructionModal(buttonText, ...args).then(() => {
-					this.showInstructions();
-					this.verifyButton.addEventListener('click', handler);
-				});
-			}
-		});
-	}
-
-	removeListener(modal, handler) {
-		throw new Error('Method not implemented.');
-	}
-
-	showInstructions() {
+	showCurrentModal() {
 		if (!this.currentModal) {
 			return;
 		}
@@ -69,24 +44,66 @@ export class Modal {
 		this.currentModal.style.display = 'flex';
 	}
 
-	buildInstructionModal(buttonText, ...args) {
-		return new Promise(resolve => {
-			this.currentModal = this.instructionModal;
-			const innerContainer = this.currentModal.querySelector('.inner');
+	hideModal() {
+		if (!this.currentModal) {
+			return;
+		}
 
-			while (innerContainer.firstChild) {
-				innerContainer.removeChild(innerContainer.firstChild);
+		this.currentModal.classList.add('hidden');
+		this.currentModal.style.display = 'none';
+		this.currentModal = null;
+		this.currentButton = null;
+	}
+
+	async waitForNextClick(instructions = false, buttonText = '', ...args) {
+		// console.log(
+		// 	`${Date.now()} >> Entering waitForNextClick: instructions= instructions`
+		// );
+		this.hideModal();
+
+		if (!instructions) {
+			if (!this.nextPhase) {
+				return;
 			}
 
-			args.forEach((text, index) => {
-				const messageDiv = document.createElement('div');
-				messageDiv.innerHTML = `<span id="message_${index + 1}">${text}</span>`;
-				innerContainer.appendChild(messageDiv);
-			});
+			this.currentModal = this.nextModal;
+			this.showCurrentModal();
+			// console.log(
+			// 	'Binding NextPhase listener at',
+			// 	Date.now(),
+			// 	'->',
+			// 	this.nextPhase
+			// );
 
-			this.verifyButton.innerText = buttonText;
-			resolve();
+			await waitForEvent(this.nextPhase, 'click');
+			this.hideModal();
 			return;
+		} else {
+			await this.buildInstructionModal(buttonText, ...args);
+
+			this.currentModal = this.instructionModal;
+			this.showCurrentModal();
+			await waitForEvent(this.verifyButton, 'click');
+			this.hideModal();
+			return;
+		}
+	}
+
+	async buildInstructionModal(buttonText, ...args) {
+		this.currentModal = this.instructionModal;
+		const innerContainer = this.currentModal.querySelector('.inner');
+
+		while (innerContainer.firstChild) {
+			innerContainer.removeChild(innerContainer.firstChild);
+		}
+
+		args.forEach((text, index) => {
+			const messageDiv = document.createElement('div');
+			messageDiv.innerHTML = `<span id="message_${index + 1}">${text}</span>`;
+			innerContainer.appendChild(messageDiv);
 		});
+
+		this.verifyButton.innerText = buttonText;
+		return;
 	}
 }

@@ -8,6 +8,10 @@
  */
 
 /**
+ * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
+ */
+
+/**
  * @typedef {import('src/types/missionTypes.js').MissionPhase} MissionPhase
  * @typedef {import('src/types/missionTypes.js').AppStateKey} StateKey
  * @typedef {import('../types/missionTypes.js').DSKYActionItem } DSKYActionItem
@@ -82,6 +86,7 @@ export class MissionStateBase {
 		/** @type {KeypadState | null} */ this.keypadState = null;
 		this.tickEmitter = tickEmitter;
 		this.lastTick = null;
+		/** @type {TickPayload | null} */ this.lastTickPayload = null;
 		this.tickHandler = null;
 		this.verbNounToProgram = verbNounToProgramMap;
 		/**
@@ -152,12 +157,7 @@ export class MissionStateBase {
 		if (allComplete) {
 			this.actionEmitter.emit('actionsComplete', this.actionsCompleted);
 			// Ignored because this is an optional hook the subclass can implement
-			const isRunning = this.game.clock.pause();
-
-			this.modal.waitForNextClick().then(() => {
-				this.onAllCompleted?.();
-				this.game.clock.resume;
-			});
+			this.onAllCompleted?.();
 		}
 	}
 
@@ -212,6 +212,7 @@ export class MissionStateBase {
 
 			const deltaTime = currentGet - this.lastTick;
 			this.lastTick = currentGet;
+			this.lastTickPayload = tick;
 
 			this.onTickUpdate(deltaTime, tick.getFormatted);
 		};
@@ -230,7 +231,7 @@ export class MissionStateBase {
 	}
 
 	bindKeypadStateHandler() {
-		console.trace('Binding keypad state handler');
+		// console.trace('Binding keypad state handler');
 
 		/**
 		 *

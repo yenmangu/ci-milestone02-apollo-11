@@ -31,9 +31,15 @@ export class IdleState extends MissionStateBase {
 		this.fuel = undefined;
 		this.altitude = undefined;
 
-		this.onAllCompleted = () => {
+		this.onAllCompleted = async () => {
+			await this.openModal();
 			this.game.fsm.transitionTo(AppStateKeys.descent_orbit);
 		};
+	}
+	async openModal() {
+		const isRunning = this.game.clock.pause();
+		await this.modal.waitForNextClick();
+		this.game.clock.resume();
 	}
 
 	/**

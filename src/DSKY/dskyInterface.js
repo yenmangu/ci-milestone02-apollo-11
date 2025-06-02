@@ -21,6 +21,10 @@ export class DSKYInterface {
 		this.dskyController.displayController.write(id, value);
 	}
 
+	writeProgram(value) {
+		this.dskyController.displayController.write('prog', value);
+	}
+
 	bulkWrite(values) {
 		this.dskyController.displayController.bulkWrite(values);
 	}

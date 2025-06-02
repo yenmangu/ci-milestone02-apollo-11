@@ -70,9 +70,9 @@ export class DSKYController {
 	}
 
 	onStateEvents() {
-		this.keypadSubscription = pushButtonEmitter.subscribe(event => {
-			// Keypad events (lights etc)
-		});
+		// this.keypadSubscription = pushButtonEmitter.subscribe(event => {
+		// 	// Keypad events (lights etc)
+		// });
 	}
 
 	initiate() {

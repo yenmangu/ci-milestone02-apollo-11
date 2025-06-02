@@ -1,6 +1,7 @@
 import { DSKYInterface } from '../../DSKY/dskyInterface.js';
 import { actionEmitter } from '../../event/eventBus.js';
 import { GameController } from '../../game/gameController.js';
+import { Modal } from '../../modal/modalView.js';
 import { AppStateKeys } from '../../types/missionTypes.js';
 import { MissionStateBase } from '../missionStateBase.js';
 import { DescentOrbitController } from './descentOrbitController.js';
@@ -25,18 +26,20 @@ export class DescentOrbitState extends MissionStateBase {
 		this.altitude = undefined;
 		this.prevTelemetry = null;
 		this.burnInitiated = false;
+		this.modal = new Modal();
 	}
 
 	// Defining the callback needed for the handleActionEvent
 
 	onEnter() {
 		console.log('Sub class required actions: ', this.requiredActions);
+		// this.checkProgramStatus('P63');
 		this.watchUntilComplete(
 			event => {
-				console.log('tracing event: ', event);
+				// console.log('tracing event: ', event);
 				this.handleActionEvent(event);
 			},
-			event => {
+			eventComplete => {
 				console.log('Descent Orbit actions completed');
 				this.game.fsm.transitionTo(AppStateKeys.powered_descent);
 			}
@@ -48,7 +51,9 @@ export class DescentOrbitState extends MissionStateBase {
 		this.controller.updateDisplay(this.prevTelemetry);
 		this.controller.updatePhase(this.getTelemetrySnapshot().phase_name);
 		this.bindTickHandler();
-		this.bindKeypadStateHandler();
+		if (!this.keypadStateHandler) {
+			this.bindKeypadStateHandler();
+		}
 	}
 
 	onTickUpdate(deltaTimeMs) {
@@ -88,6 +93,8 @@ export class DescentOrbitState extends MissionStateBase {
 	}
 
 	onKeypadUpdate(keypadState) {
+		console.trace('Keypad state in descent orbit controller: ', keypadState);
+
 		this.checkDSKYStatus(keypadState);
 	}
 
@@ -100,8 +107,38 @@ export class DescentOrbitState extends MissionStateBase {
 
 	handleActionEvent(event) {
 		console.log('Event being handled: ', event);
-		if (!event.action) {
-			return;
+
+		const { name, data } = event;
+		if (name === 'cue_22') {
+			const targetGET = data.seconds + 3;
+
+			/**
+			 *
+			 * @param {import('../../types/clockTypes.js').TickPayload} tickPayload
+			 */
+			const checkForTarget = tickPayload => {
+				if (tickPayload.get >= targetGET) {
+					this.game.clock.pause();
+					// Refactor this out!!!
+					// SEPARATION OF CONCERNS!!!
+					const lineOne = `The crew are now awaiting the Apollo Guidance Computer (AGC)
+					to initiate the Descent Orbit Insertion burn`;
+					const lineTwo = `Please verify the burn below, which will skip forward
+					to a few seconds before the actual Burn Ignition Ground Elapsed Time (GET)
+					of "101:36:14",
+					 and watch the DSKY initiate Program 63 (P63)`;
+					this.modal.waitForNextClick(true, 'Verify', lineOne, lineTwo).then(() => {
+						// NOW SKIP TO CORRECT TIME
+						this.game.clock.jumpTo('101:36:00');
+						this.game.clock.resume();
+						// INITIATE p63
+						this.checkProgramStatus('P63');
+						// Add COMP ACTY LIGHT FLASH
+					});
+					this.tickEmitter.off('tick', checkForTarget);
+				}
+			};
+			this.tickEmitter.on('tick', checkForTarget);
 		}
 		if (this.requiredActions.has(event.action)) {
 			if (event.action === 'verify_burn') this.markActionComplete(event.action);

@@ -168,11 +168,7 @@
       "dsky_actions": [{
         "program": "P63",
         "description": "Braking phase program, used to kill horizontal velocity after DOI burn",
-        "verb_noun": [{
-          "verb": "37",
-          "noun": "63",
-          "description": "Throttle input for P63 braking burn"
-        }]
+        "verb_noun": []
       }],
       "get_stamp": "101:36:14"
     },

@@ -30,7 +30,8 @@ import {
 	tickEmitter,
 	stateEmitter,
 	phaseNameEmitter,
-	pushButtonEmitter
+	pushButtonEmitter,
+	actionEmitter
 } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
@@ -38,6 +39,7 @@ import { actionKeyFor } from '../util/actionKey.js';
 import getSecondsFromGET from '../util/getSecondsFromGet.js';
 import watchUntilComplete from '../util/watchUntilComplete.js';
 import { Modal } from '../modal/modalView.js';
+import { verbNounToProgramMap } from '../AGCPrograms/programMap.js';
 
 /**
  * Creates the MissionStateBase class,
@@ -70,16 +72,18 @@ export class MissionStateBase {
 		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
 		/** @type {EventEmitter} */ this.phaseNameEmitter = phaseNameEmitter;
 		/** @type {DSKYActionRuntime | null} */ this.dskyActions = null;
-		/** @type {Set<string>} */ this.requiredActions = new Set();
+		/** @type {Map<any>} */ this.requiredActions = new Map();
 		/** @type {Set<string>} */ this.actionsCompleted = new Set();
 		/** @type {TimelineCueRuntime[]} */ this.timelineCues = [];
 		this.actionWatcher = null;
 		this.phaseHeadingEl = document.getElementById('phaseName');
 		this.keypadEmitter = pushButtonEmitter;
+		this.actionEmitter = actionEmitter;
 		/** @type {KeypadState | null} */ this.keypadState = null;
 		this.tickEmitter = tickEmitter;
 		this.lastTick = null;
 		this.tickHandler = null;
+		this.verbNounToProgram = verbNounToProgramMap;
 		/**
 		 * Single point of truth for pause status.
 		 * All child state classes inherit this.
@@ -110,6 +114,10 @@ export class MissionStateBase {
 		 * Expose the frozen map on every instance.
 		 */
 		this.phaseGetMap = MissionStateBase._phaseGetMap;
+		this.onProgramSelected = programNumber => {
+			// default: do nothing (or console.debug)
+			console.debug(`Program ${programNumber} entered (no-op).`);
+		};
 	}
 
 	/**
@@ -135,11 +143,14 @@ export class MissionStateBase {
 	 */
 	markActionComplete(actionKey) {
 		this.actionsCompleted.add(actionKey);
-		const allComplete = [...this.requiredActions].every(action =>
+		const requiredAction = this.requiredActions.get(actionKey);
+		this.actionEmitter.emit('action', { name: actionKey, data: requiredAction });
+		const allComplete = [...this.requiredActions.keys()].every(action =>
 			this.actionsCompleted.has(action)
 		);
 
 		if (allComplete) {
+			this.actionEmitter.emit('actionsComplete', this.actionsCompleted);
 			// Ignored because this is an optional hook the subclass can implement
 			const isRunning = this.game.clock.pause();
 
@@ -219,6 +230,8 @@ export class MissionStateBase {
 	}
 
 	bindKeypadStateHandler() {
+		console.trace('Binding keypad state handler');
+
 		/**
 		 *
 		 * @param {import('../types/dskyTypes.js').KeypadState} state
@@ -316,13 +329,14 @@ export class MissionStateBase {
 				this.timelineCues = phase.timeline_cues.map((cue, index) => {
 					const seconds = getSecondsFromGET(cue.time);
 					const actionKey = `cue_${index}`;
-					this.requiredActions.add(actionKey);
-					return {
+					const cueObject = {
 						...cue,
 						seconds,
 						shown: false,
 						actionKey
 					};
+					this.requiredActions.set(actionKey, cueObject);
+					return cueObject;
 				});
 			}
 		}
@@ -350,7 +364,7 @@ export class MissionStateBase {
 
 		if (required_action) {
 			if (required_action !== 'none') {
-				this.requiredActions.add(required_action);
+				this.requiredActions.set(required_action, required_action);
 			}
 		}
 		if (dsky_actions.length) {
@@ -359,56 +373,80 @@ export class MissionStateBase {
 			/** @type {VerbNounRuntimeArray} */ const verbNoun = [];
 			/** @type {ProgramRuntimeArray} */ const program = [];
 			dsky_actions.forEach((action, index) => {
-				if (action.program) {
-					this.requiredActions.add(action.program);
-					program.push({
+				if (Array.isArray(action.program)) {
+					for (const p of action.program) {
+						const programObject = {
+							program: p,
+							complete: false
+						};
+						program.push(programObject);
+						this.requiredActions.set(p, action.program);
+					}
+				} else if (typeof action.program === 'string') {
+					const programObject = {
 						program: action.program,
 						complete: false
-					});
+					};
+					program.push(programObject);
+					this.requiredActions.set(action.program, action.program);
 				}
 				if (Array.isArray(action.verb_noun)) {
 					for (const pair of action.verb_noun) {
 						const key = actionKeyFor(pair.verb, pair.noun);
-						verbNoun.push({
+						const verbNoun = {
 							verb: pair.verb,
 							noun: pair.noun,
 							key: key,
 							complete: false
-						});
-						this.requiredActions.add(key);
+						};
+						verbNoun.push(verbNoun);
+						this.requiredActions.set(key, verbNoun);
 					}
 				}
 			});
 			this.dskyActions = { verbNoun, program };
 
 			this.actionMetaData = dsky_actions;
-			for (const action of dsky_actions) {
-				if (action.program) {
-					this.requiredActions.add(action.program);
-				}
-				if (Array.isArray(action.verb_noun)) {
-					for (const pair of action.verb_noun) {
-						const key = actionKeyFor(pair.verb, pair.noun);
-						this.requiredActions.add(key);
-					}
-				}
-			}
 		}
 	}
-
-	checkProgramStatus(program) {}
 
 	/**
 	 *
 	 * @param {KeypadState} state
 	 */
 	checkDSKYStatus(state) {
+		console.log('Checking DSKY status');
+
 		for (const action of this.dskyActions.verbNoun) {
 			if (!action.complete) {
 				if (state.noun === action.noun && state.verb === action.verb) {
 					action.complete = true;
 					this.markActionComplete(action.key);
+
+					// const foundProgram = this.verbNounToProgram[action.key];
+					// if (foundProgram) {
+					// 	this.dskyInterface.writeProgram(foundProgram);
+					// }
+
+					// for (const pro of this.dskyActions.program) {
+					// 	if (!pro.complete && pro.program === foundProgram) {
+					// 		pro.complete = true;
+					// 		this.onProgramSelected?.(foundProgram);
+					// 		this.markActionComplete(foundProgram);
+					// 	}
+					// }
 				}
+			}
+		}
+	}
+
+	checkProgramStatus(program) {
+		for (const pro of this.dskyActions.program) {
+			if (!pro.complete && pro.program === program) {
+				const program = pro.program.slice(1);
+				this.dskyInterface.writeProgram(program);
+				pro.complete === true;
+				this.markActionComplete(pro.program);
 			}
 		}
 	}

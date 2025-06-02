@@ -48,9 +48,9 @@ export default class EventEmitter {
 			this.events[type].forEach(listener => listener(payload));
 		}
 		// Emit to wildcard listeners
-		if (this.events['*']) {
-			this.events['*'].forEach(listener => listener({ type, payload }));
-		}
+		// if (this.events['*']) {
+		// 	this.events['*'].forEach(listener => listener({ type, payload }));
+		// }
 	}
 
 	/**

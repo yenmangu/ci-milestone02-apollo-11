@@ -69,10 +69,18 @@ export class FSM {
 	 * Transitions to a state, instantiating lazily if needed
 	 * @param {AppStatesKey} key
 	 */
-	transitionTo(key) {
+	transitionTo(key, dev = false) {
 		// console.log('Key: ', key);
 
 		// Capture telemetry before switching out
+
+		if (dev) {
+			if (this.currentState?.requiredActions) {
+				[...this.currentState.requiredActions.keys()].forEach(key => {
+					this.currentState.markActionComplete(key);
+				});
+			}
+		}
 
 		if (this.currentState?.telemetry) {
 			this.previousTelemetry = this.currentState.telemetry;
@@ -130,5 +138,7 @@ export class FSM {
 		this.currentState = this.states.get(stateKey);
 		this.stateEmitter.emit('state', stateKey);
 		this.currentState.enter();
+		if (dev) {
+		}
 	}
 }

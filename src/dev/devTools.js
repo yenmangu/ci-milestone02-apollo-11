@@ -9,6 +9,7 @@ import { stateEmitter } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { FSM } from '../FSM/fsm.js';
 import { GameController } from '../game/gameController.js';
+import { MissionStateBase } from '../missionStates/missionStateBase.js';
 import {
 	AppStateKeys,
 	AppStates,
@@ -26,6 +27,12 @@ export class DevTools {
 	constructor({ gameController, fsm, emitter }) {
 		this.fsm = fsm;
 		this.gameController = gameController;
+
+		// STATES
+		this.descentOrbit = this.fsm.factories[AppStateKeys.descent_orbit];
+		this.poweredDescent = this.fsm.factories[AppStateKeys.powered_descent];
+		this.braking = this.fsm.factories[AppStateKeys.braking_phase];
+
 		this.nonNavigableStates = ['FAILED', 'PAUSED'];
 
 		this.devPanel = this.showDevPanel();
@@ -76,7 +83,7 @@ export class DevTools {
 		});
 	}
 	setStateName() {
-		// console.log('this.fsm.currentState.stateKey: ', this.fsm.currentState.stateKey);
+		console.log('[DEV]: setting state name');
 		const currentStateKey = Object.entries(AppStates).find(([key]) => {
 			// console.log('key: ', key);
 			return key === this.fsm.currentState.stateKey;
@@ -137,6 +144,7 @@ export class DevTools {
 		/** @type  {HTMLInputElement} */
 		this.secondsInput = cast(document.querySelector('input#seconds'));
 		this.secondsInput.setAttribute('value', '2');
+		this.jumpSeconds = this.secondsInput.valueAsNumber;
 		/** @type {HTMLButtonElement} */
 		this.jumpButton = document.querySelector('button#jump');
 		this.jumpButton.innerText = `Jump ${this.secondsInput.value}s`;
@@ -207,7 +215,8 @@ export class DevTools {
 		}
 		console.log(`${newStateKey} ${newIndex}`);
 
-		this.fsm.transitionTo(newStateKey);
+		this.fsm.transitionTo(newStateKey, true);
+
 		this.currentStateIndex = newIndex;
 		this.setStateName();
 	}

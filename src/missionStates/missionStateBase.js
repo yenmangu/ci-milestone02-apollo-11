@@ -36,13 +36,16 @@ import {
 	phaseNameEmitter,
 	pushButtonEmitter,
 	actionEmitter,
-	globalEmitter
+	phaseEmitter
 } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
 import { actionKeyFor } from '../util/actionKey.js';
 import getSecondsFromGET from '../util/getSecondsFromGet.js';
-import watchUntilComplete from '../util/watchUntilComplete.js';
+import {
+	watchPhaseAction,
+	watchUntilComplete
+} from '../util/watchUntilComplete.js';
 import { Modal } from '../modal/modalView.js';
 import { verbNounToProgramMap } from '../AGCPrograms/programMap.js';
 
@@ -81,6 +84,7 @@ export class MissionStateBase {
 		/** @type {Set<string>} */ this.actionsCompleted = new Set();
 		/** @type {TimelineCueRuntime[]} */ this.timelineCues = [];
 		this.actionWatcher = null;
+		this.phaseWatcher = null;
 		this.phaseHeadingEl = document.getElementById('phaseName');
 		this.keypadEmitter = pushButtonEmitter;
 		this.actionEmitter = actionEmitter;
@@ -124,6 +128,9 @@ export class MissionStateBase {
 			// default: do nothing (or console.debug)
 			console.debug(`Program ${programNumber} entered (no-op).`);
 		};
+		// this.watchUntilComplete((event) => {
+		// 	if()
+		// })
 	}
 
 	/**
@@ -144,6 +151,13 @@ export class MissionStateBase {
 	}
 
 	/**
+	 * @protected
+	 */
+	watchPhaseUntilComplete(onAction) {
+		this.phaseWatcher = watchPhaseAction(onAction);
+	}
+
+	/**
 	 *
 	 * @param {string} actionKey
 	 */
@@ -156,6 +170,7 @@ export class MissionStateBase {
 		);
 
 		if (allComplete) {
+			console.log('ALL ACTIONS COMPLETE');
 			this.actionEmitter.emit('actionsComplete', this.actionsCompleted);
 			// Ignored because this is an optional hook the subclass can implement
 			this.onAllCompleted?.();
@@ -215,7 +230,7 @@ export class MissionStateBase {
 			this.lastTick = currentGet;
 			this.lastTickPayload = tick;
 
-			this.onTickUpdate(deltaTime, tick.getFormatted);
+			this.onTickUpdate();
 		};
 		this.tickEmitter.on('tick', this.tickHandler);
 	}
@@ -335,7 +350,8 @@ export class MissionStateBase {
 						...cue,
 						seconds,
 						shown: false,
-						actionKey
+						actionKey,
+						type: 'cue'
 					};
 					this.requiredActions.set(actionKey, cueObject);
 					return cueObject;
@@ -370,12 +386,16 @@ export class MissionStateBase {
 		if (phase.failure_state) {
 			this.dskyInterface.dskyController.failureState = phase.failure_state;
 		}
-
-		if (required_action) {
+		if (Array.isArray(required_action)) {
+			required_action.forEach(action => {
+				this.requiredActions.set(action, action);
+			});
+		} else {
 			if (required_action !== 'none') {
 				this.requiredActions.set(required_action, required_action);
 			}
 		}
+
 		if (dsky_actions.length) {
 			// Clear any remaining actions
 			this.dskyActions = null;
@@ -385,6 +405,7 @@ export class MissionStateBase {
 				if (Array.isArray(action.program)) {
 					for (const p of action.program) {
 						const programObject = {
+							type: 'program',
 							program: p,
 							complete: false
 						};
@@ -393,6 +414,7 @@ export class MissionStateBase {
 					}
 				} else if (typeof action.program === 'string') {
 					const programObject = {
+						type: 'program',
 						program: action.program,
 						complete: false
 					};
@@ -401,14 +423,20 @@ export class MissionStateBase {
 				}
 				if (Array.isArray(action.verb_noun)) {
 					for (const pair of action.verb_noun) {
-						const key = actionKeyFor(pair.verb, pair.noun);
-						const verbNoun = {
+						const key = actionKeyFor(
+							pair.verb,
+							pair.noun,
+							pair.display ? true : false
+						);
+						const verbNounObject = {
+							type: 'verb_noun',
 							verb: pair.verb,
 							noun: pair.noun,
+							display: pair.display ? pair.display : false,
 							key: key,
 							complete: false
 						};
-						verbNoun.push(verbNoun);
+						verbNoun.push(verbNounObject);
 						this.requiredActions.set(key, verbNoun);
 					}
 				}
@@ -489,6 +517,7 @@ export class MissionStateBase {
 
 	exit() {
 		this.actionWatcher?.unsubscribe();
+		this.phaseWatcher?.unsubscribe();
 		this.unsubscribeFromTicks();
 		if (typeof this.onExit === 'function') {
 			this.onExit();

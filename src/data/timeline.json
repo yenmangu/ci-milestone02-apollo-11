@@ -36,7 +36,7 @@
       "altitude_units": "miles",
       "velocity_fps": 5280,
       "fuel_percent": 98,
-      "required_action": "verify_burn",
+      "required_action": ["verify_burn", "complete_burn"],
       "audio_ref": "nasa/doi_go.mp3",
       "timeline_cues": [{
           "time": "101:17:07",
@@ -171,14 +171,13 @@
       },
       "dsky_actions": [{
         "program": "P63",
-        "description": "Braking phase program, used to kill horizontal velocity after DOI burn",
-        "verb_noun": []
+        "description": "Braking phase program, used to kill horizontal velocity after DOI burn"
       }],
       "get_stamp": "101:36:14"
     },
     {
       "state": "powered_descent",
-      "phase_name": "Powered Descent Initiation (PDI)",
+      "phase_name": "Powered Descent Initiation (PDI) Pre-Ignition",
       "start_get": "102:45:40",
       "start_time": 1020,
       "description": "DPS ignition at 10% throttle",
@@ -196,17 +195,24 @@
       },
       "dsky_actions": [{
         "program": "P63",
-        "description": "Initiates powered descent engine burn",
+        "description": "Initiates powered descent engine burn (Braking Phase)",
         "verb_noun": [{
             "verb": "37",
-            "noun": "11",
-            "description": "Throttle Control - set throttle percentage"
+            "noun": "63",
+            "description": "Initiate P63 - Braking Phase",
+            "prog": "63"
           },
           {
-            "verb": "16",
-            "noun": "14",
-            "description": "Rendezvous radar enable/disable (used for descent radar check)"
+            "verb": "06",
+            "noun": "33",
+            "description": "104:30:10.94"
+          },
+          {
+            "verb": "99",
+            "display": true
           }
+
+
         ]
       }],
       "timeline_cues": [{
@@ -248,7 +254,13 @@
       "dsky_actions": [{
         "program": "P63",
         "description": "Braking burn program continues",
+
         "verb_noun": [{
+            "verb": "16",
+            "noun": "14",
+            "description": "Rendezvous radar enable/disable (used for descent radar check)"
+          },
+          {
             "verb": "06",
             "noun": "22",
             "description": "Control Attitude - manual control"

@@ -31,10 +31,6 @@ export class IdleController {
 		this.dsky.hud.updateHud(telemetry);
 	}
 
-	updatePhase(phaseName) {
-		this.dsky.hud.updatePhase(phaseName);
-	}
-
 	async startIntro() {
 		await this.view.renderCountdown(3);
 	}

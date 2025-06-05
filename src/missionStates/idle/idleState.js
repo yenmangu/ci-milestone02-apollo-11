@@ -55,7 +55,6 @@ export class IdleState extends MissionStateBase {
 
 		this.prevTelemetry = this.previousTelemetry || null;
 		this.controller.updateDisplay(this.getTelemetrySnapshot());
-		this.controller.updatePhase(this.getTelemetrySnapshot().phase_name);
 	}
 
 	onTickUpdate(deltaTimeSeconds, getFormatted) {

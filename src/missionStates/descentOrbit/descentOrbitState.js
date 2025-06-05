@@ -21,18 +21,24 @@ export class DescentOrbitState extends MissionStateBase {
 	constructor(gameController, dskyInterface, stateController, key) {
 		super(gameController, dskyInterface, key);
 		this.controller = stateController;
-
+		this.phaseWatch = this.watchPhaseUntilComplete;
 		this.fuel = undefined;
 		this.altitude = undefined;
 		this.prevTelemetry = null;
 		this.burnInitiated = false;
 		this.modal = new Modal();
+
+		this.onAllCompleted = async () => {
+			// await this.controller.poweredDescentIntroModal();
+			this.game.fsm.transitionTo(AppStateKeys.powered_descent);
+		};
 	}
 
 	// Defining the callback needed for the handleActionEvent
 
 	onEnter() {
-		// console.log('Sub class required actions: ', this.requiredActions);
+		console.log('Sub class required actions: ', this.requiredActions);
+		// this.controller.updatePhase(this.p)
 		// this.checkProgramStatus('P63');
 		this.watchUntilComplete(
 			event => {
@@ -40,22 +46,31 @@ export class DescentOrbitState extends MissionStateBase {
 				this.handleActionEvent(event);
 			},
 			eventComplete => {
-				// console.log('Descent Orbit actions completed');
-				this.game.fsm.transitionTo(AppStateKeys.powered_descent);
+				// console.log('eventComplete: ', eventComplete);
+				// // console.log('Descent Orbit actions completed');
+				// this.game.fsm.transitionTo(AppStateKeys.powered_descent);
 			}
 		);
+
+		this.watchPhaseUntilComplete(phaseEvent => {
+			const { name } = phaseEvent;
+			[...this.requiredActions.keys()].forEach(key => {
+				if (name === key) {
+					this.markActionComplete(name);
+				}
+			});
+		});
 
 		this.prevTelemetry = this.previousTelemetry || null;
 		console.log('this.previousTelemetry: ', this.previousTelemetry);
 		this.controller.updateDisplay(this.prevTelemetry);
-		this.controller.updatePhase(this.getTelemetrySnapshot().phase_name);
 		this.bindTickHandler();
 		if (!this.keypadStateHandler) {
 			this.bindKeypadStateHandler();
 		}
 	}
 
-	onTickUpdate(deltaTimeMs) {
+	onTickUpdate() {
 		const currentTelemetry = this.getTelemetrySnapshot();
 		if (this.prevTelemetry && currentTelemetry) {
 			this.controller.handleTelemetryTick(
@@ -76,6 +91,7 @@ export class DescentOrbitState extends MissionStateBase {
 		console.trace('Keypad state in descent orbit controller: ', keypadState);
 
 		this.checkDSKYStatus(keypadState);
+		this.controller.dskyFinalised = true;
 	}
 
 	handleActionEvent(event) {
@@ -87,10 +103,6 @@ export class DescentOrbitState extends MissionStateBase {
 		}
 		if (name === 'cue_23') {
 			this.controller.handleIgnitionCue(data, this.currentPhase);
-		}
-
-		if (this.requiredActions.has(event.action)) {
-			if (event.action === 'verify_burn') this.markActionComplete(event.action);
 		}
 	}
 

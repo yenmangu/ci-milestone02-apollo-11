@@ -27,7 +27,7 @@
  *
  */
 
-import { AppStateKeys } from '../types/missionTypes.js';
+import { AppStateKeys, AppStates } from '../types/missionTypes.js';
 
 import { DSKYInterface } from '../DSKY/dskyInterface.js';
 import {
@@ -66,6 +66,7 @@ export class MissionStateBase {
 	 * @type {PhaseGetMap}
 	 */
 	static _phaseGetMap;
+	static _allTelemetry;
 
 	/**
 	 * @param {GameController} gameController
@@ -114,6 +115,12 @@ export class MissionStateBase {
 
 		this.modal = new Modal();
 
+		if (!MissionStateBase._allTelemetry) {
+			const telemetryMap = this.buildTelemetryMap();
+			Object.freeze(telemetryMap);
+			MissionStateBase._allTelemetry = telemetryMap;
+		}
+
 		if (!MissionStateBase._phaseGetMap) {
 			const map = /** @type {PhaseGetMap} */ (this.buildStartGetMap());
 			Object.freeze(map);
@@ -124,6 +131,11 @@ export class MissionStateBase {
 		 * Expose the frozen map on every instance.
 		 */
 		this.phaseGetMap = MissionStateBase._phaseGetMap;
+		/**
+		 * @type {Object}
+		 * Expose frozen telemetry map on every instance.
+		 */
+		this.allTelemetryValues = MissionStateBase._allTelemetry;
 		this.onProgramSelected = programNumber => {
 			// default: do nothing (or console.debug)
 			console.debug(`Program ${programNumber} entered (no-op).`);
@@ -132,13 +144,32 @@ export class MissionStateBase {
 		// 	if()
 		// })
 	}
+	buildTelemetryMap() {
+		const map = {};
+		for (const key of Object.values(AppStateKeys)) {
+			const phase = this.game.timeLine.getPhase(key);
+			if (phase) {
+				const lunar_altitude = phase.lunar_altitude;
+				const altitude_units = phase.altitude_units;
+				const velocity_fps = phase.velocity_fps;
+				const fuel_percent = phase.fuel_percent;
+
+				Object.freeze(lunar_altitude);
+				Object.freeze(altitude_units);
+				Object.freeze(velocity_fps);
+				Object.freeze(fuel_percent);
+				map[key] = { lunar_altitude, altitude_units, velocity_fps, fuel_percent };
+			}
+		}
+		return map;
+	}
 
 	/**
 	 *
 	 * @param {MissionPhase} phase
 	 * 	JSON data for this phase or undefined if missing.
 	 */
-	onEnter(phase) {
+	onEnter(phase = null) {
 		throw new Error('Subclass must implement onEnter()');
 	}
 
@@ -283,10 +314,13 @@ export class MissionStateBase {
 		if (!this.stateKey) {
 			console.debug('No State Key');
 		}
+		this.stateEmitter.emit('state', AppStates[this.stateKey]);
 		const phase = this.game.timeLine.getPhase(this.stateKey);
 
 		if (!phase) {
+			this.onEnter();
 		} else {
+			console.log('Current phase: ', phase.phase_name);
 			this.currentPhase = phase;
 			this.updatePhaseHeading(phase.phase_name);
 			this.onMissionCritical(phase);
@@ -314,11 +348,10 @@ export class MissionStateBase {
 	}
 
 	updatePhaseHeading(phaseName) {
-		this.phaseNameEmitter.emit('phaseName', phaseName);
-
-		if (this.phaseHeadingEl) {
-			this.phaseHeadingEl.innerText = phaseName;
-		}
+		this.phaseNameEmitter.emit('phaseName', {
+			key: this.stateKey,
+			name: phaseName
+		});
 	}
 
 	/**

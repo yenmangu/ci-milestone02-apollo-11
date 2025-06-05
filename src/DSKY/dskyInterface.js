@@ -41,5 +41,13 @@ export class DSKYInterface {
 		// this.
 	}
 
+	unlock() {
+		this.dskyController.unlockKeypad();
+	}
+
+	lock() {
+		this.dskyController.unlockKeypad(false);
+	}
+
 	showAll() {}
 }

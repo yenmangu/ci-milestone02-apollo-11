@@ -20,6 +20,8 @@ export class DSKYController {
 		this.phaseDescription = '';
 		this.failureState = {};
 		this.audioRef = '';
+		/** @type {KeypadController | null} */
+		this.keypadController = null;
 
 		if (!this.displayController) {
 			/** @type {DisplayController} */
@@ -38,13 +40,14 @@ export class DSKYController {
 		// console.log('Keypad manager created:', this.keypad);
 
 		/** @type {KeypadController} */
-		this.keypadController = new KeypadController(
-			{
-				getPolarity: this.getPolarity.bind(this),
-				resetDsky: this.resetDsky.bind(this)
-			},
-			this.keypad
-		);
+		if (!this.keypadController || this.keypadController !== null)
+			this.keypadController = new KeypadController(
+				{
+					getPolarity: this.getPolarity.bind(this),
+					resetDsky: this.resetDsky.bind(this)
+				},
+				this.keypad
+			);
 
 		// The handleInput is expecting access to
 		// - keypadController.keypadStateManager.
@@ -73,6 +76,18 @@ export class DSKYController {
 		// this.keypadSubscription = pushButtonEmitter.subscribe(event => {
 		// 	// Keypad events (lights etc)
 		// });
+	}
+
+	unlockKeypad(unlock = true) {
+		if (unlock) {
+			this.keypadController.buttons.forEach(button => {
+				button.disabled = true;
+			});
+		} else {
+			this.keypadController.buttons.forEach(button => {
+				button.disabled = false;
+			});
+		}
 	}
 
 	initiate() {

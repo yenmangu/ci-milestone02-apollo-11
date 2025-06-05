@@ -1,9 +1,10 @@
 import { stateEmitter } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { MissionStateBase } from '../missionStates/missionStateBase.js';
-import { AppStates } from '../types/missionTypes.js';
+import { AppStateKeys, AppStates } from '../types/missionTypes.js';
 /**
  * @typedef {import('src/types/missionTypes.js').AppStateKey} AppStatesKey
+ * @typedef {import('../types/missionTypes.js').AppStateValue} AppStateValue
  */
 
 export class FSM {
@@ -14,9 +15,9 @@ export class FSM {
 	constructor(gameController) {
 		this.game = gameController;
 		this.states = new Map();
-		// /**
-		//  * @type {}
-		//  */
+		/**
+		 * @type {MissionStateBase}
+		 */
 		this.currentState = null;
 		this.factories = {};
 
@@ -70,10 +71,6 @@ export class FSM {
 	 * @param {AppStatesKey} key
 	 */
 	transitionTo(key, dev = false) {
-		// console.log('Key: ', key);
-
-		// Capture telemetry before switching out
-
 		if (dev) {
 			if (this.currentState?.requiredActions) {
 				[...this.currentState.requiredActions.keys()].forEach(key => {
@@ -81,17 +78,20 @@ export class FSM {
 				});
 			}
 		}
-
-		if (this.currentState?.telemetry) {
-			this.previousTelemetry = this.currentState.telemetry;
-		}
+		const previousState = this.currentState;
 
 		// const state = this.states.get(AppStates[key]);
-		const stateKey = AppStates[key];
+		const stateKeyValue = AppStates[key];
 
+		// Temp class holders
+		let stateAttempt;
+		let controllerAttempt;
+		let viewAttempt;
 		// Lazily create the state if not yet constructed
+		if (!this.states.has(stateKeyValue)) {
+			// State not yet created
+			console.log('State not yet created: ', stateKeyValue);
 
-		if (!this.states.has(stateKey)) {
 			const entry = this.factories[key];
 			// Yes its unnecessary but its here for future implementation
 			const { factoryFn, meta } = entry;
@@ -108,37 +108,56 @@ export class FSM {
 				);
 			}
 
-			// If supported by class, inject previousTelemetry
-			if (state.setPreviousTelemetry && this.previousTelemetry) {
-				// console.log(
-				// 	'State not yet created. creating now. Prev Telemetry: ',
-				// 	this.previousTelemetry
-				// );
-				// console.log('Setting previous telemetry');
+			stateAttempt = state;
+			controllerAttempt = controller;
+			viewAttempt = view;
 
-				state.setPreviousTelemetry(this.previousTelemetry);
-			}
+			this.states.set(stateKeyValue, stateAttempt);
+			this.views.set(stateKeyValue, viewAttempt);
+			this.controllers.set(stateKeyValue, controllerAttempt);
 
-			this.states.set(stateKey, state);
-			// Added even if not needed
-			this.views.set(stateKey, view);
-			this.controllers.set(stateKey, controller);
+			// Else if state already constructed
 		} else {
 			// If state already constructed, inject previousTelemetry directly
-			const /** @type {MissionStateBase} */ state = this.states.get(stateKey);
-			if (state.setPreviousTelemetry && this.previousTelemetry) {
-				// console.log('In FSM: ', this.previousTelemetry);
-
-				state.setPreviousTelemetry(this.previousTelemetry);
-			}
+			const /** @type {MissionStateBase} */ state = this.states.get(stateKeyValue);
+			stateAttempt = state;
 		}
+
+		// Get 'live' phase (not pre_start, paused or failed)
+		const excluded = [AppStates.PRE_START, AppStates.PAUSED, AppStates.FAILED];
+		console.log('Excluded: ', excluded);
+
+		const livePhaseKeys = Object.entries(AppStates)
+			.filter(
+				([key, value]) => !excluded.includes(/** @type {AppStateValue} */ (value))
+			)
+			.map(([key, value]) => key);
+
+		// If a live phase:
+		console.log('PhaseKys: ', livePhaseKeys);
+
+		if (livePhaseKeys.includes(/** @type {AppStatesKey} */ (key))) {
+			const phase = this.game.timeLine.getPhase(key);
+			console.log('phase in fsm: ', phase);
+
+			if (stateAttempt.setPreviousTelemetry && this.previousTelemetry) {
+				stateAttempt.setPreviousTelemetry(this.previousTelemetry);
+			} else {
+				// this.previousTelemetry =
+			}
+		} else {
+			console.log('NOT LIVE PHASE');
+		}
+
+		console.log('this.currentState: ', this.currentState);
 		if (this.currentState) {
 			this.currentState.exit();
 		}
-		this.currentState = this.states.get(stateKey);
-		this.stateEmitter.emit('state', stateKey);
+		const /** @type {MissionStateBase} */ newState = this.states.get(stateKeyValue);
+		this.currentState = newState;
 		this.currentState.enter();
 		if (dev) {
+			return { previousState, newState };
 		}
 	}
 }

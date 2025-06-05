@@ -5,6 +5,11 @@
  * @property {EventEmitter} emitter
  */
 
+/**
+ * @typedef {import('../types/missionTypes.js').MissionTimeline} Timeline
+ * @typedef {import('../types/missionTypes.js').MissionPhase} MissionPhase
+ */
+
 import { stateEmitter } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { FSM } from '../FSM/fsm.js';
@@ -54,6 +59,19 @@ export class DevTools {
 			([key]) => key === this.fsm.currentState.stateKey
 		);
 
+		this.timeline = null;
+		/**
+		 * @type {Timeline}
+		 */
+		this.timeline = this.gameController.timeLine;
+		this.timelineMap = null;
+		this.telemetryMap = null;
+		this.initialiseTimeline();
+		if (this.timelineMap) {
+			this.initialiseTelemetryMap();
+			console.log('telem map: ', this.telemetryMap);
+		}
+
 		if (this.devPanel) {
 			this.collectButtons();
 			this.addListeners();
@@ -72,14 +90,49 @@ export class DevTools {
 		this.subscribe();
 		this.event = {};
 	}
-	subscribe() {
-		this.stateEmitter.subscribe(event => {
-			if (this.event !== event) {
-				// console.trace('Event chage detected: ', event);
-				this.event = event;
 
-				this.setStateName();
-			}
+	initialiseTelemetryMap() {
+		const telemetryMap = {};
+		/** @type {Array<[string, MissionPhase]>} */
+		const entries = Object.entries(this.timelineMap);
+		for (const [key, value] of entries) {
+			const telemetry = {
+				lunar_altitude: value.lunar_altitude,
+				altitude_units: value.altitude_units,
+				velocity_fps: value.velocity_fps,
+				fuel_percent: value.fuel_percent
+			};
+			telemetryMap[key] = telemetry;
+		}
+		this.telemetryMap = telemetryMap;
+	}
+
+	initialiseTimeline() {
+		this.timeline = this.gameController.timeLine;
+		if (this.timeline) {
+			this.timelineMap = this.makeTimelineMap(this.timeline);
+			console.log('timeline map: ', this.timelineMap);
+		}
+	}
+
+	/** @param {import('../types/missionTypes.js').MissionTimeline} timeline  */
+	makeTimelineMap(timeline) {
+		const map = {};
+		for (const [key, value] of Object.entries(AppStateKeys)) {
+			const phase = timeline.getPhase(value);
+			if (!phase) continue;
+			const stateKey = AppStateKeys[key];
+			map[stateKey] = phase;
+		}
+		return map;
+	}
+
+	subscribe() {
+		this.stateEmitter.on('state', event => {
+			console.log(`[stateEmitter]: ${event}`);
+		});
+		this.stateEmitter.subscribe(event => {
+			console.log('[SUBSCRIBE]: ', event);
 		});
 	}
 	setStateName() {
@@ -189,6 +242,7 @@ export class DevTools {
 
 		return devPanel;
 	}
+
 	handleNav(direction) {
 		if (direction !== 'next' && direction !== 'prev') {
 			return;
@@ -215,9 +269,38 @@ export class DevTools {
 		}
 		console.log(`${newStateKey} ${newIndex}`);
 
-		this.fsm.transitionTo(newStateKey, true);
+		const stateClasses = this.fsm.transitionTo(newStateKey, true);
+		const { previousState, newState } = stateClasses;
+
+		// switch (newIndex) {
+		// 	case 0:
+		// 		this.fsm.transitionTo(AppStateKeys.pre_start, true)
+		// 		this.gameController.clock.stop();
+		// 		this.gameController.clock.start();
+		// 		break;
+		// 	case 1:
+
+		// }
+		if (newIndex === 0) {
+			this.gameController.clock.stop();
+			this.gameController.clock.start();
+		}
 
 		this.currentStateIndex = newIndex;
 		this.setStateName();
 	}
+
+	// transition(newStateKey, previousTelemetry = null) {
+	// 	// Get copies of previous and current state class instance
+	// 	// const /** @type {MissionStateBase} */ prevStateClass = this.fsm.transitionTo(
+	// 	// 		newStateKey,
+	// 	// 		true
+	// 	// 	).prev;
+	// 	// const /** @type {MissionStateBase} */ newStateClass = this.fsm.transitionTo(
+	// 	// 		newStateKey,
+	// 	// 		true
+	// 	// ).new;
+
+	// 	const { /** @type {MissionStateBase} */ (prev), /** @type {MissionStateBase} */ (new) } =
+	// }
 }

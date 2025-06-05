@@ -120,16 +120,19 @@ export const AppStateKeys = {
 
 /**
  * @typedef {Object} DSKYVerbNoun
- * @property {string} verb - The verb code for the DSKY action.
- * @property {string} noun - The noun code for the DSKY action.
- * @property {string} description - Description of the verb-noun action.
+ * @property {string} [verb] - The verb code for the DSKY action.
+ * @property {string} [noun] - The noun code for the DSKY action.
+ * @property {string} [description] - Description of the verb-noun action.
+ * @property {boolean} [display]
+ * @property {string} [prog]
+ *
  */
 
 /**
  * @typedef {Object} DSKYActionItem
  * @property {string|null} [program] - The DSKY program number or null if none.
  * @property {string|null} [description] - Optional description of the program.
- * @property {DSKYVerbNoun[]} verb_noun - List of verb-noun pairs associated with this program.
+ * @property {DSKYVerbNoun[]} [verb_noun] - List of verb-noun pairs associated with this program.
  */
 
 /**
@@ -138,14 +141,18 @@ export const AppStateKeys = {
 
 /**
  * @typedef {Object} VerbNounRuntime
- * @property {string} verb
- * @property {string} noun
+ * @property {string} type
+ * @property {string} [verb]
+ * @property {string} [noun]
+ * @property {boolean} [display]
  * @property {string} key
  * @property {boolean} complete
+ * @property {string} [prog]
  */
 
 /**
  * @typedef {Object} ProgramRuntime
+ * @property {string} type
  * @property {string} program
  * @property {boolean} complete
  */
@@ -175,7 +182,7 @@ export const AppStateKeys = {
  * @property {string} altitude_units
  * @property {number} velocity_fps
  * @property {number} fuel_percent
- * @property {string } required_action
+ * @property {string | string[]} required_action
  * @property {string} audio_ref
  * @property {string} get_stamp
  * @property {Object} [timeline_cues]
@@ -225,6 +232,7 @@ export const AppStateKeys = {
 
 /**
  * @typedef {TimelineCue & {
+ * type: string,
  * seconds: number,
  * shown: boolean,
  * actionKey: string

@@ -1,3 +1,5 @@
+import { GameController } from '../game/gameController.js';
+
 /**
  *
  * @param {HTMLElement} element
@@ -26,6 +28,8 @@ function waitForEvent(element, eventName) {
 
 export class Modal {
 	constructor() {
+		this.dev = GameController._dev;
+
 		this.nextModal = document.getElementById('next_Modal');
 		this.instructionModal = document.getElementById('instruction_Modal');
 		this.verifyButton = document.getElementById('verifyButton');
@@ -60,6 +64,9 @@ export class Modal {
 		// 	`${Date.now()} >> Entering waitForNextClick: instructions= instructions`
 		// );
 		this.hideModal();
+		if (this.dev) {
+			return new Promise(resolve => resolve());
+		}
 
 		if (!instructions) {
 			if (!this.nextPhase) {

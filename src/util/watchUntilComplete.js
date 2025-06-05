@@ -1,4 +1,4 @@
-import { actionEmitter } from '../event/eventBus.js';
+import { actionEmitter, phaseEmitter } from '../event/eventBus.js';
 
 /**
  * Subscribes to all 'action' events untill 'actionsComplete' is received.
@@ -9,7 +9,7 @@ import { actionEmitter } from '../event/eventBus.js';
  * @param {(event: {type: string, [key: string]: any}) => void} onComplete
  * @returns {{unsubscribe: () => void}}
  */
-export default function watchUntilComplete(onAction, onComplete) {
+export function watchUntilComplete(onAction, onComplete) {
 	const actionSub = actionEmitter.on('action', onAction);
 	const completeSub = actionEmitter.on('actionsComplete', event => {
 		completeSub.unsubscribe();
@@ -20,6 +20,16 @@ export default function watchUntilComplete(onAction, onComplete) {
 		unsubscribe: () => {
 			actionSub.unsubscribe();
 			completeSub.unsubscribe();
+		}
+	};
+}
+
+export function watchPhaseAction(onAction) {
+	const phaseSub = phaseEmitter.on('action', onAction);
+
+	return {
+		unsubscribe: () => {
+			phaseSub.unsubscribe();
 		}
 	};
 }

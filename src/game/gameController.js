@@ -16,6 +16,7 @@ import { MissionClock } from './missionClock.js';
  * takes a parsed JSON mission timline document
  */
 export class GameController {
+	static _dev = false;
 	/** @param {MissionTimeline} timeline */
 	constructor(timeline) {
 		this.fsm = new FSM(this);

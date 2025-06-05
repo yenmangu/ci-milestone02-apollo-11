@@ -1,6 +1,6 @@
 import { TelemetryKeys } from '../../types/uiTypes.js';
 import { HudView } from './hudView.js';
-import { tickEmitter } from '../../event/eventBus.js';
+import { tickEmitter, phaseNameEmitter } from '../../event/eventBus.js';
 
 export class HudController {
 	/**
@@ -14,6 +14,9 @@ export class HudController {
 		this.telemetry = {};
 		// console.log('Instruments: ', instruments);
 		this.subscribeToTicks();
+		this.subscribeToNameChange();
+		this.phaseName = '';
+		this.currentKey = null;
 	}
 	subscribeToTicks() {
 		tickEmitter.on(
@@ -22,6 +25,18 @@ export class HudController {
 				this.hudView.writeTime(tick.getFormatted);
 			}
 		);
+	}
+	subscribeToNameChange() {
+		phaseNameEmitter.on('phaseName', phase => {
+			if (!phase) {
+				return;
+			}
+			console.log('Phase in subToPhaseName: ', phase);
+
+			this.currentKey = phase.key;
+			this.phaseName = phase.name;
+			this.updatePhase(phase.name);
+		});
 	}
 
 	setUnits(altitude_units) {

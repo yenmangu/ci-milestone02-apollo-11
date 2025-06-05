@@ -7,7 +7,7 @@ const stateEmitter = new EventEmitter();
 const actionEmitter = new EventEmitter();
 const phaseNameEmitter = new EventEmitter();
 const agcEmitter = new EventEmitter();
-const globalEmitter = new EventEmitter();
+const phaseEmitter = new EventEmitter();
 
 // Dev emitter
 const devLightsEmitter = new EventEmitter();
@@ -21,7 +21,7 @@ export {
 	actionEmitter,
 	phaseNameEmitter,
 	agcEmitter,
-	globalEmitter,
+	phaseEmitter,
 	devLightsEmitter,
 	devNavEmitter
 };

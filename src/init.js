@@ -1,4 +1,4 @@
-import { uiElements } from './DSKY/dskyDom.js';
+import { queryDom } from './DSKY/dskyDom.js';
 import { DSKYController } from './DSKY/dskyController.js';
 import { loadTimeline } from './data/timeline.js';
 import { GameController } from './game/gameController.js';
@@ -17,18 +17,21 @@ export async function initProgram() {
 		 */
 		let state = AppStateKeys.pre_start;
 		if (dev) {
-			state = AppStateKeys.idle;
+			// state = AppStateKeys.idle;
+			state = AppStateKeys.pre_start;
 		}
 
 		console.log('Init program initiated');
 
 		// console.log('UI Elements: ', uiElements);
 		const timeline = await loadTimeline();
+		const uiElements = queryDom();
 
 		const dsky = new DSKYController(uiElements);
 		const hud = new HudController(uiElements.hudMap);
 		const dskyInterface = new DSKYInterface(dsky, hud);
 		const gameController = new GameController(timeline);
+		GameController._dev = dev;
 		gameController.start();
 
 		dskyInterface.initiate();

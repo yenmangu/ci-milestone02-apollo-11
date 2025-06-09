@@ -2,9 +2,8 @@ import { initSevenSegmentDisplay } from './seven-segment/initSevenSegment.js';
 import { cast } from '../util/cast.js';
 
 /**
- * @type {import('../types/uiTypes.js').DskyDomElements}
+ * @returns {import('../types/uiTypes.js').DskyDomElements}
  */
-const uiElements = queryDom();
 
 function queryDom() {
 	const sevenSegmentDisplays = cast(
@@ -61,4 +60,4 @@ function queryDom() {
 	};
 }
 
-export { uiElements };
+export { queryDom };

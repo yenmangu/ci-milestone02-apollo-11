@@ -17,6 +17,7 @@
  * @typedef {import('../types/missionTypes.js').DSKYActionItem } DSKYActionItem
  * @typedef {DSKYActionItem[]} DSKYActions
  * @typedef {import('../types/dskyTypes.js').KeypadState} KeypadState
+ * @typedef {import('../types/missionTypes.js').TimelineCue} TimelineCue
  * @typedef {import('src/types/missionTypes.js').TimelineCueRuntime} TimelineCueRuntime
  */
 
@@ -25,6 +26,10 @@
  * @typedef {import('../types/missionTypes.js').VerbNounRuntime[]} VerbNounRuntimeArray
  * @typedef {import('../types/missionTypes.js').ProgramRuntime[]} ProgramRuntimeArray
  *
+ */
+
+/**
+ * @typedef {import('../types/telemetryTypes.js').Telemetry} Telemetry
  */
 
 import { AppStateKeys, AppStates } from '../types/missionTypes.js';
@@ -36,7 +41,7 @@ import {
 	phaseNameEmitter,
 	pushButtonEmitter,
 	actionEmitter,
-	phaseEmitter
+	telemetryEmitter
 } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
@@ -89,6 +94,7 @@ export class MissionStateBase {
 		this.phaseHeadingEl = document.getElementById('phaseName');
 		this.keypadEmitter = pushButtonEmitter;
 		this.actionEmitter = actionEmitter;
+		this.telemetryEmitter = telemetryEmitter;
 		/** @type {KeypadState | null} */ this.keypadState = null;
 		this.tickEmitter = tickEmitter;
 		this.lastTick = null;
@@ -143,6 +149,7 @@ export class MissionStateBase {
 		// this.watchUntilComplete((event) => {
 		// 	if()
 		// })
+		this._devFastComplete = false;
 	}
 	buildTelemetryMap() {
 		const map = {};
@@ -193,6 +200,8 @@ export class MissionStateBase {
 	 * @param {string} actionKey
 	 */
 	markActionComplete(actionKey) {
+		// console.log('[MissionStateBase] markActionComplete(', actionKey, ')');
+
 		this.actionsCompleted.add(actionKey);
 		const requiredAction = this.requiredActions.get(actionKey);
 		this.actionEmitter.emit('action', { name: actionKey, data: requiredAction });
@@ -201,8 +210,10 @@ export class MissionStateBase {
 		);
 
 		if (allComplete) {
-			console.log('ALL ACTIONS COMPLETE');
-			this.actionEmitter.emit('actionsComplete', this.actionsCompleted);
+			console.trace(`[MissionStateBase] All keys complete: for ${this.stateKey}`, [
+				...this.requiredActions.keys()
+			]);
+			console.trace('[MissionStateBase] Completed set:', this.actionsCompleted);
 			// Ignored because this is an optional hook the subclass can implement
 			this.onAllCompleted?.();
 		}
@@ -227,8 +238,13 @@ export class MissionStateBase {
 		return map;
 	}
 
+	/**
+	 *
+	 * @param {Telemetry} telemetry
+	 */
 	setPreviousTelemetry(telemetry) {
 		this.previousTelemetry = telemetry;
+		this.telemetryEmitter.emit('setPrevious', telemetry);
 	}
 
 	getTelemetrySnapshot() {
@@ -324,6 +340,10 @@ export class MissionStateBase {
 			this.currentPhase = phase;
 			this.updatePhaseHeading(phase.phase_name);
 			this.onMissionCritical(phase);
+			console.log(
+				`⏳ OnEnter about to bind watchers for ${this.stateKey} ; requiredActions keys =`,
+				[...this.requiredActions.keys()]
+			);
 			this.game.clock.jumpTo(this.phaseGetMap[this.stateKey].start_get);
 			this.resetCues();
 			this.resetDskyActions();
@@ -376,19 +396,28 @@ export class MissionStateBase {
 
 		if (phase.timeline_cues) {
 			if (Array.isArray(phase.timeline_cues)) {
-				this.timelineCues = phase.timeline_cues.map((cue, index) => {
-					const seconds = getSecondsFromGET(cue.time);
-					const actionKey = `cue_${index}`;
-					const cueObject = {
-						...cue,
-						seconds,
-						shown: false,
-						actionKey,
-						type: 'cue'
-					};
-					this.requiredActions.set(actionKey, cueObject);
-					return cueObject;
-				});
+				this.timelineCues = phase.timeline_cues
+					.filter(function (/** @type {TimelineCueRuntime} */ cue) {
+						if (cue.ignore) {
+							return false;
+						}
+						return true;
+					})
+					.map((/** @type {TimelineCue} */ cue, index) => {
+						const seconds = getSecondsFromGET(cue.time);
+						const actionKey = `cue_${index}`;
+						const cueObject = {
+							...cue,
+							seconds,
+							shown: false,
+							actionKey,
+							type: 'cue'
+						};
+						this.requiredActions.set(actionKey, cueObject);
+						return cueObject;
+					});
+
+				this.timelineCues.forEach((cue, index) => {});
 			}
 		}
 
@@ -401,7 +430,7 @@ export class MissionStateBase {
 		};
 
 		// this.dskyInterface.hud.updateHud(telemetry);
-		if (!this.previousTelemetry || this.previousTelemetry === 'null') {
+		if (!this.previousTelemetry || this.previousTelemetry === null) {
 			this.telemetry = { ...telemetry, state };
 		} else {
 			this.telemetry = {
@@ -544,14 +573,29 @@ export class MissionStateBase {
 		this.dskyInterface.hud.displayTranscript(message);
 	}
 
+	unsubscribeFromAll() {
+		if (this.actionWatcher) {
+			this.actionWatcher.unsubscribe();
+		}
+		if (this.phaseWatcher) {
+			this.phaseWatcher.unsubscribe();
+		}
+		if (this.keypadStateHandler) {
+			this.keypadEmitter.off('finalise', this.keypadStateHandler);
+			this.keypadEmitter.off('keypad', this.keypadStateHandler);
+			this.keypadStateHandler = null;
+		}
+
+		this.unsubscribeFromTicks();
+	}
+
 	onExit() {
 		console.warn('SubClass does not implement onExit()');
 	}
 
 	exit() {
-		this.actionWatcher?.unsubscribe();
-		this.phaseWatcher?.unsubscribe();
-		this.unsubscribeFromTicks();
+		this.unsubscribeFromAll();
+
 		if (typeof this.onExit === 'function') {
 			this.onExit();
 		}

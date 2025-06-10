@@ -1,6 +1,14 @@
+/**
+ * @typedef {import('../../types/telemetryTypes.js').Telemetry} Telemetry
+ */
+
 import { TelemetryKeys } from '../../types/uiTypes.js';
 import { HudView } from './hudView.js';
-import { tickEmitter, phaseNameEmitter } from '../../event/eventBus.js';
+import {
+	tickEmitter,
+	phaseNameEmitter,
+	telemetryEmitter
+} from '../../event/eventBus.js';
 
 export class HudController {
 	/**
@@ -12,6 +20,8 @@ export class HudController {
 		this.hudView = new HudView(instruments);
 		this.instruments = instruments;
 		this.telemetry = {};
+		this.telemetryEmitter = telemetryEmitter;
+
 		// console.log('Instruments: ', instruments);
 		this.subscribeToTicks();
 		this.subscribeToNameChange();
@@ -23,6 +33,16 @@ export class HudController {
 			'tick',
 			/** @param {import('../../types/clockTypes.js').TickPayload} tick */ tick => {
 				this.hudView.writeTime(tick.getFormatted);
+			}
+		);
+	}
+
+	subscribeToPreviousTelemetryEmit() {
+		this.telemetryEmitter.on(
+			'setPrevious',
+			(/** @type {Telemetry} */ telemetry) => {
+				if (!telemetry || telemetry === null) return;
+				this.updateHud(telemetry);
 			}
 		);
 	}

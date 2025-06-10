@@ -2,11 +2,12 @@
  * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
  */
 
-import { tickEmitter } from '../event/eventBus.js';
+import { tickEmitter, runningEmitter } from '../event/eventBus.js';
 import getSecondsFromGET from '../util/getSecondsFromGet.js';
 
 export class MissionClock {
 	constructor(startEpochMs, timeScale = 1, startGetSeconds = 0) {
+		this._loop = this._loop.bind(this);
 		this.startEpoch = startEpochMs;
 		this.lastRealTime = null; // Last real timestamp
 		this.elapsedMissionTime = 0; // Accumulated mission time so far
@@ -59,16 +60,22 @@ export class MissionClock {
 		return `T${sign}${hh}:${mm}:${ss}`;
 	}
 
-	_loop = () => {
+	_loop(now) {
 		if (!this.isRunning) {
+			runningEmitter.emit('running', false);
 			return;
 		}
 
-		const now = performance.now();
-		const realDelta = this.getRealDelta(now);
+		if (this.lastRealTime === null) {
+			this.lastRealTime = now;
+		} else {
+			const realDelta = this.getRealDelta(now);
+			this.elapsedMissionTime += realDelta * this.timeScale;
+			this.lastRealTime = now;
+		}
 
-		this.elapsedMissionTime += realDelta * this.timeScale;
-		this.lastRealTime = now;
+		// const now = performance.now();
+		// const realDelta = this.getRealDelta(now);
 
 		/** @type {TickPayload} */
 		const tick = {
@@ -76,10 +83,10 @@ export class MissionClock {
 			get: this.currentGETSeconds,
 			getFormatted: this.currentGET
 		};
-
+		runningEmitter.emit('running', true);
 		tickEmitter.emit('tick', tick);
 		this.frame = requestAnimationFrame(this._loop);
-	};
+	}
 
 	setTimeScale(newScale) {
 		if (this.isRunning) {
@@ -97,16 +104,19 @@ export class MissionClock {
 			return;
 		}
 		this.elapsedMissionTime = 0;
-		this.lastRealTime = performance.now();
-
 		this.isRunning = true;
-		this._loop();
+		this.lastRealTime = null;
+
+		this.lastRealTime = performance.now();
+		this.frame = requestAnimationFrame(this._loop);
 	}
 
 	pause() {
 		if (!this.isRunning) {
 			return;
 		}
+		runningEmitter.emit('running', false);
+		console.log('⏸️ [PAUSING]');
 
 		const now = performance.now();
 		const realDelta = this.getRealDelta(now);
@@ -126,10 +136,11 @@ export class MissionClock {
 		if (this.isRunning) {
 			return;
 		}
-		this.lastRealTime = performance.now();
+		runningEmitter.emit('running', true);
+		console.log('▶️ [RESUMING]');
 		this.isRunning = true;
-
-		this._loop();
+		this.lastRealTime = null;
+		this.frame = requestAnimationFrame(this._loop);
 	}
 
 	stop() {

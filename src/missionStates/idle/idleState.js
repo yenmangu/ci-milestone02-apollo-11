@@ -63,8 +63,12 @@ export class IdleState extends MissionStateBase {
 		this.checkTimelineCues(currentGETSeconds);
 	}
 
-	exit() {
+	onExit() {
 		console.log('Exiting idle state');
+		if (this.tickHandler) {
+			this.tickEmitter.off('tick', this.tickHandler);
+			this.tickHandler = null;
+		}
 	}
 	handleInput() {
 		console.log('Input in IdleState detected');

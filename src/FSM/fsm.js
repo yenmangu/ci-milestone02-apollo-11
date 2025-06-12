@@ -27,6 +27,7 @@ export class FSM {
 		this.previousTelemetry = null;
 
 		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
+		this.dev = false;
 	}
 	/**
 	 * Adds a new mission state to the finite state machine.
@@ -66,98 +67,148 @@ export class FSM {
 		this.factories[key] = { factoryFn, meta };
 	}
 
-	/**
-	 * Transitions to a state, instantiating lazily if needed
-	 * @param {AppStatesKey} key
-	 */
-	transitionTo(key, dev = false) {
-		if (dev) {
-			if (this.currentState?.requiredActions) {
-				[...this.currentState.requiredActions.keys()].forEach(key => {
-					this.currentState.markActionComplete(key);
-				});
-			}
-		}
-		const previousState = this.currentState;
+	// Helper function to determine if state is live state
 
-		// const state = this.states.get(AppStates[key]);
-		const stateKeyValue = AppStates[key];
-
-		// Temp class holders
-		let stateAttempt;
-		let controllerAttempt;
-		let viewAttempt;
-		// Lazily create the state if not yet constructed
-		if (!this.states.has(stateKeyValue)) {
-			// State not yet created
-			console.log('State not yet created: ', stateKeyValue);
-
-			const entry = this.factories[key];
-			// Yes its unnecessary but its here for future implementation
-			const { factoryFn, meta } = entry;
-
-			if (!entry || !entry.factoryFn) {
-				throw new Error(`No state or factory found for key "${key}"`);
-			}
-
-			const { view, controller, state } = entry.factoryFn();
-
-			if (!(state instanceof MissionStateBase)) {
-				throw new TypeError(
-					`Factory for "${key}" must return a state extending MissionStateBase`
-				);
-			}
-
-			stateAttempt = state;
-			controllerAttempt = controller;
-			viewAttempt = view;
-
-			this.states.set(stateKeyValue, stateAttempt);
-			this.views.set(stateKeyValue, viewAttempt);
-			this.controllers.set(stateKeyValue, controllerAttempt);
-
-			// Else if state already constructed
-		} else {
-			// If state already constructed, inject previousTelemetry directly
-			const /** @type {MissionStateBase} */ state = this.states.get(stateKeyValue);
-			stateAttempt = state;
-		}
-
-		// Get 'live' phase (not pre_start, paused or failed)
+	isLive(stateKey) {
 		const excluded = [AppStates.PRE_START, AppStates.PAUSED, AppStates.FAILED];
-		console.log('Excluded: ', excluded);
-
 		const livePhaseKeys = Object.entries(AppStates)
 			.filter(
 				([key, value]) => !excluded.includes(/** @type {AppStateValue} */ (value))
 			)
 			.map(([key, value]) => key);
 
-		// If a live phase:
-		console.log('PhaseKys: ', livePhaseKeys);
+		if (livePhaseKeys.includes(/** @type {AppStatesKey} */ (stateKey))) {
+			return true;
+		}
+	}
 
-		if (livePhaseKeys.includes(/** @type {AppStatesKey} */ (key))) {
-			const phase = this.game.timeLine.getPhase(key);
-			console.log('phase in fsm: ', phase);
-
-			if (stateAttempt.setPreviousTelemetry && this.previousTelemetry) {
-				stateAttempt.setPreviousTelemetry(this.previousTelemetry);
-			} else {
-				// this.previousTelemetry =
+	async devCompleteActions() {
+		return new Promise(resolve => {
+			if (this.currentState?.requiredActions) {
+				[...this.currentState.requiredActions.keys()].forEach(actionKey => {
+					this.currentState.markActionComplete(actionKey);
+				});
 			}
-		} else {
-			console.log('NOT LIVE PHASE');
-		}
+			resolve();
+			return;
+		});
+	}
 
-		console.log('this.currentState: ', this.currentState);
-		if (this.currentState) {
-			this.currentState.exit();
-		}
-		const /** @type {MissionStateBase} */ newState = this.states.get(stateKeyValue);
-		this.currentState = newState;
-		this.currentState.enter();
-		if (dev) {
-			return { previousState, newState };
-		}
+	/**
+	 * Transitions to a state, instantiating lazily if needed
+	 * @param {AppStatesKey} key
+	 */
+	async transitionTo(key) {
+		console.trace(`TIMESTAMP: [${performance.now()}]: transitionTo()`);
+		return new Promise(async resolve => {
+			const newKey = key;
+			// if (this.dev) {
+			// 	await this.devCompleteActions();
+			// }
+			const previousState = this.currentState;
+
+			// Dev navigation
+			if (previousState && this.dev && previousState._devFastComplete) {
+				previousState._devFastComplete = false;
+				previousState.exit();
+				previousState.timelineCues.forEach(cue => {
+					cue.shown = true;
+				});
+				if (previousState.dskyActions) {
+					previousState.dskyActions.program.forEach(p => p.complete === true);
+					previousState.dskyActions.verbNoun.forEach(p => p.complete === true);
+				}
+				previousState.requiredActions.clear();
+			} else if (previousState) {
+				previousState.exit;
+			}
+
+			if (previousState) {
+				const prevStateKey = previousState.stateKey;
+
+				if (this.isLive(prevStateKey)) {
+					const prevPhase = this.game.timeLine.getPhase(prevStateKey);
+					if (!prevPhase) {
+						this.previousTelemetry = null;
+					}
+					const { lunar_altitude, altitude_units, velocity_fps, fuel_percent } =
+						prevPhase;
+
+					this.previousTelemetry = {
+						lunar_altitude,
+						altitude_units,
+						velocity_fps,
+						fuel_percent
+					};
+				}
+			}
+
+			// const state = this.states.get(AppStates[key]);
+			const stateKeyValue = AppStates[newKey];
+
+			// Temp class holders
+			let stateAttempt;
+			let controllerAttempt;
+			let viewAttempt;
+			// Lazily create the state if not yet constructed
+			if (!this.states.has(stateKeyValue)) {
+				// State not yet created
+				console.log('State not yet created: ', stateKeyValue);
+
+				const entry = this.factories[newKey];
+				// Yes its unnecessary but its here for future implementation
+				const { factoryFn, meta } = entry;
+
+				if (!entry || !entry.factoryFn) {
+					throw new Error(`No state or factory found for key "${newKey}"`);
+				}
+
+				const { view, controller, state } = entry.factoryFn();
+
+				if (!(state instanceof MissionStateBase)) {
+					throw new TypeError(
+						`Factory for "${key}" must return a state extending MissionStateBase`
+					);
+				}
+
+				stateAttempt = state;
+				controllerAttempt = controller;
+				viewAttempt = view;
+
+				this.states.set(stateKeyValue, stateAttempt);
+				this.views.set(stateKeyValue, viewAttempt);
+				this.controllers.set(stateKeyValue, controllerAttempt);
+
+				// Else if state already constructed
+			} else {
+				// If state already constructed, inject previousTelemetry directly
+				const /** @type {MissionStateBase} */ state =
+						this.states.get(stateKeyValue);
+				stateAttempt = state;
+			}
+
+			// Get 'live' phase (not pre_start, paused or failed)
+
+			if (this.isLive(newKey)) {
+				if (stateAttempt.setPreviousTelemetry && this.previousTelemetry) {
+					stateAttempt.setPreviousTelemetry(this.previousTelemetry);
+				} else {
+					// this.previousTelemetry =
+				}
+			} else {
+				console.log('NOT LIVE PHASE');
+			}
+
+			const /** @type {MissionStateBase} */ newState =
+					this.states.get(stateKeyValue);
+			this.currentState = newState;
+			this.currentState.enter();
+			if (this.dev) {
+				resolve({ previousState, newState });
+				return;
+			}
+			resolve();
+			return;
+		});
 	}
 }

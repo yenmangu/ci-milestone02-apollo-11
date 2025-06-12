@@ -10,7 +10,7 @@
  * @typedef {import('../types/missionTypes.js').MissionPhase} MissionPhase
  */
 
-import { stateEmitter } from '../event/eventBus.js';
+import { stateEmitter, runningEmitter } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { FSM } from '../FSM/fsm.js';
 import { GameController } from '../game/gameController.js';
@@ -58,6 +58,7 @@ export class DevTools {
 		this.currentStateIndex = this.factories.findIndex(
 			([key]) => key === this.fsm.currentState.stateKey
 		);
+		this.currentState = this.fsm.currentState ? this.fsm.currentState : null;
 
 		this.timeline = null;
 		/**
@@ -87,7 +88,9 @@ export class DevTools {
 			}
 		});
 		/** @type {EventEmitter} */ this.stateEmitter = stateEmitter;
+		/** @type {EventEmitter} */ this.runningEmitter = runningEmitter;
 		this.subscribe();
+		this.isRunning = false;
 		this.event = {};
 	}
 
@@ -130,13 +133,17 @@ export class DevTools {
 	subscribe() {
 		this.stateEmitter.on('state', event => {
 			console.log(`[stateEmitter]: ${event}`);
+			this.setStateName();
 		});
 		this.stateEmitter.subscribe(event => {
 			console.log('[SUBSCRIBE]: ', event);
 		});
+		this.runningEmitter.on('running', event => {
+			this.isRunning = event;
+			this.playPauseButton.innerText = event === true ? '⏸️' : '▶️';
+		});
 	}
 	setStateName() {
-		console.log('[DEV]: setting state name');
 		const currentStateKey = Object.entries(AppStates).find(([key]) => {
 			// console.log('key: ', key);
 			return key === this.fsm.currentState.stateKey;
@@ -147,6 +154,7 @@ export class DevTools {
 				/** @type {import('../types/missionTypes.js').AppStateKey} */ (
 					currentStateKey
 				);
+			console.log('[DEV]: setting state name to: ', this.stateKey);
 			// console.log('currentStateKey found: ', currentStateKey);
 			this.currentStateIndex = this.factories.findIndex(([key]) => {
 				return key === currentStateKey;
@@ -168,6 +176,11 @@ export class DevTools {
 			this.handleReset();
 		});
 
+		this.playPauseButton.addEventListener('click', e => {
+			e.preventDefault();
+			this.handlePlayPause();
+		});
+
 		this.secondsInput.addEventListener('change', e => {
 			e.preventDefault();
 			// this.jumpSeconds = 0;
@@ -178,6 +191,13 @@ export class DevTools {
 			e.preventDefault();
 			this.handleJump();
 		});
+	}
+	handlePlayPause() {
+		if (this.gameController.clock.isRunning) {
+			this.gameController.clock.pause();
+		} else {
+			this.gameController.clock.resume();
+		}
 	}
 	handleJump() {
 		console.log(`Jumping by ${this.jumpSeconds}s`);
@@ -194,6 +214,7 @@ export class DevTools {
 		this.prevButton = cast(document.querySelector('button#prevBtn'));
 		this.nextButton = cast(document.querySelector('button#nextBtn'));
 		this.resetButton = cast(document.querySelector('button#resetBtn'));
+		this.playPauseButton = cast(document.getElementById('playPause'));
 		/** @type  {HTMLInputElement} */
 		this.secondsInput = cast(document.querySelector('input#seconds'));
 		this.secondsInput.setAttribute('value', '2');
@@ -234,6 +255,10 @@ export class DevTools {
 							<button id="jump"
 											class="btn btn-primary">Jump</button>
 						</div>
+						<div class="col-2">
+							<button id="playPause"
+											class="btn btn-primary">pause</button>
+						</div>
 					</div>
 				</div>
 		`;
@@ -243,7 +268,8 @@ export class DevTools {
 		return devPanel;
 	}
 
-	handleNav(direction) {
+	async handleNav(direction) {
+		this.fsm.dev = true;
 		if (direction !== 'next' && direction !== 'prev') {
 			return;
 		}
@@ -252,55 +278,73 @@ export class DevTools {
 			if (this.currentStateIndex >= this.factories.length - 1) {
 				return;
 			}
+
 			newIndex++;
+			const [newStateKey] = this.factories[newIndex];
+			const current = this.fsm.currentState;
+
+			if (this.fsm.currentState.requiredActions.size > 0) {
+				console.log('[⏭️ NEXT] fast-completing', current.stateKey);
+				current._devFastComplete = true;
+				this.completeActions(current);
+			} else {
+				await this.fsm.transitionTo(newStateKey);
+			}
+			this.currentStateIndex = newIndex;
+			this.setStateName();
 		} else if (direction === 'prev') {
 			if (this.currentStateIndex <= 0) {
 				return;
 			}
+			// await this.handlePrev(newIndex);
 			newIndex--;
+			const [newStateKey] = this.factories[newIndex];
+			await this.fsm.transitionTo(newStateKey);
+			this.currentStateIndex = newIndex;
+			this.setStateName();
 		}
+		// const state = this.fsm.currentState;
 
-		const [newStateKey] = this.factories[newIndex];
-
-		// Guard against transitioning to special non-mission states
-		if (this.nonNavigableStates.includes(newStateKey)) {
-			console.warn(`Blocked navigation to special state: ${newStateKey}`);
-			return;
-		}
-		console.log(`${newStateKey} ${newIndex}`);
-
-		const stateClasses = this.fsm.transitionTo(newStateKey, true);
-		const { previousState, newState } = stateClasses;
-
-		// switch (newIndex) {
-		// 	case 0:
-		// 		this.fsm.transitionTo(AppStateKeys.pre_start, true)
-		// 		this.gameController.clock.stop();
-		// 		this.gameController.clock.start();
-		// 		break;
-		// 	case 1:
-
-		// }
 		if (newIndex === 0) {
 			this.gameController.clock.stop();
 			this.gameController.clock.start();
 		}
-
-		this.currentStateIndex = newIndex;
-		this.setStateName();
 	}
 
-	// transition(newStateKey, previousTelemetry = null) {
-	// 	// Get copies of previous and current state class instance
-	// 	// const /** @type {MissionStateBase} */ prevStateClass = this.fsm.transitionTo(
-	// 	// 		newStateKey,
-	// 	// 		true
-	// 	// 	).prev;
-	// 	// const /** @type {MissionStateBase} */ newStateClass = this.fsm.transitionTo(
-	// 	// 		newStateKey,
-	// 	// 		true
-	// 	// ).new;
+	// handlePrev(newIndex) {
+	// 	const [newStateKey] = this.factories[newIndex];
+	// 	if (this.nonNavigableStates.includes(newStateKey)) {
+	// 		console.warn(`Blocked navigation to special state: ${newStateKey}`);
 
-	// 	const { /** @type {MissionStateBase} */ (prev), /** @type {MissionStateBase} */ (new) } =
+	// 		return;
+	// 	} else {
+	// 		this.fsm.dev = true;
+	// 		const stateClasses = this.fsm.transitionTo(newStateKey);
+	// 	}
 	// }
+
+	// handleNext(newStateKey) {
+	// 	const state = this.fsm.currentState;
+	// 	if (state?.requiredActions) {
+	// 		const complete = this.completeActions(state);
+	// 	} else {
+	// 		this.fsm.transitionTo(newStateKey);
+	// 		return;
+	// 	}
+	// }
+
+	/**
+	 *
+	 * @param {MissionStateBase} state
+	 */
+	completeActions(state) {
+		// return new Promise(resolve => {
+		[...state.requiredActions.keys()].forEach(actionKey => {
+			state.markActionComplete(actionKey);
+		});
+		// 	resolve(true);
+		// 	console.log('Resolved completing actions in: ', state.stateKey);
+		// 	return;
+		// });
+	}
 }

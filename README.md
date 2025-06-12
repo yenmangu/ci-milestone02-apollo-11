@@ -75,6 +75,8 @@ links to add to write up:
 https://fontsinuse.com/uses/56966/nasa-apollo-11-mission
 https://fontsinuse.com/typefaces/4496/spartan
 https://medium.com/@dovid11564/using-css-animations-to-mimic-the-look-of-a-crt-monitor-3919de3318e2
+https://tcf.pages.tcnj.edu/files/2013/12/Apollo-Guidance-Computer.pdf
+
 
 
 

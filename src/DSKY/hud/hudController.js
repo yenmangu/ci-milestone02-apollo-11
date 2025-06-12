@@ -25,6 +25,7 @@ export class HudController {
 		// console.log('Instruments: ', instruments);
 		this.subscribeToTicks();
 		this.subscribeToNameChange();
+		this.subscribeToPreviousTelemetryEmit();
 		this.phaseName = '';
 		this.currentKey = null;
 	}

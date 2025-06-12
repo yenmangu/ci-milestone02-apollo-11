@@ -42,11 +42,11 @@ export class DSKYInterface {
 	}
 
 	unlock() {
-		this.dskyController.unlockKeypad();
+		this.dskyController.unlockKeypad(false);
 	}
 
 	lock() {
-		this.dskyController.unlockKeypad(false);
+		this.dskyController.unlockKeypad(true);
 	}
 
 	showAll() {}

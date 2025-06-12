@@ -228,6 +228,7 @@ export const AppStateKeys = {
  * @property {string} speaker
  * @property {string} text
  * @property {object} [meta]
+ * @property {boolean} [ignore]
  */
 
 /**

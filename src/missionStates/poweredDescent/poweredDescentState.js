@@ -26,8 +26,9 @@ export class PoweredDescentState extends MissionStateBase {
 		this.prevTelemetry = undefined;
 	}
 
-	onEnter() {
+	async onEnter() {
 		this.controller.onEnter();
+		await this.controller.goForIntro();
 		this.watchUntilComplete(
 			event => {
 				this.handleActionEvent(event);
@@ -36,15 +37,29 @@ export class PoweredDescentState extends MissionStateBase {
 		);
 		this.prevTelemetry = this.previousTelemetry || null;
 		this.controller.updateDisplay();
+		this.bindTickHandler();
+		if (!this.keypadStateHandler) {
+			this.bindKeypadStateHandler();
+		}
 	}
 	async handleActionEvent(event) {
+		console.log('Event: ', event);
+
 		const { name, data } = event;
 
 		if (name === 'cue_2') {
-			this.controller.goForBrakingPhase();
+			if (data.shown === true) {
+				setTimeout(async () => {
+					await this.controller.goForPreIgnition();
+				}, 1400);
+			}
 		}
 
 		if (name === 'VERB_37_NOUN_63') {
+			if (this.checkProgramStatus('P63')) {
+				console.log('P63 entered');
+				this.controller.preIgnition = true;
+			}
 		}
 
 		if (name === 'VERB_06_NOUN_33') {
@@ -63,7 +78,7 @@ export class PoweredDescentState extends MissionStateBase {
 			await this.controller.ignite();
 
 			// @ T-35s - DSKY Blanks for 5 s
-			// @T5
+			// @T5``
 			// Show current VELOCITY in R_1
 			// Show TIG (min/sec) in R_2
 			// Show dV in R_3
@@ -78,12 +93,39 @@ export class PoweredDescentState extends MissionStateBase {
 		if (this.previousTelemetry && currentTelemetry) {
 			if (this.lastTickPayload !== null) {
 				this.controller.handleTick(this.lastTickPayload);
+				this.checkTimelineCues(this.lastTickPayload.get);
 			}
 		}
 	}
 
+	onKeypadUpdate(keypadState) {
+		this.checkDSKYStatus(keypadState);
+	}
+
+	async waitForProceed() {
+		return new Promise((resolve, reject) => {
+			// Determine if program 63 initiated
+			this.checkProgramStatus('P63');
+			if (true) {
+				resolve(true);
+				return;
+			} else {
+				reject(false);
+				return;
+			}
+		});
+	}
+
 	exit() {
-		console.log('Exiting PoweredDescent state');
+		super.exit();
+	}
+
+	onExit() {
+		console.log('Exiting poweredDescentState');
+
+		if (this.tickHandler) {
+			this.tickEmitter.off('tick', this.tickHandler);
+		}
 	}
 	handleInput() {
 		console.log('Input in PoweredDescent detected');

@@ -59,19 +59,15 @@ export class PoweredDescentController {
 		}
 	}
 
-	async goForBrakingPhase() {
-		// console.warn('Method not fully implemented.');
-		// Enable DSKY INPUT
-		// User should select P63
-		// Then -> user select V06N33 -> SHOW
-
-		// Await modal and click
-		await this.startBrakingPhase();
-
-		// unlock DSKY
-		this.dsky.unlock();
-		this.preIgnition = true;
+	async goForIntro() {
+		await this.introModal();
 	}
+
+	async goForPreIgnition() {
+		await this.preIgnitionModal();
+		this.dsky.unlock();
+	}
+
 	async getProceed() {
 		// Await PRO from input (MAX 5 S)
 	}
@@ -88,15 +84,29 @@ export class PoweredDescentController {
 
 	 * @returns {string[]}
 	 */
-	getModalLines() {
-		return Object.values(this.modalData);
+	getModalLines(section) {
+		return Object.values(this.modalData[section]);
 	}
 
-	async startBrakingPhase() {
+	async introModal() {
+		this.gameController.clock.pause();
 		await this.modal.waitForNextClick(
 			true,
-			'Start Powered Descent Phase',
-			...this.getModalLines()
+
+			'Next',
+			...this.getModalLines('first')
 		);
+
+		this.gameController.clock.resume();
+	}
+
+	async preIgnitionModal() {
+		this.gameController.clock.pause();
+		await this.modal.waitForNextClick(
+			true,
+			'Start Pre-Ignition',
+			...this.getModalLines('second')
+		);
+		this.gameController.clock.resume();
 	}
 }

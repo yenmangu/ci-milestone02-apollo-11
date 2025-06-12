@@ -546,6 +546,7 @@ export class MissionStateBase {
 				this.dskyInterface.writeProgram(program);
 				pro.complete === true;
 				this.markActionComplete(pro.program);
+				return true;
 			}
 		}
 	}
@@ -598,6 +599,9 @@ export class MissionStateBase {
 
 		if (typeof this.onExit === 'function') {
 			this.onExit();
+		}
+		if (this.requiredActions.size) {
+			this.requiredActions.clear();
 		}
 	}
 }

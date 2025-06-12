@@ -29,6 +29,7 @@ function waitForEvent(element, eventName) {
 export class Modal {
 	constructor() {
 		this.dev = GameController._dev;
+		this.controller = GameController;
 
 		this.nextModal = document.getElementById('next_Modal');
 		this.instructionModal = document.getElementById('instruction_Modal');
@@ -59,14 +60,20 @@ export class Modal {
 		this.currentButton = null;
 	}
 
-	async waitForNextClick(instructions = false, buttonText = '', ...args) {
+	async waitForNextClick(
+		instructions = false,
+
+		buttonText = '',
+		...args
+	) {
 		// console.log(
 		// 	`${Date.now()} >> Entering waitForNextClick: instructions= instructions`
 		// );
 		this.hideModal();
-		if (this.dev) {
-			return new Promise(resolve => resolve());
-		}
+
+		// if (this.dev) {
+		// 	return new Promise(resolve => resolve());
+		// }
 
 		if (!instructions) {
 			if (!this.nextPhase) {

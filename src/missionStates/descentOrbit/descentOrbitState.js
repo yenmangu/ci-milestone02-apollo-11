@@ -95,7 +95,7 @@ export class DescentOrbitState extends MissionStateBase {
 	}
 
 	handleActionEvent(event) {
-		console.log('Event being handled: ', event);
+		// console.log('Event being handled: ', event);
 
 		const { name, data } = event;
 		if (name === 'cue_22') {
@@ -105,10 +105,16 @@ export class DescentOrbitState extends MissionStateBase {
 			this.controller.handleIgnitionCue(data, this.currentPhase);
 		}
 	}
-
 	exit() {
 		super.exit();
-		console.log('Exiting DescentOrbit state');
+	}
+	onExit() {
+		console.log('Exiting descentOrbit state');
+
+		if (this.tickHandler) {
+			this.tickEmitter.off('tick', this.tickHandler);
+			this.tickHandler = null;
+		}
 	}
 	handleInput() {
 		console.log('Input in DescentOrbit detected');

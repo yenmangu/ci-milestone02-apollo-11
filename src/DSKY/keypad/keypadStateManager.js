@@ -32,7 +32,7 @@ const createKeypadStateManager = displayInterface => {
 
 			state.buffer = '';
 			logState('setMode');
-			pushButtonEmitter.emit(mode, 'enable');
+			pushButtonEmitter.emit('keypad', { mode: mode, action: 'enable' });
 		},
 
 		appendDigit(digit) {

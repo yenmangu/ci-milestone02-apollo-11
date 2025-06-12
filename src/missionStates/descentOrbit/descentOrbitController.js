@@ -228,8 +228,8 @@ export class DescentOrbitController {
 		this.burnTimeScale = this.normalScale * (this.burnTime / targetDuration);
 		this.gameController.clock.setTimeScale(this.burnTimeScale);
 
-		this.dsky.writeProgram('P63');
-		this.phaseEmitter.emit('action', { name: 'P63' });
+		// this.dsky.writeProgram('P63');
+		// this.phaseEmitter.emit('action', { name: 'P63' });
 		this.burnInProgress = true;
 		this.burnStartRealTime = performance.now();
 	}
@@ -251,6 +251,7 @@ export class DescentOrbitController {
 	async poweredDescentIntroModal() {
 		await this.modal.waitForNextClick(
 			true,
+
 			'Start Powered Descent Routine',
 			...Object.values(pd_intro)
 		);

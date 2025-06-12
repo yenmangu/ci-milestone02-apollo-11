@@ -185,14 +185,15 @@ export class MissionClock {
 
 		this.lastRealTime = performance.now();
 		this.isRunning = true;
-		this._loop();
+		requestAnimationFrame(this._loop);
 
-		const payload = {
-			elapsed: this.elapsedMissionTime,
-			get: this.currentGETSeconds,
-			getFormatted: this.currentGET
-		};
-		tickEmitter.emit('tick', payload);
+		// No longer needed:
+		// const payload = {
+		// 	elapsed: this.elapsedMissionTime,
+		// 	get: this.currentGETSeconds,
+		// 	getFormatted: this.currentGET
+		// };
+		// tickEmitter.emit('tick', payload);
 	}
 
 	// For Debugging purposes

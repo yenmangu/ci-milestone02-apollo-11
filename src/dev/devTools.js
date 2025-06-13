@@ -194,9 +194,9 @@ export class DevTools {
 	}
 	handlePlayPause() {
 		if (this.gameController.clock.isRunning) {
-			this.gameController.clock.pause();
+			this.gameController.pause();
 		} else {
-			this.gameController.clock.resume();
+			this.gameController.resume();
 		}
 	}
 	handleJump() {

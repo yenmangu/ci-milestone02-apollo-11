@@ -37,9 +37,9 @@ export class IdleState extends MissionStateBase {
 		};
 	}
 	async openModal() {
-		const isRunning = this.game.clock.pause();
+		const isRunning = this.game.pause();
 		await this.modal.waitForNextClick();
-		this.game.clock.resume();
+		this.game.resume();
 	}
 
 	/**

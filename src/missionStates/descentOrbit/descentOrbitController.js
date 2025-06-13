@@ -96,7 +96,7 @@ export class DescentOrbitController {
 			this.initiatedPreBurn = true;
 			this.burnTargetGET = null;
 
-			this.gameController.clock.pause();
+			this.gameController.pause();
 			const lineOne = doi.line_1;
 			const lineTwo = doi.line_2;
 
@@ -105,7 +105,7 @@ export class DescentOrbitController {
 
 			// NOW SKIP TO CORRECT TIME
 			this.gameController.clock.jumpTo('101:36:10');
-			this.gameController.clock.resume();
+			this.gameController.resume();
 			this.phaseEmitter.emit('action', { name: 'verify_burn' });
 
 			// Add COMP ACTY LIGHT FLASH

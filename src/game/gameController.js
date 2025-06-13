@@ -59,7 +59,7 @@ export class GameController {
 	}
 
 	resume() {
-		this.clock.start();
+		this.clock.resume();
 	}
 	pause() {
 		this.clock.pause();

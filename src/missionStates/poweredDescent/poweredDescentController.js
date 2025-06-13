@@ -64,7 +64,7 @@ export class PoweredDescentController {
 	}
 
 	async goForPreIgnition() {
-		await this.preIgnitionModal();
+		await this.preProgramModal();
 		this.dsky.unlock();
 	}
 
@@ -89,24 +89,30 @@ export class PoweredDescentController {
 	}
 
 	async introModal() {
-		this.gameController.clock.pause();
+		this.gameController.pause();
 		await this.modal.waitForNextClick(
 			true,
 
 			'Next',
-			...this.getModalLines('first')
+			...this.getModalLines('intro')
 		);
 
-		this.gameController.clock.resume();
+		this.gameController.resume();
 	}
 
-	async preIgnitionModal() {
-		this.gameController.clock.pause();
+	async preProgramModal() {
+		this.gameController.pause();
 		await this.modal.waitForNextClick(
 			true,
 			'Start Pre-Ignition',
-			...this.getModalLines('second')
+			...this.getModalLines('pre_63')
 		);
-		this.gameController.clock.resume();
+		this.gameController.resume();
+	}
+
+	async preIgnitionModal(section) {
+		this.gameController.pause();
+		await this.modal.waitForNextClick(true, '');
+		this.gameController.resume();
 	}
 }

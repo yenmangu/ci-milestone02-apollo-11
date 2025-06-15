@@ -103,6 +103,7 @@ export class MissionStateBase {
 		this.tickHandler = null;
 		this.verbNounToProgram = verbNounToProgramMap;
 		this.runCues = true;
+		this.replayingCues = false;
 		/**
 		 * Single point of truth for pause status.
 		 * All child state classes inherit this.
@@ -567,9 +568,27 @@ export class MissionStateBase {
 		}
 	}
 	runCue(cue) {
-		if (this.runCues) {
-			this.showCueOnHUD(cue);
+		if (!this.runCues || this.replayingCues) return;
+		this.showCueOnHUD(cue);
+	}
+
+	async showAllPendingCues() {
+		const missedCues = this.timelineCues.filter(
+			cue => !cue.shown && cue.seconds < this.lastTick
+		);
+		if (missedCues.length === 0) return;
+
+		missedCues.sort((a, b) => a.seconds - b.seconds);
+
+		this.replayingCues = true;
+
+		for (let i = 0; i < missedCues.length; i++) {
+			await new Promise(resolve => setTimeout(resolve, 2000));
+			this.showCueOnHUD(missedCues[i]);
+			missedCues[i].shown = true;
+			this.markActionComplete(missedCues[i].actionKey);
 		}
+		this.replayingCues = false;
 	}
 	/**
 	 *

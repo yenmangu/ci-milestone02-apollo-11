@@ -60,12 +60,37 @@ export class PoweredDescentController {
 	}
 
 	async goForIntro() {
+		this.gameController.pause();
 		await this.introModal();
+		await this.postIntroModal();
+		this.gameController.resume();
+	}
+
+	async goForPreProgram() {
+		this.gameController.pause();
+
+		await this.preProgramModal();
+		this.dsky.unlock();
+		this.dsky.hud.displayPrompt('Enter "V37N63E"');
+		this.gameController.clock.jumpTo('');
+		this.gameController.resume();
 	}
 
 	async goForPreIgnition() {
-		await this.preProgramModal();
-		this.dsky.unlock();
+		this.gameController.pause();
+		await this.preIgnitionIntroModal();
+		await this.preIgnitionInstructionsModal();
+		this.gameController.resume();
+		// Display correct values
+		this.dsky.hud.displayPrompt('Try the following: V37');
+		// Test values
+		this.dsky.bulkWrite({
+			verb: '06',
+			noun: '61',
+			register_1: '111111',
+			register_2: '222222',
+			register_3: '333333'
+		});
 	}
 
 	async getProceed() {
@@ -75,6 +100,10 @@ export class PoweredDescentController {
 	async ignite() {
 		await this.modal.waitForNextClick(false);
 		this.ignition = true;
+	}
+
+	onFailure() {
+		this.dsky.hud.displayPrompt('FAILURE');
 	}
 
 	updateDisplay() {}
@@ -89,30 +118,28 @@ export class PoweredDescentController {
 	}
 
 	async introModal() {
-		this.gameController.pause();
-		await this.modal.waitForNextClick(
-			true,
+		await this.getModal('intro', 'Next');
+	}
 
-			'Next',
-			...this.getModalLines('intro')
-		);
-
-		this.gameController.resume();
+	async postIntroModal() {
+		await this.getModal('post_intro', 'Next');
 	}
 
 	async preProgramModal() {
-		this.gameController.pause();
-		await this.modal.waitForNextClick(
-			true,
-			'Start Pre-Ignition',
-			...this.getModalLines('pre_63')
-		);
-		this.gameController.resume();
+		await this.getModal('pre_63', 'Proceed');
 	}
 
-	async preIgnitionModal(section) {
-		this.gameController.pause();
-		await this.modal.waitForNextClick(true, '');
-		this.gameController.resume();
+	async preIgnitionIntroModal() {
+		await this.getModal('pre_ignition_1', 'Enter Pre-Ignition');
+	}
+	async preIgnitionInstructionsModal() {
+		await this.getModal('pre_ignition_2', 'Next');
+		await this.getModal('pre_ignition_3', 'Next');
+		await this.getModal('pre_ignition_final', 'Next');
+	}
+
+	async getModal(section, buttonText) {
+		const lines = this.getModalLines(section);
+		await this.modal.waitForNextClick(true, buttonText, ...lines);
 	}
 }

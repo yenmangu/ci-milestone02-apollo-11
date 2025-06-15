@@ -89,6 +89,7 @@ export class MissionStateBase {
 		/** @type {Map<any>} */ this.requiredActions = new Map();
 		/** @type {Set<string>} */ this.actionsCompleted = new Set();
 		/** @type {TimelineCueRuntime[]} */ this.timelineCues = [];
+		this.transcriptCues = [];
 		this.actionWatcher = null;
 		this.phaseWatcher = null;
 		this.phaseHeadingEl = document.getElementById('phaseName');
@@ -101,6 +102,7 @@ export class MissionStateBase {
 		/** @type {TickPayload | null} */ this.lastTickPayload = null;
 		this.tickHandler = null;
 		this.verbNounToProgram = verbNounToProgramMap;
+		this.runCues = true;
 		/**
 		 * Single point of truth for pause status.
 		 * All child state classes inherit this.
@@ -321,6 +323,9 @@ export class MissionStateBase {
 	 * Fetches the JSON phase and delegates to onEnter.
 	 */
 	enter() {
+		if (!this.game.clock.isRunning) {
+			this.game.clock.resume();
+		}
 		// console.trace('enter being called on : ', this.stateKey);
 		if (!this.game.timeLine?.getPhase) {
 			console.warn(
@@ -380,7 +385,6 @@ export class MissionStateBase {
 	 */
 	onMissionCritical(phase) {
 		const {
-			start_time,
 			start_get,
 			phase_name,
 			description,
@@ -443,7 +447,6 @@ export class MissionStateBase {
 		this.dskyInterface.dskyController.requiredActions = required_action;
 		this.dskyInterface.dskyController.phaseName = phase_name;
 		this.dskyInterface.dskyController.phaseDescription = description;
-		this.dskyInterface.dskyController.startTime = start_time;
 		this.dskyInterface.dskyController.audioRef = audio_ref;
 		if (phase.failure_state) {
 			this.dskyInterface.dskyController.failureState = phase.failure_state;
@@ -458,7 +461,7 @@ export class MissionStateBase {
 			}
 		}
 
-		if (dsky_actions.length) {
+		if (dsky_actions && dsky_actions.length) {
 			// Clear any remaining actions
 			this.dskyActions = null;
 			/** @type {VerbNounRuntimeArray} */ const verbNoun = [];
@@ -554,15 +557,19 @@ export class MissionStateBase {
 	checkTimelineCues(currentGETSeconds) {
 		for (const cue of this.timelineCues) {
 			if (!cue.shown && currentGETSeconds >= cue.seconds) {
-				this.runCue(cue);
+				if (cue.no_display) {
+				} else {
+					this.runCue(cue);
+				}
 				cue.shown = true;
-
 				this.markActionComplete(cue.actionKey);
 			}
 		}
 	}
 	runCue(cue) {
-		this.showCueOnHUD(cue);
+		if (this.runCues) {
+			this.showCueOnHUD(cue);
+		}
 	}
 	/**
 	 *

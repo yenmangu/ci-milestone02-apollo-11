@@ -175,7 +175,6 @@ export const AppStateKeys = {
  * @typedef {Object} MissionPhase
  * @property {string} state
  * @property {string} start_get
- * @property {number} start_time
  * @property {string} phase_name
  * @property {string} description
  * @property {number} lunar_altitude
@@ -227,8 +226,10 @@ export const AppStateKeys = {
  * @property {string} time
  * @property {string} speaker
  * @property {string} text
+ * @property {boolean} dsky
  * @property {object} [meta]
  * @property {boolean} [ignore]
+ * @property {boolean} [no_display]
  */
 
 /**

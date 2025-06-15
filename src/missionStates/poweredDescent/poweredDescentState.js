@@ -1,6 +1,7 @@
 import { DSKYInterface } from '../../DSKY/dskyInterface.js';
 import { GameController } from '../../game/gameController.js';
 import { AppStateKeys } from '../../types/missionTypes.js';
+import getSecondsFromGET from '../../util/getSecondsFromGet.js';
 import { MissionStateBase } from '../missionStateBase.js';
 import { PoweredDescentController } from './poweredDescentController.js';
 
@@ -15,7 +16,8 @@ export class PoweredDescentState extends MissionStateBase {
 	constructor(gameController, dskyInterface, controller, key) {
 		super(gameController, dskyInterface, key);
 		this.controller = controller;
-
+		this.programEntryDeadline = getSecondsFromGET('102:32:34');
+		this.failureShown = false;
 		this.onAllCompleted = () => {
 			if (this.controller.ignition) {
 				this.game.fsm.transitionTo(AppStateKeys.braking_phase);
@@ -50,8 +52,8 @@ export class PoweredDescentState extends MissionStateBase {
 		if (name === 'cue_2') {
 			if (data.shown === true) {
 				setTimeout(async () => {
-					await this.controller.goForPreIgnition();
-				}, 1400);
+					await this.controller.goForPreProgram();
+				}, 1000);
 			}
 		}
 
@@ -59,32 +61,24 @@ export class PoweredDescentState extends MissionStateBase {
 			if (this.checkProgramStatus('P63')) {
 				console.log('P63 entered');
 				this.controller.preIgnition = true;
+				await this.controller.goForPreIgnition();
+			} else {
+				this.runCues = false;
 			}
 		}
-
-		if (name === 'VERB_06_NOUN_33') {
-			this.controller.getTIG(data);
-			// Show TIME OF IGNITION
-			// Confirm engine ignition
-			// @ T-35s - DSKY Blanks for 5 s
-			// @ T-5s - ACTION EVENT DISPLAY VERB 99
-		}
+		if (this.controller.preIgnition)
+			if (name === 'VERB_06_NOUN_33') {
+				this.controller.getTIG(data);
+				// Show TIME OF IGNITION
+				// Confirm engine ignition
+				// @ T-35s - DSKY Blanks for 5 s
+				// @ T-5s - ACTION EVENT DISPLAY VERB 99
+			}
 
 		if (typeof name === 'string' && name.startsWith('DISPLAY')) {
 			// FLASH VERB 99
 			await this.controller.getProceed();
-			// Confirm engine ignition
-
 			await this.controller.ignite();
-
-			// @ T-35s - DSKY Blanks for 5 s
-			// @T5``
-			// Show current VELOCITY in R_1
-			// Show TIG (min/sec) in R_2
-			// Show dV in R_3
-			// Failure state - 5 seconds to accept BEFORE Time of Ignition
-			// IF keyboard state does not equal proceed!!
-			// IF NOT FAIL -
 		}
 	}
 
@@ -94,6 +88,17 @@ export class PoweredDescentState extends MissionStateBase {
 			if (this.lastTickPayload !== null) {
 				this.controller.handleTick(this.lastTickPayload);
 				this.checkTimelineCues(this.lastTickPayload.get);
+			}
+		}
+		// FAILURE STATE
+		if (
+			!this.actionsCompleted.has('P63') &&
+			this.lastTick >= this.programEntryDeadline
+		) {
+			if (!this.failureShown) {
+				console.warn('P63 Not entered before cutoff - triggering failure');
+				this.failureShown = true;
+				this.controller.onFailure();
 			}
 		}
 	}

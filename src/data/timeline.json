@@ -3,7 +3,7 @@
       "state": "idle",
       "phase_name": "Lunar Orbit (CSM Separation)",
       "start_get": "100:40:00",
-      "start_time": 0,
+
       "description": "Eagle separates from Columbia in lunar orbit",
       "lunar_altitude": 60,
       "altitude_units": "miles",
@@ -30,7 +30,7 @@
       "state": "descent_orbit",
       "phase_name": "Descent Orbit Insertion (DOI)",
       "start_get": "101:17:00",
-      "start_time": 300,
+
       "description": "30-second burn to lower perilune",
       "lunar_altitude": 18,
       "altitude_units": "miles",
@@ -170,18 +170,15 @@
         "audio_ref": "nasa/abort_doi.mp3",
         "historical_context": "Actual DOI achieved 10.2% thrust (102:33:05 GET)"
       },
-      "dsky_actions": [{
-        "program": "P63",
-        "description": "Braking phase program, used to kill horizontal velocity after DOI burn"
-      }],
+
       "get_stamp": "101:36:14"
     },
     {
       "state": "powered_descent",
-      "phase_name": "Powered Descent Initiation (PDI) Pre-Ignition",
-      "start_get": "102:45:35",
-      "start_time": 1020,
-      "description": "DPS ignition at 10% throttle",
+      "phase_name": "Powered Descent Initiation (PDI)",
+      "start_get": "102:28:00",
+
+      "description": "The short time before P63 (BRAKING) Ignition",
       "lunar_altitude": 50000,
       "altitude_units": "feet",
       "velocity_fps": 5500,
@@ -190,7 +187,7 @@
       "audio_ref": "nasa/pdi_ignition.mp3",
       "failure_state": {
         "type": "ABORT_NO_IGNITION",
-        "condition": "throttle_activation_time >8s",
+        "condition": "throttle_activation_time > 8s",
         "audio_ref": "nasa/abort_pdi.mp3",
         "historical_context": "DPS had triple redundancy - never failed"
       },
@@ -203,34 +200,109 @@
             "description": "Initiate P63 - Braking Phase",
             "prog": "63"
           },
-          {
-            "verb": "06",
-            "noun": "33",
-            "description": "104:30:10.94"
-          },
+
           {
             "verb": "99",
             "display": true
           }
-
-
         ]
       }],
       "timeline_cues": [{
-          "time": "102:45:40",
+          "time": "102:28:08",
           "speaker": "Flight",
           "text": "Go for powered descent. Initiate PDI now."
         },
         {
-          "time": "102:45:42",
-          "speaker": "CAPCOM",
-          "text": "Eagle, Houston. You are go for PDI."
+          "time": "102:28:18",
+          "speaker": "Collins (Columbia, relaying to Eagle)",
+          "text": "Eagle, this is Columbia. They just gave you a Go for powered descent."
         },
         {
-          "time": "102:45:52",
-          "speaker": "Eagle",
-          "text": "Roger, go for powered descent."
+          "time": "102:28:51",
+          "speaker": "Duke",
+          "text": "Eagle, Houston. We read you now. You're Go for PDI. Over."
+        },
+
+        {
+          "time": "102:28:52",
+          "speaker": "AGC/DSKY",
+          "text": "Input Program 63: V37 N63 E",
+          "dsky": true,
+          "meta": {
+            "verb": "37",
+            "noun": "63",
+            "type": "program_entry"
+          }
+        },
+        {
+          "time": "102:32:20",
+          "speaker": "AGC/DSKY",
+          "text": "Verb 37 Noun 63: Braking phase selected.",
+          "dsky": true,
+          "meta": {
+            "verb": "37",
+            "noun": "63"
+          }
+        },
+        {
+          "time": "102:32:25",
+          "speaker": "Aldrin",
+          "text": "Engine arm, descent. 40 seconds."
+        },
+        {
+          "time": "102:32:29",
+          "speaker": "AGC/DSKY",
+          "text": "Noun 62: Ignition countdown initiated.",
+          "dsky": true,
+          "meta": {
+            "verb": "00",
+            "noun": "62"
+          }
+        },
+        {
+          "time": "102:32:30",
+          "speaker": "AGC/DSKY",
+          "text": "Noun 62: Ignition countdown initiated.",
+          "dsky": true,
+          "ignore": true,
+
+          "meta": {
+            "verb": "00",
+            "noun": "62"
+          }
+        },
+        {
+          "time": "102:32:30",
+          "speaker": "AGC/DSKY",
+          "text": "FAILURE",
+          "no_dislpay": true,
+          "dsky": true,
+          "meta": {
+
+          }
+        },
+        {
+          "time": "102:32:34",
+          "speaker": "Armstrong",
+          "text": "Is the camera running?"
+        },
+        {
+          "time": "102:32:35",
+          "speaker": "Aldrin",
+          "text": "Camera's running. Descent armed."
+        },
+        {
+          "time": "102:32:59",
+          "speaker": "AGC/DSKY",
+          "dsky": true,
+          "text": "PROCEED key accepted. Engine start imminent."
+        },
+        {
+          "time": "102:33:04",
+          "speaker": "AGC/DSKY",
+          "text": "IGNITION"
         }
+
       ],
       "get_stamp": "102:33:04"
     },
@@ -238,7 +310,7 @@
       "state": "braking_phase",
       "phase_name": "Braking Phase (P63)",
       "start_get": "102:33:04",
-      "start_time": 1080,
+
       "description": "Full throttle to kill horizontal velocity",
       "lunar_altitude": 33000,
       "altitude_units": "feet",
@@ -295,7 +367,7 @@
       "state": "program_alarm_1202",
       "phase_name": "1202 Program Alarm",
       "start_get": "102:38:22",
-      "start_time": 1125,
+
       "description": "Computer overload at 33,500 ft",
       "lunar_altitude": 33500,
       "altitude_units": "feet",
@@ -342,7 +414,7 @@
       "state": "approach_phase",
       "phase_name": "Approach Phase (P64)",
       "start_get": "102:41:24",
-      "start_time": 1200,
+
       "description": "Manual control at ~2,000 ft",
       "lunar_altitude": 2000,
       "altitude_units": "feet",
@@ -393,7 +465,7 @@
       "state": "program_alarm_1201",
       "phase_name": "1201 Program Alarm",
       "start_get": "102:42:05",
-      "start_time": 1260,
+
       "description": "Second computer overload at 1,600 ft",
       "lunar_altitude": 1600,
       "altitude_units": "feet",
@@ -440,7 +512,7 @@
       "state": "final_descent",
       "phase_name": "Final Descent (P66)",
       "start_get": "104:17:00",
-      "start_time": 1320,
+
       "description": "Manual landing (104:17:00 GET)",
       "lunar_altitude": 500,
       "altitude_units": "feet",
@@ -496,7 +568,7 @@
       "state": "landed",
       "phase_name": "Lunar Touchdown",
       "start_get": "104:17:38",
-      "start_time": 1380,
+
       "description": "Contact light at 104:17:39 GET",
       "lunar_altitude": 0,
       "altitude_units": "feet",

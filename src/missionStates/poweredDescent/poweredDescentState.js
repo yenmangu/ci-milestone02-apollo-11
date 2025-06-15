@@ -53,6 +53,7 @@ export class PoweredDescentState extends MissionStateBase {
 			if (data.shown === true) {
 				setTimeout(async () => {
 					await this.controller.goForPreProgram();
+					this.runCues = false;
 				}, 1000);
 			}
 		}
@@ -61,9 +62,8 @@ export class PoweredDescentState extends MissionStateBase {
 			if (this.checkProgramStatus('P63')) {
 				console.log('P63 entered');
 				this.controller.preIgnition = true;
+				this.runCues = true;
 				await this.controller.goForPreIgnition();
-			} else {
-				this.runCues = false;
 			}
 		}
 		if (this.controller.preIgnition)
@@ -82,7 +82,7 @@ export class PoweredDescentState extends MissionStateBase {
 		}
 	}
 
-	onTickUpdate() {
+	async onTickUpdate() {
 		const currentTelemetry = this.getTelemetrySnapshot();
 		if (this.previousTelemetry && currentTelemetry) {
 			if (this.lastTickPayload !== null) {
@@ -91,6 +91,7 @@ export class PoweredDescentState extends MissionStateBase {
 			}
 		}
 		// FAILURE STATE
+
 		if (
 			!this.actionsCompleted.has('P63') &&
 			this.lastTick >= this.programEntryDeadline
@@ -100,6 +101,14 @@ export class PoweredDescentState extends MissionStateBase {
 				this.failureShown = true;
 				this.controller.onFailure();
 			}
+		}
+		// Pending cues
+		if (
+			this.actionsCompleted.has('P63') &&
+			this.missedCues.length > 0 &&
+			!this.replayingCues
+		) {
+			await this.showAllPendingCues();
 		}
 	}
 

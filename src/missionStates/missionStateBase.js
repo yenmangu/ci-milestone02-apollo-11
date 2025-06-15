@@ -89,6 +89,7 @@ export class MissionStateBase {
 		/** @type {Map<any>} */ this.requiredActions = new Map();
 		/** @type {Set<string>} */ this.actionsCompleted = new Set();
 		/** @type {TimelineCueRuntime[]} */ this.timelineCues = [];
+		/** @type {TimelineCueRuntime[]} */ this.missedCues = [];
 		this.transcriptCues = [];
 		this.actionWatcher = null;
 		this.phaseWatcher = null;
@@ -560,6 +561,10 @@ export class MissionStateBase {
 			if (!cue.shown && currentGETSeconds >= cue.seconds) {
 				if (cue.no_display) {
 				} else {
+					if (!this.runCues) {
+					} else {
+						this.missedCues.push(cue);
+					}
 					this.runCue(cue);
 				}
 				cue.shown = true;
@@ -573,21 +578,19 @@ export class MissionStateBase {
 	}
 
 	async showAllPendingCues() {
-		const missedCues = this.timelineCues.filter(
-			cue => !cue.shown && cue.seconds < this.lastTick
-		);
-		if (missedCues.length === 0) return;
+		if (this.missedCues.length === 0) return;
 
-		missedCues.sort((a, b) => a.seconds - b.seconds);
+		this.missedCues.sort((a, b) => a.seconds - b.seconds);
 
 		this.replayingCues = true;
 
-		for (let i = 0; i < missedCues.length; i++) {
+		for (let i = 0; i < this.missedCues.length; i++) {
 			await new Promise(resolve => setTimeout(resolve, 2000));
-			this.showCueOnHUD(missedCues[i]);
-			missedCues[i].shown = true;
-			this.markActionComplete(missedCues[i].actionKey);
+			this.showCueOnHUD(this.missedCues[i]);
+			this.missedCues[i].shown = true;
+			this.markActionComplete(this.missedCues[i].actionKey);
 		}
+		this.missedCues = [];
 		this.replayingCues = false;
 	}
 	/**

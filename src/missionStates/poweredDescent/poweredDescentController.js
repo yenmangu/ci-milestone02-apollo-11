@@ -71,8 +71,8 @@ export class PoweredDescentController {
 
 		await this.preProgramModal();
 		this.dsky.unlock();
-		this.dsky.hud.displayPrompt('Enter "V37N63E"');
-		this.gameController.clock.jumpTo('');
+		// this.dsky.hud.displayPrompt('Enter "V37N63E"');
+		// this.gameController.clock.jumpTo('');
 		this.gameController.resume();
 	}
 
@@ -82,7 +82,7 @@ export class PoweredDescentController {
 		await this.preIgnitionInstructionsModal();
 		this.gameController.resume();
 		// Display correct values
-		this.dsky.hud.displayPrompt('Try the following: V37');
+		// this.dsky.hud.displayPrompt('Try the following: V37');
 		// Test values
 		this.dsky.bulkWrite({
 			verb: '06',

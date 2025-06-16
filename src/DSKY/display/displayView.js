@@ -7,17 +7,23 @@ import {
 import {} from '../../types/dskyTypes.js';
 
 /**
+ * @typedef {import('../../types/uiTypes.js').displayMap} displayMap
+ * @typedef {import('../../types/uiTypes.js').lightsMap} lightsMap
+ */
+
+/**
  * Render class for the DSKY component
  */
 export class DisplayView {
 	/**
 	 *
-	 * @param {import('../../types/uiTypes.js').displayMap} displayMap
-	 * @param {import('../../types/uiTypes.js').lightsMap} lightsMap
+	 * @param {displayMap} displayMap
+	 * @param {lightsMap} lightsMap
 	 */
 	constructor(displayMap, lightsMap) {
 		// console.log('Display view instance created');
 		this.displayMap = displayMap;
+		console.log('This display map: ', this.displayMap);
 
 		/** @type {import('../../types/uiTypes.js').lightsMap} */
 		this.lightsMap = lightsMap;
@@ -32,9 +38,17 @@ export class DisplayView {
 	setDskyStateZero() {
 		// console.log('Setting state zero');
 
-		Object.values(this.displayMap).forEach((display, idx) => {
-			display.textContent = idx < 3 ? '00' : '00000';
-		});
+		for (const [key, value] of Object.entries(this.displayMap)) {
+			if (key === 'noun' || key === 'verb') {
+				value.textContent = '00';
+			}
+			if (key.startsWith('polarity')) {
+				value.textContent = '+';
+			}
+			if (key.startsWith('register')) {
+				value.textContent = '000000';
+			}
+		}
 	}
 
 	write(id, value) {

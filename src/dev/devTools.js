@@ -6,6 +6,10 @@
  */
 
 /**
+ * @typedef {import('../types/missionTypes.js').AppStateKey} AppStateKey
+ */
+
+/**
  * @typedef {import('../types/missionTypes.js').MissionTimeline} Timeline
  * @typedef {import('../types/missionTypes.js').MissionPhase} MissionPhase
  */
@@ -92,6 +96,10 @@ export class DevTools {
 		this.subscribe();
 		this.isRunning = false;
 		this.event = {};
+		this.jumpGetTarget = localStorage.getItem('GET_TARGET') || null;
+		// Start At
+
+		// this.devStartAt(AppStateKeys.powered_descent);
 	}
 
 	initialiseTelemetryMap() {
@@ -191,6 +199,16 @@ export class DevTools {
 			e.preventDefault();
 			this.handleJump();
 		});
+
+		this.jumpToInput.addEventListener('change', e => {
+			e.preventDefault();
+			this.jumpGetTarget = this.jumpToInput.value;
+		});
+
+		this.jumpToButton.addEventListener('click', e => {
+			e.preventDefault();
+			this.handleJump(this.jumpGetTarget);
+		});
 	}
 	handlePlayPause() {
 		if (this.gameController.clock.isRunning) {
@@ -199,10 +217,18 @@ export class DevTools {
 			this.gameController.resume();
 		}
 	}
-	handleJump() {
-		console.log(`Jumping by ${this.jumpSeconds}s`);
+	handleJump(target = null) {
+		if (!target) {
+			console.log(`Jumping by ${this.jumpSeconds}s`);
 
-		this.gameController.clock.jumpBy(this.jumpSeconds);
+			this.gameController.clock.jumpBy(this.jumpSeconds);
+		} else {
+			if (typeof target === 'string') {
+				console.log(`Jumping to ${this.jumpGetTarget}s`);
+				this.gameController.clock.jumpTo(this.jumpGetTarget);
+				localStorage.setItem('GET_TARGET', this.jumpGetTarget);
+			}
+		}
 	}
 	handleReset() {
 		this.fsm.transitionTo(AppStateKeys.pre_start);
@@ -222,45 +248,60 @@ export class DevTools {
 		/** @type {HTMLButtonElement} */
 		this.jumpButton = document.querySelector('button#jump');
 		this.jumpButton.innerText = `Jump ${this.secondsInput.value}s`;
+		/** @type {HTMLInputElement} */ this.jumpToInput = cast(
+			document.getElementById('devGet')
+		);
+		this.jumpGetTarget = this.jumpToInput.value;
+		this.jumpToButton = document.getElementById('jumpTo');
+		this.jumpToInput.value = this.jumpGetTarget || '';
 	}
 
 	showDevPanel() {
 		const devPanel = document.createElement('section');
 		devPanel.innerHTML = `
 				<div class="container-fluid text-center dev-panel">
-				<div class="row">
-					<div class="col-6">Dev Panel</div>
-					<div class="col-6" id="stateName"></div>
-				</row>
-					<div class="row justify-content-evenly">
-						<div class="col-3">
-							<button id="prevBtn"
-											class="btn btn-primary">Prev</button>
-						</div>
-						<div class="col-3">
-							<button id="resetBtn"
-											class="btn btn-primary">Reset</button>
-						</div>
-
-						<div class="col-3">
-							<button id="nextBtn"
-											class="btn btn-primary">Next</button>
-						</div>
-					</div>
-					<div class="row justify-content-center mt-1">
-					<div class="col-2 align-self-center">
-							<input id="seconds" type="number"/>
-						</div>
-						<div class="col-2">
-							<button id="jump"
-											class="btn btn-primary">Jump</button>
-						</div>
-						<div class="col-2">
-							<button id="playPause"
-											class="btn btn-primary">pause</button>
-						</div>
-					</div>
-				</div>
+	<div class="row">
+		<div class="col-6">Dev Panel</div>
+		<div class="col-6"
+				 id="stateName"></div>
+		</row>
+		<div class="row justify-content-evenly">
+			<div class="col-3">
+				<button id="prevBtn"
+								class="btn btn-primary">Prev</button>
+			</div>
+			<div class="col-3">
+				<button id="resetBtn"
+								class="btn btn-primary">Reset</button>
+			</div>
+			<div class="col-3">
+				<button id="nextBtn"
+								class="btn btn-primary">Next</button>
+			</div>
+		</div>
+		<div class="row justify-content-center mt-1">
+			<div class="col-2 align-self-center">
+				<input id="devGet"
+							 type="text" />
+			</div>
+			<div class="col-2">
+				<button id="jumpTo"
+								class="btn btn-primary">Jump To</button>
+			</div>
+			<div class="col-2 align-self-center">
+				<input id="seconds"
+							 type="number" />
+			</div>
+			<div class="col-2">
+				<button id="jump"
+								class="btn btn-primary">Jump</button>
+			</div>
+			<div class="col-2">
+				<button id="playPause"
+								class="btn btn-primary">pause</button>
+			</div>
+		</div>
+	</div>
 		`;
 		devPanel.id = 'devPanel';
 		document.getElementById('go-back').before(devPanel);
@@ -311,27 +352,21 @@ export class DevTools {
 		}
 	}
 
-	// handlePrev(newIndex) {
-	// 	const [newStateKey] = this.factories[newIndex];
-	// 	if (this.nonNavigableStates.includes(newStateKey)) {
-	// 		console.warn(`Blocked navigation to special state: ${newStateKey}`);
-
-	// 		return;
-	// 	} else {
-	// 		this.fsm.dev = true;
-	// 		const stateClasses = this.fsm.transitionTo(newStateKey);
-	// 	}
-	// }
-
-	// handleNext(newStateKey) {
-	// 	const state = this.fsm.currentState;
-	// 	if (state?.requiredActions) {
-	// 		const complete = this.completeActions(state);
-	// 	} else {
-	// 		this.fsm.transitionTo(newStateKey);
-	// 		return;
-	// 	}
-	// }
+	/**
+	 *
+	 * @param {AppStateKey} stateKey
+	 */
+	devStartAt(stateKey) {
+		this.fsm.dev = true;
+		this.fsm.transitionTo(AppStateKeys.idle);
+		const current = this.fsm.currentState;
+		if (this.fsm.currentState.requiredActions.size > 0) {
+			current._devFastComplete = true;
+			this.completeActions(current);
+		}
+		this.fsm.transitionTo(stateKey);
+		this.setStateName();
+	}
 
 	/**
 	 *

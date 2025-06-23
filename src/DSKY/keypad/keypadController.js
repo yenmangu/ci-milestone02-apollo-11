@@ -50,6 +50,8 @@ export class KeypadController {
 	}
 
 	handleInput(dskyData) {
+		console.log('Raw dsky data: ', dskyData);
+
 		if (!this.keypadStateManager) {
 			console.warn('Keypad state manager not initialised');
 		}
@@ -74,6 +76,9 @@ export class KeypadController {
 					this.parent.resetDsky();
 					break;
 				// MORE
+				case ModeTypes.PRO:
+					this.keypadStateManager.setMode(dskyData);
+					break;
 				default:
 					this.defaultMethod();
 			}

@@ -281,7 +281,7 @@ export class MissionStateBase {
 			this.lastTick = currentGet;
 			this.lastTickPayload = tick;
 
-			this.onTickUpdate();
+			this.onTickUpdate((tick = tick));
 		};
 		this.tickEmitter.on('tick', this.tickHandler);
 	}
@@ -310,12 +310,21 @@ export class MissionStateBase {
 			}
 			this.keypadState = state;
 
+			console.log(
+				'[MissionStateBase bindKeypadStateHandler]: Global keypad state: ',
+				this.keypadState
+			);
 			this.onKeypadUpdate(state);
 		};
 		this.keypadEmitter.on('finalise', this.keypadStateHandler);
+		this.keypadEmitter.on('keypad', this.keypadStateHandler);
 	}
 
 	onKeypadUpdate(state) {
+		console.log(
+			'[MissionStateBase onKeypadUpdate]: Global keypad state: ',
+			this.keypadState
+		);
 		console.warn('Subclass does not implement onKeypadUpdate()');
 	}
 	// Abstract Methods all child classes must implement
@@ -520,7 +529,7 @@ export class MissionStateBase {
 	 */
 	checkDSKYStatus(state) {
 		console.log('Checking DSKY status');
-
+		if (!this.dskyActions) return;
 		for (const action of this.dskyActions.verbNoun) {
 			if (!action.complete) {
 				if (state.noun === action.noun && state.verb === action.verb) {
@@ -562,19 +571,25 @@ export class MissionStateBase {
 				if (cue.no_display) {
 				} else {
 					if (!this.runCues) {
-					} else {
 						this.missedCues.push(cue);
+					} else {
+						this.runCue(cue);
 					}
-					this.runCue(cue);
 				}
-				cue.shown = true;
 				this.markActionComplete(cue.actionKey);
 			}
 		}
 	}
+
+	/**
+	 *
+	 * @param {TimelineCueRuntime} cue
+	 * @returns {void}
+	 */
 	runCue(cue) {
 		if (!this.runCues || this.replayingCues) return;
 		this.showCueOnHUD(cue);
+		cue.shown = true;
 	}
 
 	async showAllPendingCues() {
@@ -583,11 +598,13 @@ export class MissionStateBase {
 		this.missedCues.sort((a, b) => a.seconds - b.seconds);
 
 		this.replayingCues = true;
+		console.log('Replaying Cues');
 
 		for (let i = 0; i < this.missedCues.length; i++) {
-			await new Promise(resolve => setTimeout(resolve, 2000));
+			await new Promise(resolve => setTimeout(resolve, 1000));
 			this.showCueOnHUD(this.missedCues[i]);
 			this.missedCues[i].shown = true;
+
 			this.markActionComplete(this.missedCues[i].actionKey);
 		}
 		this.missedCues = [];

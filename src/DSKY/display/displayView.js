@@ -27,6 +27,7 @@ export class DisplayView {
 
 		/** @type {import('../../types/uiTypes.js').lightsMap} */
 		this.lightsMap = lightsMap;
+		console.log('Lights Map: ', this.lightsMap);
 
 		this.flashingIntervals = {};
 		this.devLightsSub = devLightsEmitter.subscribe(event => {

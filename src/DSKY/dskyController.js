@@ -1,12 +1,17 @@
+/**
+ * @typedef {import('../types/uiTypes.js').DskyDomElements} DskyDomElements
+ */
+
 import { DisplayController } from './display/displayController.js';
 import { HudController } from './hud/hudController.js';
 import createKeypadStateManager from './keypad/keypadStateManager.js';
 import { pushButtonEmitter } from '../event/eventBus.js';
 import { KeypadController } from './keypad/keypadController.js';
+import { IndicatorLights } from './indicatorLights/indicatorLightsController.js';
 
 export class DSKYController {
 	/**
-	 * @param {import('../types/uiTypes.js').DskyDomElements} uiElements
+	 * @param {DskyDomElements} uiElements
 	 */
 	constructor(uiElements) {
 		this.uiElements = uiElements;
@@ -14,6 +19,7 @@ export class DSKYController {
 
 		this.displayMap = uiElements.displayMap;
 		this.lightsMap = uiElements.indicatorLights;
+		/** @type {HTMLElement} */ this.progLight = uiElements.progLight;
 		this.expectedActions = {};
 		/** @type {any | any[]} */ this.requiredActions = [];
 		this.phaseName = '';
@@ -28,6 +34,8 @@ export class DSKYController {
 			this.displayController = new DisplayController(this.displayMap, uiElements);
 		}
 
+		// Because the keyboardStateManager is a factory function, and not a class,
+		// the signature for for the state manager into the factory function.
 		const displayInterface = {
 			write: (id, val) => this.displayController.write(id, val),
 			bulkWrite: vals => this.displayController.bulkWrite(vals),
@@ -58,6 +66,11 @@ export class DSKYController {
 
 		this.devLightsSubscription = undefined;
 		this.startTime = undefined;
+		this.progLightInterval = undefined;
+	}
+
+	setPolarity(id, polarity) {
+		this.displayController.write(id, polarity);
 	}
 
 	defaultMethod() {
@@ -92,5 +105,25 @@ export class DSKYController {
 
 	initiate() {
 		this.displayController.setDskyStateZero();
+	}
+
+	flashProgLight(flash = true) {
+		if (flash) {
+			if (this.progLightInterval) {
+				clearInterval(this.progLightInterval);
+				this.progLight.classList.remove('active');
+				this.progLightInterval = null;
+			} else {
+				this.progLightInterval = setInterval(() => {
+					this.progLight.classList.toggle('active');
+				}, 200);
+			}
+		} else {
+			if (this.progLightInterval) {
+				clearInterval(this.progLightInterval);
+			}
+			this.progLightInterval = null;
+			this.progLight.classList.remove('active');
+		}
 	}
 }

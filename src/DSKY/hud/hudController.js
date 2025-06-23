@@ -98,6 +98,10 @@ export class HudController {
 		this.hudView.updateTranscript(message);
 	}
 
+	displayPrompt(message) {
+		this.hudView.updatePrompt(message);
+	}
+
 	updateVelocity(value) {
 		this.hudView.write('velocity', value);
 	}

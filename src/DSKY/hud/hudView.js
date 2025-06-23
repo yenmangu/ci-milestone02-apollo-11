@@ -12,7 +12,7 @@ export class HudView {
 		this.units = '';
 	}
 
-	/**
+	/**z
 	 *
 	 * @param {string} instrument
 	 * @param {string} value
@@ -29,6 +29,10 @@ export class HudView {
 
 	updateTranscript(value) {
 		this.hudMap.transcript.innerText = value;
+	}
+
+	updatePrompt(value) {
+		this.hudMap.prompt.innerText = value;
 	}
 
 	setUnits(altitudeUnits) {

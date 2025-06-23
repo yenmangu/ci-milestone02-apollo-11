@@ -230,6 +230,7 @@ export const AppStateKeys = {
  * @property {object} [meta]
  * @property {boolean} [ignore]
  * @property {boolean} [no_display]
+ * @property {string} [name]
  */
 
 /**

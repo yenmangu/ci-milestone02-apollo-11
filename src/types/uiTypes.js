@@ -58,6 +58,7 @@ export const TelemetryKeys = {
  * @property {HTMLElement} phase_name - Displays the current mission phase label.
  * @property {HTMLElement} altitude_units - Displays the current altitude units label (m or ft).
  * @property {HTMLElement} transcript - Displays the current audio transcript
+ * @property {HTMLElement} [prompt] - Displays the current audio transcript
  *
  */
 

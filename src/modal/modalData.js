@@ -73,8 +73,9 @@ const instructionData = {
 		},
 
 		pre_braking_out: {
-			0: `Ignition of the DPS has successfully happened, and now the crew begin the actual braking phase, so called because its goal was to decrease horizontal velocity as much as possible, to allow for a lunar descent.`,
-			1: `Press 'Next' to enter the braking phase of the mission.`
+			0: `Ignition of the DPS has successfully happened, and now the crew begin the actual braking phase, so called because its only purpose was to decrease horizontal velocity as much as possible, to allow for a lunar descent.`,
+			1: `Press 'Next' to enter the braking phase of the mission.`,
+			2: `<br>Source: https://www.doneyles.com/LM/Tales.html`
 		}
 	},
 

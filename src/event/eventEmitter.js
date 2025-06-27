@@ -1,8 +1,8 @@
-import {} from '../types/globalTypes.js';
+import {} from '../types/EventTypes.js';
 
 /**
  * @template {string} EventType
- * @typedef {import('../types/globalTypes.js').EventEmitterInstance<EventType>} EventEmitterInstance
+ * @typedef {import('../types/EventTypes.js').EventEmitterInstance<EventType>} EventEmitterInstance
  */
 
 /**
@@ -56,7 +56,7 @@ export default class EventEmitter {
 	/**
 	 * Shorthand for subscribing to all events
 	 * @param {(event: {type: EventType, payload: any})=> void} listener
-	 * @returns {({ unsubscribe: () => void, log: () => import('../types/globalTypes.js').Subscription })}
+	 * @returns {({ unsubscribe: () => void, log: () => import('../types/EventTypes.js').Subscription })}
 	 */
 	subscribe(listener) {
 		const wildcard = '*';

@@ -1,0 +1,63 @@
+[{
+		"name": "1202 Program Alarm",
+		"trigger_get": "102:39:02",
+		"phase_context": ["p_63"],
+		"alarm_code": "1202",
+		"interrupt_code": "1202",
+		"description": "Executive overflow- AGC unable to complete all tasks in real time ",
+		"context": ["The 1202 program alarm is being produced by data overflow in the computer. It is not an alarm that they had seen during simulations but, as Neil explained during a post-flight press conference ' In simulations we have a large number of failures and we are usually spring - loaded to the abort position. And in this case in the real flight, we are spring - loaded to the land position.'"],
+		"hud": true,
+		"dsky": true,
+		"requires_action": "ACK_1202",
+		"severity": "warning",
+		"data": {
+			"text": "1202 PROGRAM ALARM - EXEC OVERFLOW - NO CORE SETS",
+			"context": "No available memory for currently running programs"
+		}
+	},
+	{
+		"name": "1201 Program Alarm",
+		"trigger_get": "102:41:32",
+		"phase_context": ["p_64"],
+		"alarm_code": "1201",
+		"interrupt_code": "1201",
+		"description": "Executive overflow – AGC unable to schedule tasks due to vacant area exhaustion",
+		"context": [],
+		"hud": true,
+		"dsky": true,
+		"requires_action": "ACK_1201",
+		"data": {
+			"text": "1202 PROGRAM ALARM - EXEC OVERFLOW - NO VAC AREAS",
+			"context": "No available memory for new programs or data"
+		}
+	},
+	{
+		"name": "Fuel Exhausted",
+		"trigger_get": null,
+		"interrupt_code": "FUEL_EXHAUSTED",
+		"condition": "fuel_percent <= 0",
+		"description": "Simulation ends due to fuel exhaustion",
+		"phase_context": ["powered_descent", "braking_phase", "approach_phase", "final_descent"],
+		"hud": true,
+		"dsky": true,
+		"requires_action": "RETRY",
+		"severity": "fatal",
+		"audio_ref": "nasa/fuel_exhausted.mp3"
+	},
+	{
+		"name": "SYSTEM_PAUSE",
+		"trigger_get": null,
+		"interrupt_code": "PAUSE",
+		"description": "Manual or system-initiated pause in simulation",
+		"hud": true,
+		"dsky": false,
+		"input": true,
+		"output": false,
+		"semantic": true,
+		"requires_action": "RESUME",
+		"severity": "info",
+		"data": {
+			"text": "Simulation paused"
+		}
+	}
+]

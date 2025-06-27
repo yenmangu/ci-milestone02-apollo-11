@@ -8,7 +8,7 @@ import { HudController } from './DSKY/hud/hudController.js';
 import { devNavEmitter } from './event/eventBus.js';
 import { AppStateKeys } from './types/missionTypes.js';
 
-export async function initProgram() {
+export async function old_initProgram() {
 	try {
 		// DEV
 		const dev = true;
@@ -58,4 +58,18 @@ export async function initProgram() {
 	} catch (error) {
 		throw error;
 	}
+}
+
+export function initProgram() {
+	try {
+		// Load timeline
+		// Load UI elements
+		// Create UI Controller
+		// Create HUD Controller
+		// Create UI Interface (That every other component can use to update UI)
+		// Create GameController
+		// Start GameController
+		// Initiate the UI
+		// Transition to first STATE
+	} catch (error) {}
 }

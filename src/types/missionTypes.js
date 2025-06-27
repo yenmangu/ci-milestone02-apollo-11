@@ -133,6 +133,7 @@ export const AppStateKeys = {
  * @property {string|null} [program] - The DSKY program number or null if none.
  * @property {string|null} [description] - Optional description of the program.
  * @property {DSKYVerbNoun[]} [verb_noun] - List of verb-noun pairs associated with this program.
+ * @property {string|null[]} [actions]
  */
 
 /**
@@ -158,9 +159,14 @@ export const AppStateKeys = {
  */
 
 /**
+ * @typedef {Object} ActionRuntime
+ */
+
+/**
  * @typedef {Object} DSKYActionRuntime
- * @property {VerbNounRuntime[]} verbNoun
- * @property {ProgramRuntime[]} program
+ * @property {VerbNounRuntime[]} [verbNoun]
+ * @property {ProgramRuntime[]} [program]
+ * @property {ActionRuntime[]} [action]
  */
 
 /**

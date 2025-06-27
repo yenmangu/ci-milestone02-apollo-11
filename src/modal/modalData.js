@@ -63,7 +63,7 @@ const instructionData = {
 			6: `R2: Unused (ZERO padded)`,
 			7: `R3: Unused (ZERO padded)`,
 			8: `<br>At T-5s the DSKY Display flashed VERB 99, to indicate a 'go' request from the crew, at which point Buzz Aldrin, the LM Pilot keyed in 'PROCEED' (PRO) to confirm the ignition.`,
-			9: `<br>At T-0s the Ignition`
+			9: `<br>At T-0s: Ignition`
 		},
 
 		pre_ignition_final: {

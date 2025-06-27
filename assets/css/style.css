@@ -222,7 +222,8 @@ header {
 	padding-left: 0;
 }
 
-#hud-transcript {
+#hud-transcript,
+#hud-prompt {
 	font-size: 0.8rem;
 }
 

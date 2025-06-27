@@ -199,12 +199,11 @@
             "noun": "63",
             "description": "Initiate P63 - Braking Phase",
             "prog": "63"
-          },
-
-          {
-            "verb": "99",
-            "display": true
           }
+
+        ],
+        "actions": [
+          "PRO"
         ]
       }],
       "timeline_cues": [{
@@ -245,6 +244,7 @@
           }
         },
         {
+          "name": "start_countdown",
           "time": "102:32:25",
           "speaker": "Aldrin",
           "text": "Engine arm, descent. 40 seconds."
@@ -265,22 +265,12 @@
           "text": "Noun 62: Ignition countdown initiated.",
           "dsky": true,
           "ignore": true,
-
           "meta": {
             "verb": "00",
             "noun": "62"
           }
         },
-        {
-          "time": "102:32:30",
-          "speaker": "AGC/DSKY",
-          "text": "FAILURE",
-          "no_dislpay": true,
-          "dsky": true,
-          "meta": {
 
-          }
-        },
         {
           "time": "102:32:34",
           "speaker": "Armstrong",
@@ -291,11 +281,18 @@
           "speaker": "Aldrin",
           "text": "Camera's running. Descent armed."
         },
+
+        {
+          "time": "102:32:55",
+          "speaker": "AGC/DSKY",
+          "dsky": true,
+          "text": "Standby for PROCEED."
+        },
         {
           "time": "102:32:59",
           "speaker": "AGC/DSKY",
           "dsky": true,
-          "text": "PROCEED key accepted. Engine start imminent."
+          "text": "REQUESTING PROCEED. Engine start imminent."
         },
         {
           "time": "102:33:04",

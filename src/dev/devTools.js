@@ -97,6 +97,7 @@ export class DevTools {
 		this.isRunning = false;
 		this.event = {};
 		this.jumpGetTarget = localStorage.getItem('GET_TARGET') || null;
+		this.jumpToInput.value = this.jumpGetTarget !== null ? this.jumpGetTarget : '';
 		// Start At
 
 		// this.devStartAt(AppStateKeys.powered_descent);
@@ -231,6 +232,15 @@ export class DevTools {
 		}
 	}
 	handleReset() {
+		const state = this.currentState;
+		if (state) {
+			for (const [key, value] of Object.entries(state.requiredActions)) {
+				state.markActionComplete(key);
+			}
+			// if(state.)
+			state.requiredActions.clear();
+			state.unsubscribeFromAll();
+		}
 		this.fsm.transitionTo(AppStateKeys.pre_start);
 		this.currentStateIndex = 0;
 		this.setStateName();

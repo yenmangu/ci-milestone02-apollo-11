@@ -14,6 +14,7 @@ export class DSKYInterface {
 	 *  @param {HudController} hudController
 	 */
 	constructor(dskyController, hudController) {
+		this._flashingFields = new Set();
 		this.dskyController = dskyController;
 		this.hud = hudController;
 		this.lightsEmitter = indicatorLightsEmitter;
@@ -24,9 +25,13 @@ export class DSKYInterface {
 			this.currentKeypadState = state.payload;
 			console.log('[dskyInterface]: Keyboard State: ', this.currentKeypadState);
 		});
+		this.isFlashing = false;
 	}
 
 	write(id, value) {
+		if (this._flashingFields.has(id)) {
+			return;
+		}
 		this.dskyController.displayController.write(id, value);
 	}
 
@@ -40,29 +45,38 @@ export class DSKYInterface {
 
 	/**
 	 *
-	 * @param {'verb' | 'noun'} display
+	 * @param {'verb' | 'noun'} displayField
 	 * @param {string} value
 	 * @param {number} interval
 	 */
-	flash(display, value, interval = 200) {
+	flash(displayField, value, interval = 200) {
+		if (this._flashingFields.has(displayField)) {
+			return;
+		}
+		this._flashingFields.add(displayField);
 		if (this.flashInterval) {
 			clearInterval(this.flashInterval);
 		}
 		let isVisible = false;
 		this.flashInterval = setInterval(() => {
 			if (isVisible) {
-				this.write(display, '');
+				this.write(displayField, '');
 			} else {
-				this.write(display, value);
+				this.write(displayField, value);
 			}
 			isVisible = !isVisible;
 		}, interval);
+		this.isFlashing = true;
 	}
 
 	stopFlash() {
 		if (this.flashInterval) {
 			clearInterval(this.flashInterval);
+			this.flashInterval = null;
 		}
+
+		this._flashingFields.clear();
+		this.isFlashing = false;
 	}
 
 	/**
@@ -70,7 +84,12 @@ export class DSKYInterface {
 	 * @param {Record<string,string>} values
 	 */
 	bulkWrite(values) {
-		this.dskyController.displayController.bulkWrite(values);
+		for (const [field, value] of Object.entries(values)) {
+			if (!this._flashingFields.has(field)) {
+				this.write(field, value);
+			}
+		}
+		// this.dskyController.displayController.bulkWrite(values);
 	}
 
 	resetDisplay() {

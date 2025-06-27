@@ -120,4 +120,8 @@ export class Modal {
 		this.verifyButton.innerText = buttonText;
 		return;
 	}
+
+	failureModal(failureCondition) {
+		console.warn('Failure: ', failureCondition);
+	}
 }

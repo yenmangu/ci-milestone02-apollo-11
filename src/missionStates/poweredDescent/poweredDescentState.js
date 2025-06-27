@@ -26,6 +26,9 @@ export class PoweredDescentState extends MissionStateBase {
 			}
 		};
 		this.prevTelemetry = undefined;
+		this.countdownStarted = undefined;
+		this.countdownGET = '102:32:19';
+		// window.poweredDescent = this; <<<<< HERE HERE HERE HERE HERE
 	}
 
 	async onEnter() {
@@ -37,6 +40,9 @@ export class PoweredDescentState extends MissionStateBase {
 			},
 			complete => {}
 		);
+		this.watchAgcActionsUntilComplete(event => {
+			this.handleActionEvent(event);
+		});
 		this.prevTelemetry = this.previousTelemetry || null;
 		this.controller.updateDisplay();
 		this.bindTickHandler();
@@ -45,40 +51,51 @@ export class PoweredDescentState extends MissionStateBase {
 		}
 	}
 	async handleActionEvent(event) {
-		console.log('Event: ', event);
+		// console.log('Event: ', event);
 
 		const { name, data } = event;
 
 		if (name === 'cue_2') {
-			if (data.shown === true) {
-				setTimeout(async () => {
-					await this.controller.goForPreProgram();
-					this.runCues = false;
-				}, 1000);
-			}
+			// console.log('event: ', event);
+			setTimeout(async () => {
+				await this.controller.goForPreProgram();
+				this.runCues = false;
+			}, 1000);
+			// if (data.shown && data.shown === true) {
+			// 	setTimeout(async () => {
+			// 		await this.controller.goForPreProgram();
+			// 		this.runCues = false;
+			// 	}, 1000);
+			// }
 		}
 
 		if (name === 'VERB_37_NOUN_63') {
+			console.log('Event: ', event);
+
 			if (this.checkProgramStatus('P63')) {
 				console.log('P63 entered');
 				this.controller.preIgnition = true;
 				this.runCues = true;
 				await this.controller.goForPreIgnition();
+				// HERE
+				this.dskyInterface.lock();
+				await this.controller.startIgnitionCountdown(this.lastTickPayload);
+
+				// this.game.clock.jumpTo(this.countdownGET);
+
+				// await this.controller.startIgnitionCountdown(this.lastTickPayload);
+				// if (this.controller.countdownActive) {
+				// 	this.game.clock.jumpTo('102:32:19');
+				// 	this.dskyInterface.lock();
+				// }
 			}
 		}
-		if (this.controller.preIgnition)
-			if (name === 'VERB_06_NOUN_33') {
-				this.controller.getTIG(data);
-				// Show TIME OF IGNITION
-				// Confirm engine ignition
-				// @ T-35s - DSKY Blanks for 5 s
-				// @ T-5s - ACTION EVENT DISPLAY VERB 99
-			}
 
-		if (typeof name === 'string' && name.startsWith('DISPLAY')) {
-			// FLASH VERB 99
-			await this.controller.getProceed();
-			await this.controller.ignite();
+		// ITS NOT FIUCKING FLASHING
+		if (name === 'PRO') {
+			console.log('event: ', event);
+			this.markActionComplete(name);
+			console.log('PRO ACCEPTED: IGNITION SOON');
 		}
 	}
 
@@ -90,6 +107,11 @@ export class PoweredDescentState extends MissionStateBase {
 				this.checkTimelineCues(this.lastTickPayload.get);
 			}
 		}
+
+		if (this.controller.preIgnition && this.controller.countdownActive) {
+			this.controller.updateCountdownTimer(this.lastTickPayload);
+		}
+
 		// FAILURE STATE
 
 		if (
@@ -110,10 +132,19 @@ export class PoweredDescentState extends MissionStateBase {
 		) {
 			await this.showAllPendingCues();
 		}
+		if (this.countdownStarted) {
+			this.handleCountdown();
+		}
+	}
+
+	handleCountdown() {
+		this.controller.startIgnitionCountdown(this.lastTickPayload);
 	}
 
 	onKeypadUpdate(keypadState) {
 		this.checkDSKYStatus(keypadState);
+		console.log('Keypad state in poweredDescent: ', this.keypadState);
+		this.controller.keypadState = keypadState;
 	}
 
 	async waitForProceed() {

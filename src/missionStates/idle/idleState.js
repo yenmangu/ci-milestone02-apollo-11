@@ -52,12 +52,13 @@ export class IdleState extends MissionStateBase {
 		this.actionsCompleted.clear();
 
 		this.bindTickHandler();
+		// this.bindKeypadStateHandler();
 
 		this.prevTelemetry = this.previousTelemetry || null;
 		this.controller.updateDisplay(this.getTelemetrySnapshot());
 	}
 
-	onTickUpdate(deltaTimeSeconds, getFormatted) {
+	onTickUpdate() {
 		const currentGETSeconds = this.lastTick;
 
 		this.checkTimelineCues(currentGETSeconds);

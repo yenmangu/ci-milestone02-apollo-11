@@ -25,6 +25,7 @@
  * @typedef {import('../types/missionTypes.js').DSKYActionRuntime} DSKYActionRuntime
  * @typedef {import('../types/missionTypes.js').VerbNounRuntime[]} VerbNounRuntimeArray
  * @typedef {import('../types/missionTypes.js').ProgramRuntime[]} ProgramRuntimeArray
+ * @typedef {import('../types/missionTypes.js').ActionRuntime[]} ActionRuntimeArray
  *
  */
 
@@ -41,13 +42,15 @@ import {
 	phaseNameEmitter,
 	pushButtonEmitter,
 	actionEmitter,
-	telemetryEmitter
+	telemetryEmitter,
+	agcEmitter
 } from '../event/eventBus.js';
 import EventEmitter from '../event/eventEmitter.js';
 import { GameController } from '../game/gameController.js';
 import { actionKeyFor } from '../util/actionKey.js';
 import getSecondsFromGET from '../util/getSecondsFromGet.js';
 import {
+	watchAgcAction,
 	watchPhaseAction,
 	watchUntilComplete
 } from '../util/watchUntilComplete.js';
@@ -93,6 +96,7 @@ export class MissionStateBase {
 		this.transcriptCues = [];
 		this.actionWatcher = null;
 		this.phaseWatcher = null;
+		this.agcWatcher = null;
 		this.phaseHeadingEl = document.getElementById('phaseName');
 		this.keypadEmitter = pushButtonEmitter;
 		this.actionEmitter = actionEmitter;
@@ -197,6 +201,13 @@ export class MissionStateBase {
 	 */
 	watchPhaseUntilComplete(onAction) {
 		this.phaseWatcher = watchPhaseAction(onAction);
+	}
+
+	/**
+	 * @protected
+	 */
+	watchAgcActionsUntilComplete(onAction) {
+		this.agcWatcher = watchAgcAction(onAction);
 	}
 
 	/**
@@ -477,7 +488,19 @@ export class MissionStateBase {
 			this.dskyActions = null;
 			/** @type {VerbNounRuntimeArray} */ const verbNoun = [];
 			/** @type {ProgramRuntimeArray} */ const program = [];
+			/** @type {ActionRuntimeArray} */ const actions = [];
 			dsky_actions.forEach((action, index) => {
+				if (Array.isArray(action.actions)) {
+					for (const a of action.actions) {
+						const actionObject = {
+							type: 'action',
+							action: a,
+							complete: false
+						};
+						actions.push(actionObject);
+						this.requiredActions.set(a, action.actions);
+					}
+				}
 				if (Array.isArray(action.program)) {
 					for (const p of action.program) {
 						const programObject = {
@@ -565,6 +588,16 @@ export class MissionStateBase {
 		}
 	}
 
+	checkActionStatus(action) {
+		for (const ac of this.dskyActions.action) {
+			if (!ac.complete && ac.action === action) {
+				ac.complete = true;
+				this.markActionComplete(ac.action);
+				return true;
+			}
+		}
+	}
+
 	checkTimelineCues(currentGETSeconds) {
 		for (const cue of this.timelineCues) {
 			if (!cue.shown && currentGETSeconds >= cue.seconds) {
@@ -589,6 +622,8 @@ export class MissionStateBase {
 	runCue(cue) {
 		if (!this.runCues || this.replayingCues) return;
 		this.showCueOnHUD(cue);
+		console.log('Setting cue state "shown = true" ');
+
 		cue.shown = true;
 	}
 

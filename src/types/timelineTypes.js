@@ -1,5 +1,22 @@
 export {};
 
+/*
+ * This defines the shape of the data contained within the raw JSON file
+ */
+
+/** @readonly */
+export const PhaseIds = {
+	CSM_SEPARATION: 'csm_separation',
+	PDI: 'pdi',
+	P_63: 'p_63',
+	P_64: 'p_64',
+	P_66: 'p_66'
+};
+
+/**
+ * @typedef {typeof PhaseIds[keyof typeof PhaseIds]} PhaseId
+ */
+
 /**
  * @typedef {Object} Altitude
  * @property {number} miles
@@ -16,7 +33,7 @@ export {};
 
 /**
  * @typedef {Object} JSON_TimelineCueData
- * @property {string} [text]
+ * @property {string | string[]} [text]
  * @property {string} [speaker]
  * @property {string} [verb]
  * @property {string} [noun]
@@ -70,6 +87,19 @@ export {};
  */
 
 /**
+ * @typedef {Object} JSON_historical_context
+ * @property {string} time_format
+ * @property {string[]} sources
+ * @property {Object} key_events
+ */
+
+/**
+ * @typedef {Object} JSON_TimelineMetadata
+ * @property {number} time_scale
+ * @property {JSON_historical_context} historical_context
+ */
+
+/**
  * @typedef {Object} JSON_InterruptData
  * @property {string} [text]
  * @property {string} [context]
@@ -93,4 +123,14 @@ export {};
  * @property {'info' | 'warning' | 'fatal'} [severity]
  * @property {string} [condition]
  * @property {string} [audio_ref]
+ */
+
+/**
+ * @typedef {Object} RawTimelineFile
+ * @property {JSON_MissionPhase[]} phases
+ * @property {JSON_TimelineMetadata} metadata
+ */
+
+/**
+ * @typedef {JSON_RuntimeInterrupt[]} RawInterruptFile
  */

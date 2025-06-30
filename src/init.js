@@ -62,6 +62,8 @@ export async function old_initProgram() {
 
 export function initProgram() {
 	try {
+		// Determine if DEV
+		// If DEV, load DEV tools, and set DEV variables
 		// Load timeline
 		// Load UI elements
 		// Create UI Controller

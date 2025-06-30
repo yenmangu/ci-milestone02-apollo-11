@@ -1056,6 +1056,7 @@
 		{
 			"phase_name": "Terminal Descent (P66)",
 			"start_get": "102:43:22",
+			"phase_id": "p_66",
 			"description": "Manual control begins as Armstrong assumes command using P66. Fine-tuned descent and landing site navigation.",
 			"initial_state": {
 				"velocity": 1500,

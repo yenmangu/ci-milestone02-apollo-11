@@ -4,7 +4,7 @@ import { jest } from '@jest/globals';
  * @param {Object} [overrides]
  * @returns {import('../../simulationState.js').SimulationState}
  */
-export function mockSimulationState(overrides = {}) {
+export function createMockSimulationState(overrides = {}) {
 	const playedCues = new Set();
 
 	/** @type {import('../../simulationState.js').SimulationState} */ const state = {

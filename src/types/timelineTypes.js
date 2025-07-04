@@ -17,6 +17,12 @@ export const PhaseIds = {
  * @typedef {typeof PhaseIds[keyof typeof PhaseIds]} PhaseId
  */
 
+export function isValidPhaseId(value) {
+	if (!Object.values(PhaseIds).includes(value)) {
+		throw new TypeError(`phaseId: ${value} is not valid PhaseId`);
+	}
+}
+
 /**
  * @typedef {Object} Altitude
  * @property {number} miles

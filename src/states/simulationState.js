@@ -67,7 +67,7 @@ function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) 
 		devMode: !!hooks?.devMode,
 
 		playCue(cue) {
-			if (this.playedCues.has(cue.key)) return;
+			if (this.hasCueBeenPlayed(cue.key)) return;
 			this.markCuePlayed(cue.key);
 			this.dispatchCue(cue);
 		},

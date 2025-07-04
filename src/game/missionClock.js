@@ -3,7 +3,7 @@
  */
 
 import { tickEmitter, runningEmitter } from '../event/eventBus.js';
-import getSecondsFromGET from '../util/getSecondsFromGet.js';
+import { secondsFromGet } from '../util/GET.js';
 
 export class MissionClock {
 	constructor(startEpochMs, timeScale = 1, startGetSeconds = 0) {
@@ -158,7 +158,7 @@ export class MissionClock {
 	}
 
 	jumpTo(targetGET) {
-		const targetAbsoluteSeconds = getSecondsFromGET(targetGET);
+		const targetAbsoluteSeconds = secondsFromGet(targetGET);
 		const newElapsedTime = targetAbsoluteSeconds - this.startGetSeconds;
 		this.jumpToTES(newElapsedTime);
 	}

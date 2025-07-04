@@ -18,10 +18,37 @@ import { PhaseIds } from './timelineTypes.js';
  * @typedef {import("./timelineTypes.js").JSON_NonTimeAction} JSON_NonTimeAction
  * @typedef {import('./timelineTypes.js').JSON_TimelineMetadata} JSON_TimelineMetadata
  * @typedef {import('./timelineTypes.js').JSON_historical_context} JSON_historical_context
+ * @typedef {import('./timelineTypes.js').JSON_FailsAfter} JSON_FailsAfter
  */
 
 /**
- * @typedef {JSON_TimelineCue & {key: string}} RuntimeCue
+ * @typedef {Object}
+ */
+
+/**
+ * @typedef {Object} RuntimeCueData
+ * @property {string[]} [text]
+ * @property {string} [speaker]
+ * @property {string} [verb]
+ * @property {string} [noun]
+ * @property {string} [program]
+ */
+
+/**
+ * @typedef {Object} RuntimeCue
+ * @property {string} get
+ * @property {boolean} [transcript]
+ * @property {boolean} [dsky]
+ * @property {boolean} [hud]
+ * @property {boolean} [input]
+ * @property {boolean} [output]
+ * @property {boolean} [semantic]
+ * @property {string} [context]
+ * @property {string} key
+ * @property {string} [requires_action]
+ * @property {RuntimeCueData} data
+ * @property {JSON_FailsAfter} [fails_after]
+ * @property {string} [triggers]
  */
 
 /**

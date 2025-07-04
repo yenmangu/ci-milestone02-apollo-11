@@ -14,7 +14,9 @@
  *
  * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} playCue
  * - Play a cue (updates playedCues and handles side effects)
- * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => boolean} [hasCueBeenPlayed]
+ * @property {(cueKey: string) => boolean} [hasCueBeenPlayed]
+ * @property {(cueKey: string) => void} markCuePlayed
+ * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} dispatchCue
  * @property {(action: string) => void} completeAction - Mark action as completed
  * @property {(code: string) => void} triggerInterrupt
  *
@@ -66,14 +68,22 @@ function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) 
 
 		playCue(cue) {
 			if (this.playedCues.has(cue.key)) return;
-			this.playedCues.add(cue.key);
-			this.onCuePlayed?.(cue);
-			this.log?.(`Cue played: ${cue.key}`, cue);
+			this.markCuePlayed(cue.key);
+			this.dispatchCue(cue);
 		},
 
-		// hasCueBeenPlayed(cue) {
-		// 	return true
-		// },
+		hasCueBeenPlayed(cueKey) {
+			return this.playedCues.has(cueKey);
+		},
+
+		markCuePlayed(cueKey) {
+			this.playedCues.add(cueKey);
+		},
+
+		dispatchCue(cue) {
+			this.onCuePlayed?.(cue);
+			this.log?.(`Cue dispatched:  ${cue.key}`, cue);
+		},
 
 		completeAction(action) {
 			this.completedActions.add(action);

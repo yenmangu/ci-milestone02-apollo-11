@@ -31,10 +31,6 @@
  */
 
 /**
- * @typedef {Object}
- */
-
-/**
  * @typedef {Object} SimulationParameters
  * @property {string} initialPhaseId
  * @property {string} initialGET
@@ -44,7 +40,7 @@
 
 /**
  *
- * @param {SimulationParameters} param0
+ * @param {SimulationParameters} simParams
  * @returns {SimulationState}
  */
 function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) {

@@ -7,6 +7,8 @@
  * @typedef {import('../types/timelineTypes.js').PhaseId} PhaseId
  */
 
+import { secondsFromGet } from '../util/GET.js';
+
 /**
  * @typedef {import('../types/runtimeTypes.js').MissionTimeline} MissionTimeline
  * @typedef {import('../types/runtimeTypes.js').RuntimePhase} RuntimePhase
@@ -23,11 +25,13 @@
  */
 function normaliseCue(rawCue, phaseId, index) {
 	const key = rawCue.key || `${phaseId}_${index.toString().padStart(2, '0')}`;
+	const getSeconds = secondsFromGet(rawCue.get);
 	const text = Array.isArray(rawCue.data.text)
 		? rawCue.data.text
 		: [rawCue.data.text];
 	return {
 		...rawCue,
+		getSeconds,
 		key,
 		data: {
 			...rawCue.data,

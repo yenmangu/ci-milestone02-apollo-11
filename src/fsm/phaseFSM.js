@@ -3,12 +3,13 @@
  * @typedef {import("../types/runtimeTypes.js").MissionTimeline} MissionTimeline
  * @typedef {import("../types/timelineTypes.js").PhaseId} PhaseId
  * @typedef {import('../types/fsmTypes.js').PhaseRegistry} PhaseRegistry
+ * @typedef {import('../types/fsmTypes.js').BasePhase} BasePhase
  */
 
 import { isValidPhaseId } from '../types/timelineTypes.js';
 
 export class PhaseFSM {
-	currentPhaseInstance;
+	/** @type {BasePhase} */ currentPhaseInstance;
 	currentPhaseId;
 	currentPhaseMeta;
 	previousPhaseInstance;
@@ -45,6 +46,7 @@ export class PhaseFSM {
 			this.currentPhaseInstance.exit();
 		}
 		this.previousPhaseInstance = this.currentPhaseInstance;
+		this.currentPhaseId = newPhaseId;
 
 		// Search timeline.phases for object where phase_id = newPhaseId
 		const phaseMeta = this.timeline.getPhase(newPhaseId);
@@ -53,6 +55,15 @@ export class PhaseFSM {
 		}
 
 		// Instantiate phaseClass from phase metadata
-		const PhaseClass = this.phaseRegistry[newPhaseId];
+		/** @type {BasePhase} */
+		const newPhaseInstance = new this.phaseRegistry[newPhaseId](
+			this.simulationState,
+			phaseMeta
+		);
+
+		if (newPhaseInstance) {
+			this.currentPhaseInstance = newPhaseInstance;
+			this.currentPhaseInstance.enter();
+		}
 	}
 }

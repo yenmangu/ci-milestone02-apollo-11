@@ -7,6 +7,6 @@ export class CSMSeparation extends BasePhase {
 	onTick() {}
 
 	onExit() {
-		this.log('Phase:  CSM Separation complete');
+		this.log('Phase: CSM Separation complete');
 	}
 }

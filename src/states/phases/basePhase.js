@@ -1,19 +1,20 @@
 /**
  * @typedef {import("../simulationState.js").SimulationState} SimulationState
  * @typedef {import("../../types/timelineTypes.js").PhaseId} PhaseId
+ * @typedef {import("../../types/runtimeTypes.js").RuntimePhase} RuntimePhase
  */
 
 export class BasePhase {
 	/**
 	 *
 	 * @param {SimulationState} simulationState
-	 * @param {PhaseId} phaseId
-	 * @param {*} phaseMeta
+	 * @param {RuntimePhase} phaseMeta
 	 */
-	constructor(simulationState, phaseId, phaseMeta) {
+	constructor(simulationState, phaseMeta) {
 		this.simulationState = simulationState;
 		this.phaseMeta = phaseMeta;
 		this.log = simulationState.log;
+		this.phaseId = phaseMeta.phaseId;
 	}
 
 	enter() {

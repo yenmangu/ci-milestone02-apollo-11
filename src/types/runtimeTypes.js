@@ -37,6 +37,7 @@ import { PhaseIds } from './timelineTypes.js';
 /**
  * @typedef {Object} RuntimeCue
  * @property {string} get
+ * @property {number} getSeconds
  * @property {boolean} [transcript]
  * @property {boolean} [dsky]
  * @property {boolean} [hud]

@@ -4,6 +4,10 @@
  * @typedef {import("../../types/runtimeTypes.js").RuntimePhase} RuntimePhase
  */
 
+/**
+ * @typedef {import("../../types/clockTypes.js").TickPayload} TickPayload
+ */
+
 export class BasePhase {
 	/**
 	 *
@@ -15,6 +19,7 @@ export class BasePhase {
 		this.phaseMeta = phaseMeta;
 		this.log = simulationState.log;
 		this.phaseId = phaseMeta.phaseId;
+		/** @type {TickPayload} */ this.lastTickPayload = null;
 	}
 
 	enter() {
@@ -23,9 +28,19 @@ export class BasePhase {
 		}
 	}
 
-	tick() {
+	/**
+	 *
+	 * @param {TickPayload} tick
+	 */
+	tick(tick) {
+		if (this.lastTickPayload === null) {
+			this.lastTickPayload = tick;
+			return;
+		}
+
+		this.lastTickPayload = tick;
 		if (typeof this.onTick === 'function') {
-			this.onTick();
+			this.onTick(tick);
 		}
 	}
 
@@ -38,7 +53,11 @@ export class BasePhase {
 	onEnter() {
 		console.warn('Method not implemented.');
 	}
-	onTick() {
+	/**
+	 *
+	 * @param {TickPayload} tick
+	 */
+	onTick(tick) {
 		console.warn('Method not implemented.');
 	}
 	onExit() {

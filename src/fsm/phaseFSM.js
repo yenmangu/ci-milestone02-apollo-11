@@ -6,7 +6,12 @@
  * @typedef {import('../types/fsmTypes.js').BasePhase} BasePhase
  */
 
+/**
+ * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
+ */
+
 import { isValidPhaseId } from '../types/timelineTypes.js';
+import { tickEmitter } from '../event/eventBus.js';
 
 export class PhaseFSM {
 	/** @type {BasePhase} */ currentPhaseInstance;
@@ -27,6 +32,7 @@ export class PhaseFSM {
 		this.previousPhaseInstance = null;
 
 		this.devMode = simulationState.devMode;
+		tickEmitter.on('tick', this.handleTick);
 	}
 
 	/**
@@ -64,6 +70,19 @@ export class PhaseFSM {
 		if (newPhaseInstance) {
 			this.currentPhaseInstance = newPhaseInstance;
 			this.currentPhaseInstance.enter();
+		}
+	}
+	/**
+	 *
+	 * @param {TickPayload} tick
+	 */
+	handleTick(tick) {
+		this.simulationState.currentGet = tick.getFormatted;
+		if (
+			this.currentPhaseInstance &&
+			typeof this.currentPhaseInstance.tick === 'function'
+		) {
+			this.currentPhaseInstance.tick(tick);
 		}
 	}
 }

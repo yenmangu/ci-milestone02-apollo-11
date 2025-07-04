@@ -31,6 +31,13 @@
  */
 
 /**
+ * @typedef {Object} SimulationHooks
+ * @property {(cue: import('../types/runtimeTypes.js').RuntimeCue) => void} [onCuePlayed]
+ * @property {(msg:string, data: any) => void} [log]
+ * @property {boolean} [devMode]
+ */
+
+/**
  * @typedef {Object} SimulationParameters
  * @property {string} initialPhaseId
  * @property {string} initialGET
@@ -40,7 +47,7 @@
 
 /**
  *
- * @param {SimulationParameters} simParams
+ * @param {SimulationParameters} param0
  * @returns {SimulationState}
  */
 function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) {
@@ -52,11 +59,14 @@ function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) 
 		playedCues: new Set(),
 		completedActions: new Set(),
 
+		onCuePlayed: hooks?.onCuePlayed,
+		log: hooks?.log,
+		devMode: !!hooks?.devMode,
+
 		playCue(cue) {
 			if (this.playedCues.has(cue.key)) return;
 			this.playedCues.add(cue.key);
-			hooks?.onCuePlayed?.(cue);
-
+			this.onCuePlayed?.(cue);
 			this.log?.(`Cue played: ${cue.key}`, cue);
 		},
 
@@ -71,12 +81,6 @@ function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) 
 
 		getPhase(id) {
 			return timeline.getPhase(id);
-		},
-
-		log(msg, data) {
-			hooks?.log?.(msg, data);
-		},
-
-		devMode: !!hooks?.devMode
+		}
 	};
 }

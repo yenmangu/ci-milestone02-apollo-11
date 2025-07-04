@@ -42,7 +42,7 @@
  * @property {string} initialPhaseId
  * @property {string} initialGET
  * @property {import("../types/runtimeTypes.js").MissionTimeline} timeline
- * @property {Object} hooks
+ * @property {SimulationHooks} hooks
  */
 
 /**

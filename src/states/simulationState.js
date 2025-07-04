@@ -84,3 +84,5 @@ function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) 
 		}
 	};
 }
+
+export { createSimulationState };

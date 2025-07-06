@@ -47,7 +47,8 @@
 					}
 				}
 			],
-			"fail_states": []
+			"fail_states": [],
+			"non_time_specific_actions": []
 		},
 		{
 			"phase_name": "Powered Descent Initiation (PDI)",

@@ -312,6 +312,7 @@
 				}
 			],
 			"non_time_specific_actions": [{
+					"action": "V37N63",
 					"verb": "37",
 					"noun": "63",
 					"program": "63",
@@ -862,6 +863,7 @@
 				"fuel": 15
 			},
 			"timeline_cues": [{
+					"get": "102:41:32",
 					"hud": true,
 					"semantic": true,
 					"data": {
@@ -1546,9 +1548,9 @@
 	],
 	"metadata": {
 		"time_scale": 1,
-		"historical_references": {
+		"historical_context": {
 			"time_format": "GET (Ground Elapsed Time)",
-			"primary_source": "Apollo 11 Flight Journal (NASA)",
+			"sources": ["Apollo 11 Flight Journal (NASA)"],
 			"key_events": {
 				"pdi_actual": "102:45:00 GET",
 				"1202_alarm": "104:01:26 GET",

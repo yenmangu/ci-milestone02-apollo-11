@@ -20,3 +20,4 @@ ci-appollo-11.code*
 *.code-workspace
 **/*.code-workspace
 LOG.md
+coverage

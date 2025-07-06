@@ -41,7 +41,7 @@ function normaliseCue(rawCue, phaseId, index) {
 		context: rawCue.context ?? '',
 		key,
 		requiresAction: rawCue.requires_action ?? '',
-		actionCompleted: false,
+		// Remove actionComepleted entry
 		data: {
 			...rawCue.data,
 			text
@@ -49,6 +49,10 @@ function normaliseCue(rawCue, phaseId, index) {
 		failsAfter: rawCue.fails_after ?? null,
 		triggers: rawCue.triggers ?? null
 	};
+	// Add only if action is required
+	if (rawCue.requires_action) {
+		normalisedCue.actionCompleted = false;
+	}
 	return normalisedCue;
 }
 

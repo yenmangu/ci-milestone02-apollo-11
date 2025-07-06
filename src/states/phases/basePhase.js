@@ -28,6 +28,7 @@ export class BasePhase {
 	}
 
 	enter() {
+		console.log('Phase meta.allCues: ', this.phaseMeta.allCues);
 		this.chronologicalCues = [...this.phaseMeta.allCues].sort((a, b) =>
 			compareGET(a.get, b.get)
 		);
@@ -36,12 +37,17 @@ export class BasePhase {
 			this.onEnter();
 		}
 	}
+	onEnter() {
+		console.warn('Method not implemented.');
+	}
 
 	/**
 	 *
 	 * @param {TickPayload} tick
 	 */
 	tick(tick) {
+		console.log('Tick invoked');
+
 		if (this.lastTickPayload === null) {
 			this.lastTickPayload = tick;
 			return;
@@ -62,15 +68,17 @@ export class BasePhase {
 		}
 	}
 
-	exit() {
-		if (typeof this.onExit === 'function') {
-			this.onExit();
-		}
+	/**
+	 * Checks if action is required for current cue
+	 * @param {string} cueKey
+	 * @returns {boolean}
+	 */
+	isActionRequiredForCue(cueKey) {
+		const cue = this.phaseMeta.cuesByKey[cueKey];
+		if (!cue || !cue.requiresAction) return false;
+		return !this.simulationState.hasActionBeenCompleted(cue.requiresAction);
 	}
 
-	onEnter() {
-		console.warn('Method not implemented.');
-	}
 	/**
 	 *
 	 * @param {TickPayload} tick
@@ -78,6 +86,13 @@ export class BasePhase {
 	onTick(tick) {
 		console.warn('Method not implemented.');
 	}
+
+	exit() {
+		if (typeof this.onExit === 'function') {
+			this.onExit();
+		}
+	}
+
 	onExit() {
 		console.warn('Method not implemented.');
 	}

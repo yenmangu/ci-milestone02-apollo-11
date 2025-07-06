@@ -18,6 +18,7 @@
  * @property {(cueKey: string) => void} markCuePlayed
  * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} dispatchCue
  * @property {(action: string) => void} completeAction - Mark action as completed
+ * @property {(actionKey: string) => boolean } hasActionBeenCompleted
  * @property {(code: string) => void} triggerInterrupt
  *
  * @property {(msg:string, data?: any) => void} [log] - Optional debug logger
@@ -25,7 +26,7 @@
  *
  * @property {boolean} [devMode]
  *
- * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} [onCuePlayed]
+ * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} onCuePlayed
  */
 
 /**
@@ -88,6 +89,10 @@ function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) 
 		completeAction(action) {
 			this.completedActions.add(action);
 			this.log?.(`Action completed: ${action}`);
+		},
+
+		hasActionBeenCompleted(actionKey) {
+			return this.completedActions.has(actionKey);
 		},
 
 		triggerInterrupt(code) {

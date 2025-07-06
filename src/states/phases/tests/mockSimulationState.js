@@ -15,7 +15,8 @@ const DEFAULT_MOCK_PHASE_ID = 'test_phase';
 export function createMockSimulationState(overrides = {}) {
 	const playedCues = new Set();
 
-	/** @type {import('../../simulationState.js').SimulationState} */ const state = {
+	/** @type {import('../../simulationState.js').SimulationState} */
+	const state = {
 		currentPhaseId: DEFAULT_MOCK_PHASE_ID,
 		currentGet: '000:00:00',
 		currentPhase: null,
@@ -24,19 +25,28 @@ export function createMockSimulationState(overrides = {}) {
 
 		hasCueBeenPlayed: jest.fn(key => playedCues.has(key)),
 		markCuePlayed: jest.fn(key => playedCues.add(key)),
-		playCue: jest.fn((/** @type {import('../basePhase.js').RuntimeCue} */ cue) => {
-			if (playedCues.has(cue.key)) return;
-			playedCues.add(cue.key);
-			state.log?.(`Cue played: ${cue.key}`, cue);
-		}),
-
+		playCue: undefined,
+		hasActionBeenCompleted: action => {
+			return state.completedActions.has(action);
+		},
 		onCuePlayed: jest.fn(),
-		completeAction: jest.fn(),
+		completeAction: action => {
+			state.completedActions.add(action);
+		},
 
 		getPhase: jest.fn(() => null),
 		devMode: false,
 		...overrides
 	};
+	state.playCue = jest.fn(
+		(/** @type {import('../basePhase.js').RuntimeCue} */ cue) => {
+			if (playedCues.has(cue.key)) return;
+			playedCues.add(cue.key);
+			state.onCuePlayed?.(cue);
+			state.log?.(`Cue played: ${cue.key}`, cue);
+		}
+	);
+
 	return state;
 }
 
@@ -61,16 +71,37 @@ export function createMockCue(cueOverrides = {}) {
  * @property {Object} runtimeOverrides
  * @property {Object} cueOverrides
  */
+
 /**
- *
+ * Factory function to provide mock metadata and mock cue for phase testing
  * @param {Overrides} [overrides]
- * @returns {RuntimePhase}
+ * @returns {{metaData: RuntimePhase, initialCue: RuntimeCue}}
  */
 
 export function createMockMetadata(overrides) {
-	const { runtimeOverrides, cueOverrides } = overrides;
-	const mockCue = createMockCue(cueOverrides);
+	// Destructure the parameter with default values
+	const { runtimeOverrides = {}, cueOverrides = {} } = overrides;
 
+	// Ensure that both arrays and objects of cues can be passed
+	/** @type {RuntimeCue[]} */ const cues = Array.isArray(cueOverrides)
+		? cueOverrides
+		: Object.values(cueOverrides);
+
+	const initialCue = createMockCue();
+	/** @type {RuntimeCue[]} */ const cueList = [initialCue];
+
+	// Initialise cue map with initialCue
+	/** @type {{[key: string ]: RuntimeCue}} */ const cueMap = {
+		[cueList[0].key]: cueList[0]
+	};
+
+	// Add any additional cues passed in cueOverrides
+	cues.forEach((/** @type {RuntimeCue} */ cue) => {
+		cueList.push(cue);
+		cueMap[cue.key] = cue;
+	});
+
+	// Build the mock meta data
 	/** @type {RuntimePhase} */ const metaData = {
 		phaseId: DEFAULT_MOCK_PHASE_ID,
 		phaseName: 'Test Phase',
@@ -88,10 +119,9 @@ export function createMockMetadata(overrides) {
 			altitude: { miles: 0, feet: 0 },
 			fuel: 100
 		},
-		cuesByKey: {
-			[mockCue.key]: mockCue
-		},
+		allCues: cueList,
+		cuesByKey: cueMap,
 		...runtimeOverrides
 	};
-	return metaData;
+	return { metaData, initialCue };
 }

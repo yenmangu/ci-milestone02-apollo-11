@@ -29,15 +29,27 @@ function normaliseCue(rawCue, phaseId, index) {
 	const text = Array.isArray(rawCue.data.text)
 		? rawCue.data.text
 		: [rawCue.data.text];
-	return {
-		...rawCue,
+	/** @type {RuntimeTimelineCue} */ const normalisedCue = {
+		get: rawCue.get,
 		getSeconds,
+		transcript: rawCue.transcript ?? false,
+		dsky: rawCue.dsky ?? false,
+		hud: rawCue.hud ?? false,
+		input: rawCue.input ?? false,
+		output: rawCue.output ?? false,
+		semantic: rawCue.semantic ?? false,
+		context: rawCue.context ?? '',
 		key,
+		requiresAction: rawCue.requires_action ?? '',
+		actionCompleted: false,
 		data: {
 			...rawCue.data,
 			text
-		}
+		},
+		failsAfter: rawCue.fails_after ?? null,
+		triggers: rawCue.triggers ?? null
 	};
+	return normalisedCue;
 }
 
 /**

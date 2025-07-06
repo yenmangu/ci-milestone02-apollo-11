@@ -46,9 +46,10 @@ import { PhaseIds } from './timelineTypes.js';
  * @property {boolean} [semantic]
  * @property {string} [context]
  * @property {string} key
- * @property {string} [requires_action]
+ * @property {string} [requiresAction]
+ * @property {boolean} [actionCompleted] usually false initially
  * @property {RuntimeCueData} data
- * @property {JSON_FailsAfter} [fails_after]
+ * @property {JSON_FailsAfter} [failsAfter]
  * @property {string} [triggers]
  */
 

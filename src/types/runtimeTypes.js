@@ -59,7 +59,7 @@ import { PhaseIds } from './timelineTypes.js';
  * @property {string} [verb]
  * @property {string} [noun]
  * @property {string} [program]
- * @property {string} [failsAfter]
+ * @property {number} [failsAfter]
  */
 
 /**

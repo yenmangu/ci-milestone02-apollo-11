@@ -67,13 +67,14 @@ function normaliseAction(rawAction) {
 	if (!rawAction) {
 		throw new Error('Invalid non-time action passed to normaliseAction');
 	}
+
 	return {
 		description: rawAction.description,
 		action: rawAction.action ?? null,
 		verb: rawAction.verb ?? null,
 		noun: rawAction.noun ?? null,
 		program: rawAction.program ?? null,
-		failsAfter: rawAction.fails_after ?? null
+		failsAfter: rawAction.fails_after ? secondsFromGet(rawAction.fails_after) : null
 	};
 }
 
@@ -101,7 +102,6 @@ function buildMissionPhase(raw, index) {
 	const allCues = rawCues.map((cue, cueIndex) =>
 		normaliseCue(cue, raw.phase_id, cueIndex)
 	);
-	const actions = raw.non_time_specific_actions ?? [];
 
 	/** @type {import('../types/runtimeTypes.js').NonTimeAction[]} */
 	const nonTimeActions = (raw.non_time_specific_actions ?? [])

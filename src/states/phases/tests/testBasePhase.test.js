@@ -30,7 +30,7 @@ describe('BasePhase cue triggering', () => {
 		simulationState = createMockSimulationState();
 		const mockMeta = createMockMetadata({
 			runtimeOverrides: { allCues: [cue], cuesByKey: { [cue.key]: cue } },
-			cueOverrides: cue
+			cueOverrides: { cue }
 		});
 		// console.log('simulation state: ', simulationState);
 		// console.log('runtime metadata state: ', runtimeMetaData);
@@ -41,9 +41,14 @@ describe('BasePhase cue triggering', () => {
 			elapsed: cue.getSeconds
 		};
 
-		mockMeta.metaData = runtimeMetaData;
+		runtimeMetaData = mockMeta.metaData;
 
-		phase = new BasePhase(simulationState, runtimeMetaData);
+		class MockPhase extends BasePhase {
+			constructor(simState, simMeta) {
+				super(simState, simMeta);
+			}
+		}
+		phase = new MockPhase(simulationState, runtimeMetaData);
 		// phase.tick = jest.fn(
 		// 	(/** @type {import('../../../types/clockTypes.js').TickPayload} */ tick) => {
 		// 		const currentGET = tick.get;
@@ -74,7 +79,7 @@ describe('BasePhase cue triggering', () => {
 	}
 	test('chronologicalCues to be populated', () => {
 		console.log('Chrono cues: ', phase.chronologicalCues);
-
+		// debugger;
 		expect(phase.chronologicalCues.length).toBeTruthy();
 		expect(phase.chronologicalCues).toContain(cue);
 	});
@@ -114,28 +119,39 @@ describe('Tests cues with actions', () => {
 	/** @type {import('../../simulationState.js').SimulationState} */ let simState;
 	/** @type {import('../../../types/runtimeTypes.js').RuntimePhase} */ let simMeta;
 	/** @type {BasePhase} */ let simPhase;
+	/** @type {{[key:string]:string}} */ let testAction;
 
 	beforeEach(() => {
-		cue = createMockCue({ requiresAction: 'test_action' });
+		cue = createMockCue({
+			key: 'requires_action_cue',
+			requiresAction: 'test_action'
+		});
+
+		testAction = { action: 'test_action' };
 
 		// Desctructuring the return values from the method,
 		// so need to wrap the whole thing in paranthesis
 		({ metaData: simMeta, initialCue: initialCue } = createMockMetadata({
 			runtimeOverrides: {
-				nonTimeActions: [{ action: 'test_action' }]
+				nonTimeActions: [testAction]
 			},
-			cueOverrides: { cue }
+			cueOverrides: { [cue.key]: cue }
 		}));
 
-		simState = createMockSimulationState({
-			hasActionBeenCompleted: jest.fn((/** @type {string} */ action) =>
-				simState.completedActions.has(action)
-			)
-			// completeAction: jest.fn((/** @type {string} */ action) => {
-			// 	simState.completedActions.add(action);
-			// })
+		const hasActionBeenCompleted = jest.fn((/** @type {string} */ action) => {
+			return simState.completedActions.has(action);
 		});
-		simPhase = new BasePhase(simState, simMeta);
+
+		simState = createMockSimulationState({
+			hasActionBeenCompleted,
+			currentPhase: simMeta
+		});
+		class MockPhase extends BasePhase {
+			constructor(simState, simMeta) {
+				super(simState, simMeta);
+			}
+		}
+		simPhase = new MockPhase(simState, simMeta);
 	});
 
 	test('Action completes', () => {
@@ -149,6 +165,31 @@ describe('Tests cues with actions', () => {
 		simPhase.enter();
 		expect(simPhase.isActionRequiredForCue(cue.key)).toBe(true);
 	});
-	test.todo('Action should become apparent when linked cue is played');
-	test.todo('Specific action should complete with required input');
+
+	test('required action is not completed on phase entry', () => {
+		simPhase.enter();
+		expect(simState.hasActionBeenCompleted(testAction.action)).toBe(false);
+	});
+
+	test('isActionRequiredForCue returns true when cue with actionRequired is passed', () => {
+		simPhase.enter();
+		expect(simPhase.isActionRequiredForCue(cue.key)).toBe(true);
+		expect(simPhase.isActionRequiredForCue('test_cue_01')).toBe(false);
+	});
+
+	test('completeAction() marks it complete in simulation state', () => {
+		simPhase.enter();
+		simPhase.completeRequiredAction(testAction.action);
+		expect(simState.hasActionBeenCompleted(testAction.action)).toBe(true);
+		// debugger;
+		simPhase.completeRequiredAction(cue.requiresAction);
+		expect(simPhase.phaseMeta.cuesByKey[cue.key].actionCompleted).toBe(true);
+		simPhase.completeRequiredAction(cue.requiresAction);
+	});
+
+	// test('Specific action should complete with required input', () => {
+	// 	simPhase.enter();
+	// 	simPhase.completeRequiredAction(cue.requiresAction);
+	// 	expect(simState.currentPhase.cuesByKey[cue.key].actionCompleted).to;
+	// });
 });

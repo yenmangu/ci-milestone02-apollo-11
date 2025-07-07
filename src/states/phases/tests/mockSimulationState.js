@@ -32,6 +32,18 @@ export function createMockSimulationState(overrides = {}) {
 		onCuePlayed: jest.fn(),
 		completeAction: action => {
 			state.completedActions.add(action);
+			state.completeCueAction(action);
+		},
+		completeCueAction(actionKey) {
+			for (const cue of Object.values(this.currentPhase.cuesByKey)) {
+				console.log('Cue in completeCueAction: ', cue);
+				console.log('actionKey provided to function: ', actionKey);
+				if (cue.requiresAction === actionKey) {
+					console.log('requires action cue: ', cue);
+					cue.actionCompleted = true;
+					console.log('Cue after marking action complete: ', cue);
+				}
+			}
 		},
 
 		getPhase: jest.fn(() => null),
@@ -46,6 +58,8 @@ export function createMockSimulationState(overrides = {}) {
 			state.log?.(`Cue played: ${cue.key}`, cue);
 		}
 	);
+
+	// console.log('State after overrides: ', state);
 
 	return state;
 }
@@ -81,6 +95,9 @@ export function createMockCue(cueOverrides = {}) {
 export function createMockMetadata(overrides) {
 	// Destructure the parameter with default values
 	const { runtimeOverrides = {}, cueOverrides = {} } = overrides;
+
+	console.log('cueOverrides received: ', cueOverrides);
+	console.log('cueOverrides keys: ', Object.keys(cueOverrides));
 
 	// Ensure that both arrays and objects of cues can be passed
 	/** @type {RuntimeCue[]} */ const cues = Array.isArray(cueOverrides)

@@ -1,5 +1,5 @@
 /**
-
+ * @typedef {import("../types/timelineTypes.js").JSON_NonTimeAction} Action
  */
 
 /**
@@ -17,8 +17,9 @@
  * @property {(cueKey: string) => boolean} [hasCueBeenPlayed]
  * @property {(cueKey: string) => void} markCuePlayed
  * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} dispatchCue
- * @property {(action: string) => void} completeAction - Mark action as completed
+ * @property {(actionKey: string) => void} completeAction - Mark action as completed
  * @property {(actionKey: string) => boolean } hasActionBeenCompleted
+ * @property {(cueKey: string) => void} completeCueAction - Mark cue action as completed
  * @property {(code: string) => void} triggerInterrupt
  *
  * @property {(msg:string, data?: any) => void} [log] - Optional debug logger
@@ -86,13 +87,26 @@ function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) 
 			this.log?.(`Cue dispatched:  ${cue.key}`, cue);
 		},
 
-		completeAction(action) {
-			this.completedActions.add(action);
-			this.log?.(`Action completed: ${action}`);
+		/**
+		 *
+		 * @param {string} actionKey
+		 */
+		completeAction(actionKey) {
+			this.completedActions.add(actionKey);
+			this.completeCueAction(actionKey);
+			this.log?.(`Action completed: ${actionKey}`);
 		},
 
 		hasActionBeenCompleted(actionKey) {
 			return this.completedActions.has(actionKey);
+		},
+
+		completeCueAction(actionKey) {
+			for (const cue of Object.values(this.currentPhase.cuesByKey)) {
+				if (cue.requiresAction === actionKey) {
+					cue.actionCompleted = true;
+				}
+			}
 		},
 
 		triggerInterrupt(code) {

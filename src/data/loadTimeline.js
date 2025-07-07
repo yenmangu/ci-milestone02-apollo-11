@@ -4,6 +4,7 @@
  * @typedef {import('../types/timelineTypes.js').JSON_MissionPhase} RawMissionPhase
  * @typedef {import('../types/timelineTypes.js').JSON_TimelineMetadata} RawTimelineMetadata
  * @typedef {import('../types/timelineTypes.js').JSON_TimelineCue} RawTimelineCue
+ * @typedef {import('../types/timelineTypes.js').JSON_NonTimeAction} RawNonTimeAction
  * @typedef {import('../types/timelineTypes.js').PhaseId} PhaseId
  */
 
@@ -14,6 +15,7 @@ import { secondsFromGet } from '../util/GET.js';
  * @typedef {import('../types/runtimeTypes.js').RuntimePhase} RuntimePhase
  * @typedef {import('../types/runtimeTypes.js').RuntimeCue} RuntimeTimelineCue
  * @typedef {import('../types/runtimeTypes.js').TimelineMetadata} TimelineMetadata
+ * @typedef {import('../types/runtimeTypes.js').NonTimeAction} NonTimeAction
  */
 
 /**
@@ -58,6 +60,25 @@ function normaliseCue(rawCue, phaseId, index) {
 
 /**
  *
+ * @param {RawNonTimeAction} rawAction
+ * @returns {NonTimeAction}
+ */
+function normaliseAction(rawAction) {
+	if (!rawAction) {
+		throw new Error('Invalid non-time action passed to normaliseAction');
+	}
+	return {
+		description: rawAction.description,
+		action: rawAction.action ?? null,
+		verb: rawAction.verb ?? null,
+		noun: rawAction.noun ?? null,
+		program: rawAction.program ?? null,
+		failsAfter: rawAction.fails_after ?? null
+	};
+}
+
+/**
+ *
  * @param {RawTimelineMetadata} rawMeta
  * @returns {TimelineMetadata}
  */
@@ -80,6 +101,12 @@ function buildMissionPhase(raw, index) {
 	const allCues = rawCues.map((cue, cueIndex) =>
 		normaliseCue(cue, raw.phase_id, cueIndex)
 	);
+	const actions = raw.non_time_specific_actions ?? [];
+
+	/** @type {import('../types/runtimeTypes.js').NonTimeAction[]} */
+	const nonTimeActions = (raw.non_time_specific_actions ?? [])
+		.map(normaliseAction)
+		.filter(Boolean);
 
 	const cuesByKey = Object.fromEntries(allCues.map(cue => [cue.key, cue]));
 
@@ -93,7 +120,7 @@ function buildMissionPhase(raw, index) {
 		endState: raw.initial_state,
 		allCues,
 		cuesByKey,
-		nonTimeActions: raw.non_time_specific_actions || [],
+		nonTimeActions,
 		failStates: raw.fail_states || []
 	};
 }

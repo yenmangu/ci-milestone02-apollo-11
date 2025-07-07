@@ -15,7 +15,7 @@ import { PhaseIds } from './timelineTypes.js';
 /**
  * @typedef {import("./timelineTypes.js").PhaseState} PhaseState
  * @typedef {import("./timelineTypes.js").JSON_TimelineCue} JSON_TimelineCue
- * @typedef {import("./timelineTypes.js").JSON_NonTimeAction} JSON_NonTimeAction
+ * @typedef {import("./timelineTypes.js").JSON_NonTimeAction} NonTimeAction
  * @typedef {import('./timelineTypes.js').JSON_TimelineMetadata} JSON_TimelineMetadata
  * @typedef {import('./timelineTypes.js').JSON_historical_context} JSON_historical_context
  * @typedef {import('./timelineTypes.js').JSON_FailsAfter} JSON_FailsAfter
@@ -64,7 +64,7 @@ import { PhaseIds } from './timelineTypes.js';
  * @property {PhaseState} endState
  * @property {Object.<string, RuntimeCue>} cuesByKey
  * @property {RuntimeCue[]} allCues
- * @property {JSON_NonTimeAction[]} nonTimeActions
+ * @property {NonTimeAction[]} nonTimeActions
  * @property {string[]} failStates
  */
 

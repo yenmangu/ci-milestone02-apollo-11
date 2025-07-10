@@ -16,6 +16,7 @@ import { secondsFromGet } from '../util/GET.js';
  * @typedef {import('../types/runtimeTypes.js').RuntimeCue} RuntimeTimelineCue
  * @typedef {import('../types/runtimeTypes.js').TimelineMetadata} TimelineMetadata
  * @typedef {import('../types/runtimeTypes.js').NonTimeAction} NonTimeAction
+ * @typedef {import('../types/runtimeTypes.js').FailsAfter} FailsAfter
  */
 
 /**
@@ -68,13 +69,22 @@ function normaliseAction(rawAction) {
 		throw new Error('Invalid non-time action passed to normaliseAction');
 	}
 
+	/** @type {FailsAfter | null} */ let failsAfter = null;
+
+	if (rawAction.fails_after && typeof rawAction.fails_after.get === 'string') {
+		failsAfter = {
+			get: secondsFromGet(rawAction.fails_after.get),
+			name: rawAction.fails_after?.name ?? null,
+			context: rawAction.fails_after?.context ?? null
+		};
+	}
 	return {
 		description: rawAction.description,
 		action: rawAction.action ?? null,
 		verb: rawAction.verb ?? null,
 		noun: rawAction.noun ?? null,
 		program: rawAction.program ?? null,
-		failsAfter: rawAction.fails_after ? secondsFromGet(rawAction.fails_after) : null
+		failsAfter: failsAfter
 	};
 }
 

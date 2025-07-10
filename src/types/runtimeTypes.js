@@ -53,13 +53,20 @@ import { PhaseIds } from './timelineTypes.js';
  */
 
 /**
+ * @typedef {Object} FailsAfter
+ * @property {number} get
+ * @property {string} name
+ * @property {string} context
+ */
+
+/**
  * @typedef {Object} NonTimeAction
  * @property {string} description
  * @property {string} [action]
  * @property {string} [verb]
  * @property {string} [noun]
  * @property {string} [program]
- * @property {number} [failsAfter]
+ * @property {FailsAfter} [failsAfter]
  */
 
 /**

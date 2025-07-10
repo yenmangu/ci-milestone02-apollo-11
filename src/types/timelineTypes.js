@@ -77,7 +77,7 @@ export function isValidPhaseId(value) {
  * @property {string} [program]
  * @property {string} [action]
  * @property {string} description
- * @property {string} [fails_after]
+ * @property {JSON_FailsAfter} [fails_after]
  */
 
 /**

@@ -79,9 +79,9 @@ export class MissionClock {
 
 		/** @type {TickPayload} */
 		const tick = {
-			elapsed: this.elapsedMissionTime,
-			get: this.currentGETSeconds,
-			getFormatted: this.currentGET
+			elapsedSeconds: this.elapsedMissionTime,
+			getSeconds: this.currentGETSeconds,
+			getString: this.currentGET
 		};
 		runningEmitter.emit('running', true);
 		tickEmitter.emit('tick', tick);

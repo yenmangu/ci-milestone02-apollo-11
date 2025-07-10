@@ -5,6 +5,9 @@
  */
 
 export function secondsFromGet(get) {
+	if (typeof get !== 'string' || !get.includes(':')) {
+		throw new Error(`Invalid GET format: ${get}`);
+	}
 	const [hh, mm, ss] = get.split(':').map(Number);
 	return hh * 3600 + mm * 60 + ss;
 }

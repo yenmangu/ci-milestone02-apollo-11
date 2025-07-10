@@ -6,7 +6,7 @@
  * @typedef {import('../../types/runtimeTypes.js').NonTimeAction} NonTimeAction
  */
 
-import { compareGET } from '../../util/GET.js';
+import { compareGET, secondsFromGet } from '../../util/GET.js';
 
 /**
  * @typedef {import("../../types/clockTypes.js").TickPayload} TickPayload
@@ -21,58 +21,142 @@ export class BasePhase {
 	constructor(simulationState, phaseMeta) {
 		this.simulationState = simulationState;
 		/** @type {RuntimePhase} */ this.phaseMeta = phaseMeta;
-		this.log = simulationState.log;
+		this.log =
+			typeof simulationState.log === 'function'
+				? simulationState.log
+				: (msg, data) =>
+						console.log(
+							`[${this.phaseId}] ${msg}`,
+							data ? data : 'No data supplied'
+						);
 		this.phaseId = phaseMeta.phaseId;
 		/** @type {TickPayload} */ this.lastTickPayload = null;
+		/** @type {number} */ this.currentGETSeconds;
 		// Cues
 		/** @type {RuntimeCue[]} */ this.chronologicalCues = [];
+		/** @type {RuntimeCue[]} */ this.actionCues = [];
+		/** @type {RuntimeCue[]} */ this.expiringCues = [];
+		/** @type {NonTimeAction[]} */ this.nonTimeActions = [];
 	}
 
 	enter() {
-		console.log('Phase meta.allCues: ', this.phaseMeta.allCues);
+		// console.log('Phase meta.allCues: ', this.phaseMeta.allCues);
 		this.chronologicalCues = [...this.phaseMeta.allCues].sort((a, b) =>
 			compareGET(a.get, b.get)
 		);
+
+		this.actionCues = this.getActionBoundCues();
+		this.expiringCues = this.getExpiringCues();
+		this.nonTimeActions = this.getNonTimeActions();
+		console.log('actionCues: ', this.actionCues);
 
 		if (typeof this.onEnter === 'function') {
 			this.onEnter();
 		}
 	}
+	getNonTimeActions() {
+		return this.phaseMeta.nonTimeActions;
+	}
+	/**
+	 * @returns {RuntimeCue[]}
+	 */
+	getExpiringCues() {
+		return this.actionCues.filter(
+			cue => this.getActionByKey(cue.requiresAction)?.failsAfter
+		);
+	}
+	/**
+	 *
+	 * @param {string} requiresAction
+	 * @returns {NonTimeAction}
+	 */
+	getActionByKey(requiresAction) {
+		return this.nonTimeActions.find(action => action.action === requiresAction);
+	}
+
+	getActionBoundCues() {
+		return this.chronologicalCues.filter(cue => cue.requiresAction);
+	}
+
 	onEnter() {
 		console.warn('Method not implemented.');
 	}
 
 	/**
 	 *
-	 * @param {TickPayload} tick
+	 * @param {TickPayload} tickPayload
 	 */
-	tick(tick) {
+	tick(tickPayload) {
 		console.log('Tick invoked');
 
 		if (this.lastTickPayload === null) {
-			this.lastTickPayload = tick;
+			this.lastTickPayload = tickPayload;
 			return;
 		}
 
-		this.lastTickPayload = tick;
+		this.lastTickPayload = tickPayload;
+		console.log('[DEBUG] tickPayload.getSeconds:', tickPayload.getSeconds);
+		this.currentGETSeconds = tickPayload.getSeconds;
+
+		// Safely access the subclass methods
 		if (typeof this.onTick === 'function') {
-			this.onTick(tick);
+			this.onTick(tickPayload);
 		}
 		// Trigger cues whose GET matches current tick
 
-		const currentGET = tick.get;
 		for (const cue of this.chronologicalCues) {
-			if (cue.getSeconds !== currentGET) {
+			if (cue.getSeconds !== this.currentGETSeconds) {
 				continue;
 			}
 			this.simulationState.playCue(cue);
 		}
+
+		this.checkFailsAfter();
+	}
+
+	checkFailsAfter() {
 		for (const cue of Object.values(this.phaseMeta.cuesByKey)) {
-			if (cue.requiresAction && cue.failsAfter) {
-				/** @type {NonTimeAction} */ const action =
-					this.phaseMeta.nonTimeActions[cue.requiresAction];
+			if (!cue?.requiresAction) continue;
+
+			/** @type {NonTimeAction | undefined} */ const action =
+				this.phaseMeta.nonTimeActions.find(a => a.action === cue.requiresAction);
+			if (!action?.failsAfter) continue;
+
+			// console.log('[CHECK] evaluating failsAfter timeout logic');
+			// console.log('[CHECK] currentGETSeconds:', this.currentGETSeconds);
+			// console.log('[CHECK] failsAfterSeconds:', action.failsAfter.get);
+
+			if (this.hasActionTimedOut(action.failsAfter.get)) {
+				this.triggerCueFailure(cue, action);
 			}
 		}
+	}
+
+	/**
+	 *
+	 * @param {RuntimeCue} cue
+	 * @param {NonTimeAction} action
+	 */
+	triggerCueFailure(cue, action) {
+		console.warn('Method not implemented.');
+	}
+	/**
+	 *
+	 * @param {number} failsAfterSeconds
+	 * @returns {boolean}
+	 */
+	hasActionTimedOut(failsAfterSeconds) {
+		console.log('[DEBUG BasePhase] hasActionTimedOut invoked');
+
+		if (this.currentGETSeconds >= failsAfterSeconds) {
+			return true;
+		}
+	}
+
+	hasCueTimedOut(cue) {}
+
+	getCurrentGETSeconds() {
+		return this.currentGETSeconds ?? 0;
 	}
 
 	/**

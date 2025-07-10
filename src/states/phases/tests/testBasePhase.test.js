@@ -9,8 +9,8 @@ import {
 function fireTwoTicks(/** @type {BasePhase} */ instancePhase, overrides = {}) {
 	/** @type {import('../../../types/clockTypes.js').TickPayload} */ const tickPayload =
 		{
-			get: overrides.get || 0,
-			getFormatted: overrides.getFormatted || '000:00:00',
+			getSeconds: overrides.get || 0,
+			getString: overrides.getFormatted || '000:00:00',
 			elapsed: overrides.elapsed || 0
 		};
 
@@ -36,8 +36,8 @@ describe('BasePhase cue triggering', () => {
 		// console.log('runtime metadata state: ', runtimeMetaData);
 
 		tick = {
-			get: cue.getSeconds, // Numeric match
-			getFormatted: cue.get,
+			getSeconds: cue.getSeconds, // Numeric match
+			getString: cue.get,
 			elapsed: cue.getSeconds
 		};
 

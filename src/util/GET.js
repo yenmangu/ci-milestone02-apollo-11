@@ -22,6 +22,11 @@ export function compareGET(a, b) {
 	return secondsFromGet(a) - secondsFromGet(b);
 }
 
+/**
+ *
+ * @param {number} seconds
+ * @returns {string}
+ */
 export function formatSecondsToHHMMSS(seconds) {
 	const hh = String(Math.floor(seconds / 3600)).padStart(2, '0');
 	const mm = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');

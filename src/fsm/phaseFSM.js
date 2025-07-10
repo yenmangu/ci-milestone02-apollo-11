@@ -32,7 +32,7 @@ export class PhaseFSM {
 		this.previousPhaseInstance = null;
 
 		this.devMode = simulationState.devMode;
-		tickEmitter.on('tick', this.handleTick);
+		tickEmitter.on('tick', this.handleTick.bind(this));
 	}
 
 	/**
@@ -77,7 +77,7 @@ export class PhaseFSM {
 	 * @param {TickPayload} tick
 	 */
 	handleTick(tick) {
-		this.simulationState.currentGet = tick.getFormatted;
+		this.simulationState.currentGet = tick.getString;
 		if (
 			this.currentPhaseInstance &&
 			typeof this.currentPhaseInstance.tick === 'function'

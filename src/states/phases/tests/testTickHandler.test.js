@@ -8,8 +8,8 @@ import { BasePhase } from '../basePhase.js';
 
 /** @type {import('../../../types/clockTypes.js').TickPayload} */ const fakeTick = {
 	elapsed: 1000,
-	get: 3600,
-	getFormatted: '01:00:00'
+	getSeconds: 3600,
+	getString: '01:00:00'
 };
 
 describe('TickHandler', () => {

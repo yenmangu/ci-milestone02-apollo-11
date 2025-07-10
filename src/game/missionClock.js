@@ -31,6 +31,8 @@ export class MissionClock {
 	 * startGETSeconds + secondsElapsed
 	 */
 	get currentGETSeconds() {
+		// console.log('[DEBUG CLOCK] startGetSeconds:', this.startGetSeconds);
+		// console.log('[DEBUG CLOCK] secondsElapsed:', this.secondsElapsed);
 		return this.startGetSeconds + this.secondsElapsed;
 	}
 
@@ -47,6 +49,8 @@ export class MissionClock {
 	}
 
 	getRealDelta(now) {
+		// console.log('[DEBUG CLOCK] this.lastRealTime', this.lastRealTime);
+
 		return (now - this.lastRealTime) / 1000;
 	}
 
@@ -66,16 +70,19 @@ export class MissionClock {
 			return;
 		}
 
-		if (this.lastRealTime === null) {
+		if (this.lastRealTime === null || this.lastRealTime === undefined) {
 			this.lastRealTime = now;
+			return;
 		} else {
 			const realDelta = this.getRealDelta(now);
+
+			if (isNaN(realDelta)) {
+				console.warn('[WARN] realDelta is NaN - skipping tick frame');
+				return;
+			}
 			this.elapsedMissionTime += realDelta * this.timeScale;
 			this.lastRealTime = now;
 		}
-
-		// const now = performance.now();
-		// const realDelta = this.getRealDelta(now);
 
 		/** @type {TickPayload} */
 		const tick = {
@@ -84,6 +91,12 @@ export class MissionClock {
 			getString: this.currentGET
 		};
 		runningEmitter.emit('running', true);
+
+		// console.log(
+		// 	'[DEBUG CLOCK] Emitting tick: getSeconds =',
+		// 	this.currentGETSeconds
+		// );
+
 		tickEmitter.emit('tick', tick);
 		this.frame = requestAnimationFrame(this._loop);
 	}
@@ -173,6 +186,7 @@ export class MissionClock {
 			const now = performance.now();
 			const realDelta = this.getRealDelta(now);
 			this.elapsedMissionTime += realDelta * this.timeScale;
+
 			this.isRunning = false;
 			this.lastRealTime = null;
 			if (this.frame) {
@@ -182,6 +196,14 @@ export class MissionClock {
 		}
 
 		this.elapsedMissionTime = targetElapsedSeconds;
+
+		/** @type {TickPayload} */ const tickPayload = {
+			elapsedSeconds: this.elapsedMissionTime,
+			getSeconds: this.currentGETSeconds,
+			getString: this.currentGET
+		};
+
+		tickEmitter.emit('tick', tickPayload);
 
 		this.lastRealTime = performance.now();
 		this.isRunning = true;

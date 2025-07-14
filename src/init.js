@@ -63,8 +63,9 @@ export async function initProgram() {
 
 		const clock = new MissionClock(Date.now(), 1, initalGetSeconds);
 
-		const ui = queryDom();
-		const uiController = new UIController(ui);
+		const uiStructure = queryDom();
+		const ui = new UIController(uiStructure);
+		ui.init();
 
 		tickEmitter.on('tick', tickPayload => {
 			fsm.handleTick(tickPayload);

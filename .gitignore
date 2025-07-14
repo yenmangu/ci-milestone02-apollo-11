@@ -21,3 +21,4 @@ ci-appollo-11.code*
 **/*.code-workspace
 LOG.md
 coverage
+CHECKLIST.md

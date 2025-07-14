@@ -18,6 +18,22 @@ function initSevenSegmentDisplay() {
 }
 
 /**
+ * @returns {import('../types/uiTypes.js').PushButtonsMap}
+ */
+function initPushButtons() {
+	/** @type {Object.<string, HTMLButtonElement>} */
+	const map = Array.from(document.querySelectorAll('.push-button')).reduce(
+		(map, el) => {
+			const castEl = cast(/** @type {HTMLButtonElement} */ el);
+			map[castEl.id] = castEl;
+			return map;
+		},
+		{}
+	);
+	return map;
+}
+
+/**
  *
  * @returns {UIStructure}
  */
@@ -39,10 +55,13 @@ function queryDom() {
 		throw new Error('Error missing progLight in UI elements');
 	}
 	const segmentDisplays = initSevenSegmentDisplay();
-	const pushButtons = cast(
-		Array.from(document.querySelectorAll('.push-button')),
-		'nodeList'
-	);
+	if (!segmentDisplays) {
+		throw new Error('Missing segmentDisplays in UI elements');
+	}
+	const pushButtons = initPushButtons();
+	if (!pushButtons) {
+		throw new Error('Missing pushButtons in UI elements');
+	}
 
 	/** @type {any} */
 	const hudMap = Array.from(document.querySelectorAll('span[id^="hud-"]')).reduce(

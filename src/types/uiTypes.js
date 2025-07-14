@@ -10,11 +10,11 @@
  */
 
 /**
- * @typedef {Record<string, HTMLElement>} MappedElement
+ * @typedef {Object.<string, HTMLElement>} MappedElement
  */
 
 /**
- * @typedef {Record<keyof HudElements, HTMLElement>} HudMap
+ * @typedef {Object.<keyof HudElements, HTMLElement>} HudMap
  */
 
 /**
@@ -50,10 +50,14 @@
  */
 
 /**
+ * @typedef {Object.<string, HTMLButtonElement>} PushButtonsMap
+ */
+
+/**
  * @typedef {Object} DSKYStructure
  * @property {SegmentDisplayMap} segmentDisplays
  * @property {IndicatorLightsMap} indicatorLights
- * @property {HTMLElement[]} pushButtons
+ * @property {PushButtonsMap} pushButtons
  * @property {HTMLElement} progLight
  * @property {StaticDisplayMap} [staticDisplays]
  */

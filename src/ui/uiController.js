@@ -4,7 +4,7 @@
 
 import { HudRenderer } from './HUD/hudRenderer.js';
 import { ModalManager } from './modal/modalManager.js';
-import { UISectionManager } from './UISections/uISectionManager.js';
+import { UISectionManager } from './uiSections/uiSectionManager.js';
 
 export class UIController {
 	/**

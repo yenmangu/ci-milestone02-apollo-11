@@ -38,13 +38,30 @@
  */
 
 /**
- * @typedef {Object} UIStructure
- * @property {NodeListOf<HTMLElement>} sevenSegmentDisplays
- * @property {Record<string, HTMLElement>} displayMap
- * @property {Record<string, HTMLElement>} indicatorLights
+ * @typedef {Object.<string, HTMLElement>} SegmentDisplayMap
+ */
+
+/**
+ * @typedef {Object.<string, HTMLElement>} IndicatorLightsMap
+ */
+
+/**
+ * @typedef {Object.<string, HTMLElement>} StaticDisplayMap
+ */
+
+/**
+ * @typedef {Object} DSKYStructure
+ * @property {SegmentDisplayMap} segmentDisplays
+ * @property {IndicatorLightsMap} indicatorLights
+ * @property {HTMLElement[]} pushButtons
  * @property {HTMLElement} progLight
- * @property {NodeListOf<HTMLElement>} pushButtons
+ * @property {StaticDisplayMap} [staticDisplays]
+ */
+
+/**
+ * @typedef {Object} UIStructure
  * @property {HudMap} hudMap
+ * @property {DSKYStructure} dsky
  * @property {ModalElements} modals
  * @property {UISections} [sections]
  */

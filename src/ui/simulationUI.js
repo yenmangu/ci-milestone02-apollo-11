@@ -22,10 +22,11 @@ function initSevenSegmentDisplay() {
  * @returns {UIStructure}
  */
 function queryDom() {
-	const sevenSegmentDisplays = cast(
-		document.querySelectorAll('.seven-segment span[id]'),
-		'nodeList'
-	);
+	// const segmentDisplays = cast(
+	// 	document.querySelectorAll('.seven-segment span[id]'),
+	// 	'nodeList'
+	// );
+
 	/** @type {{[key: string]: HTMLElement}} */
 	const indicatorLights = Array.from(
 		document.querySelectorAll('.indicator-lights .light')
@@ -34,7 +35,7 @@ function queryDom() {
 		return map;
 	}, {});
 	const progLight = document.getElementById('compActy');
-	const displayMap = initSevenSegmentDisplay();
+	const segmentDisplays = initSevenSegmentDisplay();
 	const pushButtons = cast(
 		Array.from(document.querySelectorAll('.push-button')),
 		'nodeList'
@@ -79,13 +80,14 @@ function queryDom() {
 	};
 
 	return {
-		sevenSegmentDisplays,
-		displayMap,
-		indicatorLights,
-		progLight,
-		pushButtons,
 		hudMap: hudMapTyped,
-		modals
+		modals,
+		dsky: {
+			indicatorLights,
+			segmentDisplays,
+			pushButtons,
+			progLight
+		}
 	};
 }
 

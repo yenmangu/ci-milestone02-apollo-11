@@ -3,6 +3,9 @@
  */
 
 export class ModalManager {
+	prepare() {
+		throw new Error('Method not implemented.');
+	}
 	/**
 	 *
 	 * @param {Modals} modals

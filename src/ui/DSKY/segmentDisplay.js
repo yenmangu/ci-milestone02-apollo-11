@@ -1,9 +1,13 @@
 /**
- *
+ * @typedef {import("../../types/uiTypes.js").SegmentDisplayMap} SegmentDisplays
  */
 
 export class SegmentDisplay {
+	/**
+	 *
+	 * @param {SegmentDisplays} displays
+	 */
 	constructor(displays) {
-		this.displays = displays;
+		/** @type {SegmentDisplays} */ this.displays = displays;
 	}
 }

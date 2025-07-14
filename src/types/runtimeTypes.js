@@ -81,8 +81,8 @@ import { PhaseIds } from './timelineTypes.js';
  * @property {string} description
  * @property {string} startGET
  * @property {string} [endGET]
- * @property {PhaseState} initialState
- * @property {PhaseState} endState
+ * @property {RuntimePhaseState} initialState
+ * @property {RuntimePhaseState} endState
  * @property {Object.<string, RuntimeCue>} cuesByKey
  * @property {RuntimeCue[]} allCues
  * @property {NonTimeAction[]} nonTimeActions

@@ -48,7 +48,7 @@ export class BasePhase {
 		this.actionCues = this.getActionBoundCues();
 		this.expiringCues = this.getExpiringCues();
 		this.nonTimeActions = this.getNonTimeActions();
-		console.log('actionCues: ', this.actionCues);
+		// console.log('actionCues: ', this.actionCues);
 
 		if (typeof this.onEnter === 'function') {
 			this.onEnter();
@@ -79,7 +79,7 @@ export class BasePhase {
 	}
 
 	onEnter() {
-		console.warn('Method not implemented.');
+		// console.warn('Method not implemented.');
 	}
 
 	/**
@@ -87,7 +87,7 @@ export class BasePhase {
 	 * @param {TickPayload} tickPayload
 	 */
 	tick(tickPayload) {
-		console.log('Tick invoked');
+		// console.log('Tick invoked');
 
 		if (this.lastTickPayload === null) {
 			this.lastTickPayload = tickPayload;
@@ -95,7 +95,7 @@ export class BasePhase {
 		}
 
 		this.lastTickPayload = tickPayload;
-		console.log('[DEBUG] tickPayload.getSeconds:', tickPayload.getSeconds);
+		// console.log('[DEBUG] tickPayload.getSeconds:', tickPayload.getSeconds);
 		this.currentGETSeconds = tickPayload.getSeconds;
 
 		// Safely access the subclass methods
@@ -138,7 +138,7 @@ export class BasePhase {
 	 * @param {NonTimeAction} action
 	 */
 	triggerCueFailure(cue, action) {
-		console.warn('Method not implemented.');
+		// console.warn('Method not implemented.');
 	}
 	/**
 	 *
@@ -146,7 +146,7 @@ export class BasePhase {
 	 * @returns {boolean}
 	 */
 	hasActionTimedOut(failsAfterSeconds) {
-		console.log('[DEBUG BasePhase] hasActionTimedOut invoked');
+		// console.log('[DEBUG BasePhase] hasActionTimedOut invoked');
 
 		if (this.currentGETSeconds >= failsAfterSeconds) {
 			return true;
@@ -183,7 +183,7 @@ export class BasePhase {
 	 * @param {TickPayload} tick
 	 */
 	onTick(tick) {
-		console.warn('Method not implemented.');
+		// console.warn('Method not implemented.');
 	}
 
 	exit() {

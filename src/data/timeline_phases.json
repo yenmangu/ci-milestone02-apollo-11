@@ -121,11 +121,6 @@
 						"speaker": "AGC/DSKY",
 						"text": "Select P63 (Enter V37N63E into the DSKY)"
 					},
-					"fails_after": {
-						"get": "102:32:20",
-						"name": "NO_PROGRAM_SELECTED",
-						"context": "P63 not entered before confirmation output"
-					},
 					"requires_action": "V37N63"
 				},
 				{
@@ -317,7 +312,12 @@
 					"verb": "37",
 					"noun": "63",
 					"program": "63",
-					"description": "Initiate P63 - Braking Phase"
+					"description": "Initiate P63 - Braking Phase",
+					"fails_after": {
+						"get": "102:32:20",
+						"name": "NO_PROGRAM_SELECTED",
+						"context": "P63 not entered before confirmation output"
+					}
 				},
 				{
 					"action": "PRO",

@@ -15,6 +15,15 @@ export class MissionClock {
 		this.startGetSeconds = startGetSeconds;
 		this.isRunning = false;
 		this.frame = null;
+		this.tickEmitter = tickEmitter;
+	}
+
+	/**
+	 *
+	 * @param {TickPayload} tickPayload
+	 */
+	emitTicks(tickPayload) {
+		this.tickEmitter.emit('tick', tickPayload);
 	}
 
 	get secondsElapsed() {
@@ -97,7 +106,7 @@ export class MissionClock {
 		// 	this.currentGETSeconds
 		// );
 
-		tickEmitter.emit('tick', tick);
+		this.emitTicks(tick);
 		this.frame = requestAnimationFrame(this._loop);
 	}
 
@@ -179,7 +188,7 @@ export class MissionClock {
 	/**
 	 * Jump the mission clock to that `secondsElapsed === target`.
 	 * Emits a fully formed `tick` event so subscribers get expected payload.
-	 * @param {*} targetElapsedSeconds
+	 * @param {number} targetElapsedSeconds
 	 */
 	jumpToTES(targetElapsedSeconds) {
 		if (this.isRunning) {
@@ -203,7 +212,8 @@ export class MissionClock {
 			getString: this.currentGET
 		};
 
-		tickEmitter.emit('tick', tickPayload);
+		this.emitTicks(tickPayload);
+		// tickEmitter.emit('tick', tickPayload);
 
 		this.lastRealTime = performance.now();
 		this.isRunning = true;
@@ -226,8 +236,14 @@ export class MissionClock {
 
 		this.elapsedMissionTime += deltaSeconds;
 
+		/** @type {TickPayload} */ const tickPayload = {
+			elapsedSeconds: this.elapsedMissionTime,
+			getSeconds: 0,
+			getString: ''
+		};
+
 		if (emit) {
-			tickEmitter.emit('tick', this.elapsedMissionTime);
+			this.emitTicks(tickPayload);
 		}
 	}
 }

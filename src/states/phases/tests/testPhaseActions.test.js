@@ -18,7 +18,7 @@ import { loadTimeline } from '../../../data/loadTimeline.js';
 import { createClockHarness } from '../../../util/testUtils/createClockHarness.js';
 import { createSimulationState } from '../../simulationState.js';
 import { PhaseIds } from '../../../types/timelineTypes.js';
-import { formatSecondsToHHMMSS, secondsFromGet } from '../../../util/GET.js';
+import { getFromSeconds, secondsFromGet } from '../../../util/GET.js';
 import { PhaseFSM } from '../../../fsm/phaseFSM.js';
 import { phaseRegistry } from '../../../fsm/phaseRegistry.js';
 
@@ -89,11 +89,12 @@ describe('Test phase actions against live phase', () => {
 
 		const failSpy = jest.spyOn(phase, 'triggerCueFailure');
 		const lateGet = action.failsAfter.get + 1;
-		await advanceToGET(formatSecondsToHHMMSS(lateGet));
+		await advanceToGET(getFromSeconds(lateGet));
 
 		// console.log('[DEBUG] now:', phase.currentGETSeconds);
 		// console.log('[DEBUG] failsAfter.get:', action.failsAfter.get);
 
 		expect(failSpy).toHaveBeenCalled();
+		expect(failSpy).toHaveBeenCalledWith(cueWithExpiry, action);
 	});
 });

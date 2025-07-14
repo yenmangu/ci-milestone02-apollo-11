@@ -10,11 +10,11 @@
  */
 
 /**
- * @typedef {Object.<string, HTMLElement>} MappedElement
+ * @typedef {Record.<string, HTMLElement>} MappedElement
  */
 
 /**
- * @typedef {Object.<keyof HudElements, HTMLElement>} HudMap
+ * @typedef {Record.<keyof HudElements, HTMLElement>} HudMap
  */
 
 /**
@@ -29,6 +29,23 @@
  * @property {number} [fuel]
  * @property {string} [cueTranscript]
  * @property {string} [prompt]
+ */
+
+/**
+ * @typedef {'altFeet' | 'altMiles' | 'velocity' | 'vUnits' | 'fuel'} TelemetryKey
+ */
+
+/**
+ * @typedef {Object} Telemetry
+ * @property {string} altitude
+ * @property {string} altUnits
+ * @property {string} velocity
+ * @property {string} vUnits
+ * @property {string} fuel
+ */
+
+/**
+ * @typedef {'feet' | 'miles'} altitudeUnits
  */
 
 /**
@@ -51,19 +68,19 @@
  */
 
 /**
- * @typedef {Object.<string, HTMLElement>} SegmentDisplayMap
+ * @typedef {Record.<string, HTMLElement>} SegmentDisplayMap
  */
 
 /**
- * @typedef {Object.<string, HTMLElement>} IndicatorLightsMap
+ * @typedef {Record.<string, HTMLElement>} IndicatorLightsMap
  */
 
 /**
- * @typedef {Object.<string, HTMLElement>} StaticDisplayMap
+ * @typedef {Record.<string, HTMLElement>} StaticDisplayMap
  */
 
 /**
- * @typedef {Object.<string, HTMLButtonElement>} PushButtonsMap
+ * @typedef {Record.<string, HTMLButtonElement>} PushButtonsMap
  */
 
 /**

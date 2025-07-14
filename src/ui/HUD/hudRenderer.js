@@ -1,9 +1,17 @@
 /**
  * @typedef {import("../../types/uiTypes.js").HudMap} HudMap
+ * @typedef {import("../../types/uiTypes.js").UIState} UIState
+ * @typedef {import("../../types/uiTypes.js").TelemetryKey} TKey
  *
  */
 
 export class HudRenderer {
+	renderCue(cueText) {
+		throw new Error('Method not implemented.');
+	}
+	renderPrompt(prompt) {
+		throw new Error('Method not implemented.');
+	}
 	/**
 	 *
 	 * @param {HudMap} hudMap
@@ -12,8 +20,17 @@ export class HudRenderer {
 		/** @type {HudMap} */ this.hudMap = hudMap;
 	}
 	renderInitialState() {
-		console.error('Method not implemented.');
+		console.warn('Method not implemented.');
 	}
 
-	render(status) {}
+	/**
+	 *
+	 * @param {TKey} key
+	 * @param {string} value
+	 */
+	renderTelemetry(key, value) {
+		const el = /** @type {HTMLElement} */ (this.hudMap[key]);
+		if (!el) return;
+		el.textContent = value;
+	}
 }

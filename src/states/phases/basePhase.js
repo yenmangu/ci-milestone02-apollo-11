@@ -76,7 +76,7 @@ export class BasePhase {
 			cueTranscript: fromTick.cueTranscript,
 			prompt: fromTick.prompt
 		};
-		this.simulationState.ui?.updateHUD?.(uiState);
+		this.simulationState.ui?.updateHUD(uiState);
 	}
 
 	getNonTimeActions() {

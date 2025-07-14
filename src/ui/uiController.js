@@ -2,6 +2,9 @@
  * @typedef {import("../types/uiTypes.js").UIStructure} UI
  * @typedef {import('../types/runtimeTypes.js').PhaseState} PhaseState
  * @typedef {import('../types/uiTypes.js').UIState} UIState
+ * @typedef {import('../types/uiTypes.js').Telemetry} Telemetry
+ * @typedef {import('../types/uiTypes.js').altitudeUnits} AltitudeUnits
+ * @typedef {import('../types/uiTypes.js').TelemetryKey} TKey
  */
 
 import { cast } from '../util/cast.js';
@@ -26,6 +29,8 @@ export class UIController {
 		this.startEmitter = startEmitter;
 		/** @type {HTMLButtonElement | undefined} */ this.startButton;
 		this.initStartButton();
+		/** @type {AltitudeUnits} */ this.altitudeUnits = 'miles';
+		/** @type {Telemetry} */ this.currentTelemetry;
 	}
 
 	initStartButton() {
@@ -59,8 +64,69 @@ export class UIController {
 		throw new Error('Method not implemented.');
 	}
 
+	/**
+	 *
+	 * @param {UIState} status
+	 */
 	updateHUD(status) {
-		this.hud.render(status);
+		this.currentTelemetry = this.buildTelemetry(status);
+
+		if (status.prompt) {
+			this.hud.renderPrompt(status.prompt);
+		}
+		if (status.cueTranscript) {
+			this.hud.renderCue(status.cueTranscript);
+		}
+
+		if (!this.currentTelemetry) return;
+
+		for (const [key, value] of Object.entries(this.currentTelemetry)) {
+			const tKey = /** @type {TKey} */ (key);
+			this.hud.renderTelemetry(tKey, value);
+		}
+	}
+
+	/**
+	 *
+	 * @param {UIState} status
+	 * @returns {Telemetry}
+	 */
+
+	buildTelemetry(status) {
+		/** @type {Telemetry} */ const telemetry = {
+			altitude: '',
+			altUnits: this.altitudeUnits,
+			velocity: '0',
+			vUnits: '',
+			fuel: '0'
+		};
+		if (status.altitude) {
+			telemetry.altitude =
+				this.altitudeUnits === 'feet'
+					? status.altitude.feet.toString()
+					: status.altitude.miles.toString();
+		}
+
+		if (typeof status.velocity === 'number') {
+			telemetry.velocity = status.velocity.toString();
+		}
+
+		if (typeof status.fuel === 'number') {
+			telemetry.fuel = status.fuel.toString();
+		}
+
+		if (typeof status.vUnits === 'string') {
+			telemetry.vUnits = status.vUnits;
+		}
+		return telemetry;
+	}
+
+	/**
+	 *
+	 * @param {AltitudeUnits} altUnits
+	 */
+	updateAltitudeUnits(altUnits) {
+		this.altitudeUnits = altUnits;
 	}
 
 	showInstructionModal(message) {}

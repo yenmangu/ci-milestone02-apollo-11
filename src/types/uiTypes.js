@@ -18,6 +18,20 @@
  */
 
 /**
+ * @typedef {import("./timelineTypes.js").Altitude} Altitude
+ */
+
+/**
+ * @typedef {Object} UIState
+ * @property {Altitude} [altitude]
+ * @property {number} [velocity]
+ * @property {string} [vUnits]
+ * @property {number} [fuel]
+ * @property {string} [cueTranscript]
+ * @property {string} [prompt]
+ */
+
+/**
  * @typedef {Object} ModalElements
  * @property {HTMLElement} instruction
  * @property {HTMLElement} next
@@ -31,10 +45,9 @@
 
 /**
  * @typedef {Object} UISections
- * @property {HTMLElement} landing
  * @property {HTMLElement} dsky
- * @property {HTMLElement} preStart
- * @property {HTMLElement} goBack
+ * @property {HTMLElement} landing
+ * @property {HTMLElement} lemAnimation
  */
 
 /**

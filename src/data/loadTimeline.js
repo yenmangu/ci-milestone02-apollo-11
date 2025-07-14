@@ -6,6 +6,7 @@
  * @typedef {import('../types/timelineTypes.js').JSON_TimelineCue} RawTimelineCue
  * @typedef {import('../types/timelineTypes.js').JSON_NonTimeAction} RawNonTimeAction
  * @typedef {import('../types/timelineTypes.js').PhaseId} PhaseId
+ * @typedef {import('../types/timelineTypes.js').PhaseState} RawState
  */
 
 import { secondsFromGet } from '../util/GET.js';
@@ -17,6 +18,7 @@ import { secondsFromGet } from '../util/GET.js';
  * @typedef {import('../types/runtimeTypes.js').TimelineMetadata} TimelineMetadata
  * @typedef {import('../types/runtimeTypes.js').NonTimeAction} NonTimeAction
  * @typedef {import('../types/runtimeTypes.js').FailsAfter} FailsAfter
+ * @typedef {import('../types/runtimeTypes.js').RuntimePhaseState} RuntimePhaseState
  */
 
 /**
@@ -90,6 +92,20 @@ function normaliseAction(rawAction) {
 
 /**
  *
+ * @param {RawState} rawState
+ * @returns {RuntimePhaseState}
+ */
+function normalisePhaseState(rawState) {
+	return {
+		altitude: rawState.altitude,
+		velocity: rawState.velocity,
+		vUnits: rawState.v_units,
+		fuel: rawState.fuel
+	};
+}
+
+/**
+ *
  * @param {RawTimelineMetadata} rawMeta
  * @returns {TimelineMetadata}
  */
@@ -126,8 +142,8 @@ function buildMissionPhase(raw, index) {
 		description: raw.description,
 		startGET: raw.start_get,
 		endGET: undefined,
-		initialState: raw.initial_state,
-		endState: raw.initial_state,
+		initialState: normalisePhaseState(raw.initial_state),
+		endState: normalisePhaseState(raw.end_state),
 		allCues,
 		cuesByKey,
 		nonTimeActions,

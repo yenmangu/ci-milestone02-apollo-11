@@ -18,10 +18,15 @@ import { PhaseIds } from './timelineTypes.js';
  * @typedef {import('./timelineTypes.js').JSON_TimelineMetadata} JSON_TimelineMetadata
  * @typedef {import('./timelineTypes.js').JSON_historical_context} JSON_historical_context
  * @typedef {import('./timelineTypes.js').JSON_FailsAfter} JSON_FailsAfter
+ * @typedef {import('./timelineTypes.js').Altitude} Altitude
  */
 
 /**
- * @typedef {Object}
+ * @typedef {Object} RuntimePhaseState
+ * @property {Altitude} altitude
+ * @property {number} velocity
+ * @property {string} vUnits
+ * @property {number} fuel
  */
 
 /**

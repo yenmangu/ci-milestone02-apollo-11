@@ -28,7 +28,7 @@ import { DevController } from './dev/devModule.js';
 import { phaseRegistry } from './fsm/phaseRegistry.js';
 import { PhaseIds } from './types/timelineTypes.js';
 import { secondsFromGet } from './util/GET.js';
-import { devNavEmitter, tickEmitter } from './event/eventBus.js';
+import { startEmitter, tickEmitter } from './event/eventBus.js';
 import { queryDom } from './ui/simulationUI.js';
 import { UIController } from './ui/uiController.js';
 
@@ -46,13 +46,17 @@ export async function initProgram() {
 		const initialGET = firstPhase.startGET;
 		const initalGetSeconds = secondsFromGet(initialGET);
 
+		const uiStructure = queryDom();
+		const ui = new UIController(uiStructure);
+
 		/** @type {SimParams} */ const simParams = {
 			initialPhaseId,
 			initialGET,
 			timeline,
 			hooks: {
 				devMode: dev
-			}
+			},
+			ui
 		};
 		/** @type {SimState} */ const simState = createSimulationState(simParams);
 		/** @type {PhaseFSM} */ const fsm = new PhaseFSM(
@@ -63,26 +67,32 @@ export async function initProgram() {
 
 		const clock = new MissionClock(Date.now(), 1, initalGetSeconds);
 
-		const uiStructure = queryDom();
-		const ui = new UIController(uiStructure);
-		ui.init();
-
 		tickEmitter.on('tick', tickPayload => {
 			fsm.handleTick(tickPayload);
 		});
 
 		if (dev) {
-			devController = new DevController(simState, fsm, clock, timeline);
+			devController = new DevController(
+				simState,
+				fsm,
+				clock,
+				timeline,
+				uiStructure
+			);
 			// Expose to global window object for browser testing
 			win.dev = devController;
 		}
 
-		fsm.transitionTo(initialPhaseId);
-		clock.start();
+		ui.init();
 
-		// TODO Load UI Elements
-		// TODO Create UI Interface
-		// TODO Initiate the UI
-		// TODO
-	} catch (error) {}
+		startEmitter.on('start', () => {
+			clock.start();
+			if (!simState || !clock || !fsm) {
+				throw new Error('Critical error on start.');
+			}
+			fsm.transitionTo(initialPhaseId);
+		});
+	} catch (error) {
+		console.error('[initPogram] failed: ', error);
+	}
 }

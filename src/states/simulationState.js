@@ -1,5 +1,6 @@
 /**
  * @typedef {import("../types/timelineTypes.js").JSON_NonTimeAction} Action
+ * @typedef {import('../ui/uiController.js').UIController} UIController
  */
 
 /**
@@ -26,6 +27,7 @@
  * @property {(id: string) => import("../types/runtimeTypes.js").RuntimePhase | undefined } [getPhase]
  *
  * @property {boolean} [devMode]
+ * @property {UIController} [ui]
  *
  * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} onCuePlayed
  */
@@ -43,6 +45,7 @@
  * @property {string} initialGET
  * @property {import("../types/runtimeTypes.js").MissionTimeline} timeline
  * @property {SimulationHooks} hooks
+ * @property {UIController} [ui]
  */
 
 /**
@@ -55,7 +58,13 @@
  * @param {SimulationParameters} simulationParameters
  * @returns {SimulationState}
  */
-function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) {
+function createSimulationState({
+	initialPhaseId,
+	initialGET,
+	timeline,
+	hooks,
+	ui
+}) {
 	return {
 		currentPhaseId: initialPhaseId,
 		currentGet: initialGET,
@@ -63,6 +72,7 @@ function createSimulationState({ initialPhaseId, initialGET, timeline, hooks }) 
 
 		playedCues: new Set(),
 		completedActions: new Set(),
+		ui,
 
 		onCuePlayed: hooks?.onCuePlayed,
 		log: hooks?.log,

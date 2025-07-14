@@ -35,6 +35,25 @@ function initPushButtons() {
 
 /**
  *
+ * @returns {any}
+ */
+function initSections() {
+	const map = Array.from(document.querySelectorAll('section[id$=-ui]')).reduce(
+		(map, el) => {
+			const castEl = cast(el);
+			const key = el.id.slice(0, el.id.indexOf('-'));
+			map[key] = castEl;
+			return map;
+		},
+		{}
+	);
+	console.log('map', map);
+
+	return map;
+}
+
+/**
+ *
  * @returns {UIStructure}
  */
 function queryDom() {
@@ -63,6 +82,11 @@ function queryDom() {
 		throw new Error('Missing pushButtons in UI elements');
 	}
 
+	const sections = initSections();
+	if (!sections) {
+		throw new Error('Missing sections in UI Elements');
+	}
+
 	/** @type {any} */
 	const hudMap = Array.from(document.querySelectorAll('span[id^="hud-"]')).reduce(
 		(map, element) => {
@@ -88,10 +112,13 @@ function queryDom() {
 		}
 	}
 	const hudMapTyped = /** @type {import('../types/uiTypes.js').HudMap} */ (hudMap);
+	const sectionsTyped = /** @type {import('../types//uiTypes.js').UISections} */ (
+		sections
+	);
 
 	/** @type {import('../types/uiTypes.js').ModalElements} */
 	const modals = {
-		instruction: cast(document.getElementById('instructions_Modal')),
+		instruction: cast(document.getElementById('instruction_Modal')),
 		next: cast(document.getElementById('next_Modal')),
 		nextPhase: cast(
 			/** @type {HTMLButtonElement} */ document.getElementById('nextPhase')
@@ -109,7 +136,8 @@ function queryDom() {
 			segmentDisplays,
 			pushButtons,
 			progLight
-		}
+		},
+		sections: sectionsTyped
 	};
 }
 

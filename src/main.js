@@ -10,8 +10,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 	}
 
 	if (path === SIMULATOR_PATH) {
+		console.log('path in domain: ', path);
+		console.log('Init program');
+
 		await initProgram();
 	}
 });
-
-// NEXT : UPDATE UI TO SHOW VERBS / NOUNS

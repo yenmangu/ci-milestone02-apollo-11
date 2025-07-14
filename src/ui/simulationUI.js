@@ -34,7 +34,10 @@ function queryDom() {
 		map[element.id] = cast(element);
 		return map;
 	}, {});
-	const progLight = document.getElementById('compActy');
+	const progLight = cast(document.getElementById('compActy'));
+	if (!progLight) {
+		throw new Error('Error missing progLight in UI elements');
+	}
 	const segmentDisplays = initSevenSegmentDisplay();
 	const pushButtons = cast(
 		Array.from(document.querySelectorAll('.push-button')),

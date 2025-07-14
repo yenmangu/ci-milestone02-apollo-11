@@ -6,6 +6,7 @@
  * @typedef {import('../states/phases/basePhase.js').BasePhase} BasePhase
  * @typedef {import('../types/runtimeTypes.js').RuntimePhase} RuntimePhase
  * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
+ * @typedef {import('../types/uiTypes.js').UIStructure} UIStructure
  */
 
 /**
@@ -54,9 +55,10 @@ export class DevController {
 	 * @param {PartialFSM} fsm
 	 * @param {MissionClock} missionClock
 	 * @param {MissionTimeline} timeline
+	 * @param {UIStructure | {}} [ui={}]
 	 */
 
-	constructor(simState, fsm, missionClock, timeline) {
+	constructor(simState, fsm, missionClock, timeline, ui = {}) {
 		/** @type {SimulationState} */ this.simState = simState;
 		/** @type {PartialFSM} */ this.fsm = fsm;
 		/** @type {MissionClock} */ this.clock = missionClock;

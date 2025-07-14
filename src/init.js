@@ -30,6 +30,7 @@ import { PhaseIds } from './types/timelineTypes.js';
 import { secondsFromGet } from './util/GET.js';
 import { devNavEmitter, tickEmitter } from './event/eventBus.js';
 import { queryDom } from './ui/simulationUI.js';
+import { UIController } from './ui/uiController.js';
 
 // just for now
 let dev = true;
@@ -63,6 +64,7 @@ export async function initProgram() {
 		const clock = new MissionClock(Date.now(), 1, initalGetSeconds);
 
 		const ui = queryDom();
+		const uiController = new UIController(ui);
 
 		tickEmitter.on('tick', tickPayload => {
 			fsm.handleTick(tickPayload);

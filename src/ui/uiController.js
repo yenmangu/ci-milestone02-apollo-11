@@ -17,6 +17,9 @@ export class UIController {
 		this.modals = new ModalManager(ui.modals);
 		this.sections = new UISectionManager(ui.sections);
 	}
+	init() {
+		console.error('Method not implemented.');
+	}
 
 	updateHUD(status) {
 		this.hud.render(status);

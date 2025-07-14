@@ -2,7 +2,7 @@
  * @typedef {import("../types/uiTypes.js").UIStructure} UI
  */
 
-import { DskyController } from './DSKY/dskyRenderer.js';
+import { DskyController } from './DSKY/dskyController.js';
 import { HudRenderer } from './HUD/hudRenderer.js';
 import { ModalManager } from './modal/modalManager.js';
 import { UISectionManager } from './uiSections/uiSectionManager.js';

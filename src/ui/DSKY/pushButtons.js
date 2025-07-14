@@ -1,13 +1,13 @@
 /**
- * @typedef {import("../../types/uiTypes.js").PushButtonsMap} PushButtons
+ * @typedef {import("../../types/uiTypes.js").PushButtonsMap} PushButtonsMap
  */
 
-export class PushButtonsController {
+export class PushButtons {
 	/**
 	 *
-	 * @param {PushButtonsController} buttons
+	 * @param {PushButtonsMap} buttons
 	 */
 	constructor(buttons) {
-		/** @type {PushButtonsController} */ this.buttons = buttons;
+		/** @type {PushButtonsMap} */ this.buttons = buttons;
 	}
 }

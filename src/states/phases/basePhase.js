@@ -4,6 +4,7 @@
  * @typedef {import("../../types/runtimeTypes.js").RuntimePhase} RuntimePhase
  * @typedef {import("../../types/runtimeTypes.js").RuntimeCue} RuntimeCue
  * @typedef {import('../../types/runtimeTypes.js').NonTimeAction} NonTimeAction
+ * @typedef {import('../../types/uiTypes.js').UIState} UIState
  */
 
 import { compareGET, secondsFromGet } from '../../util/GET.js';
@@ -37,6 +38,7 @@ export class BasePhase {
 		/** @type {RuntimeCue[]} */ this.actionCues = [];
 		/** @type {RuntimeCue[]} */ this.expiringCues = [];
 		/** @type {NonTimeAction[]} */ this.nonTimeActions = [];
+		/** @type {UIState} */ this.uiState;
 	}
 
 	enter() {
@@ -50,10 +52,33 @@ export class BasePhase {
 		this.nonTimeActions = this.getNonTimeActions();
 		// console.log('actionCues: ', this.actionCues);
 
+		this.setUiData();
+
 		if (typeof this.onEnter === 'function') {
 			this.onEnter();
 		}
 	}
+
+	/**
+	 *
+	 * @param {UIState} [data]
+	 */
+	setUiData(data = {}) {
+		const fromTick = data ?? {};
+
+		const { velocity, vUnits, altitude, fuel } = this.phaseMeta?.initialState ?? {};
+
+		/** @type {UIState} */ const uiState = {
+			altitude: fromTick.altitude ?? altitude,
+			velocity: fromTick.velocity ?? velocity,
+			vUnits: fromTick.vUnits ?? vUnits,
+			fuel: fromTick.fuel ?? fuel,
+			cueTranscript: fromTick.cueTranscript,
+			prompt: fromTick.prompt
+		};
+		this.simulationState.ui?.updateHUD?.(uiState);
+	}
+
 	getNonTimeActions() {
 		return this.phaseMeta.nonTimeActions;
 	}

@@ -68,7 +68,7 @@ export class DevController {
 			timeline.runtimePhases
 		);
 		/** @type {number} */ this.lastComputedJumpSeconds = 0;
-		this.ui = ui;
+		/** @type {UIStructure | {}} */ this.ui = ui;
 	}
 
 	/**

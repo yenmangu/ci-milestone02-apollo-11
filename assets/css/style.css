@@ -114,14 +114,6 @@ section {
 
 /* Dev Styles */
 
-.container {
-	/* border: 1px solid red; */
-}
-
-.row {
-	/* border: 1px solid lightgreen; */
-}
-
 /* .col,
 .col-1,
 .col-2,
@@ -662,11 +654,6 @@ section#dsky-ui .col.py-2.custom-col {
 		min-height: 200px;
 		height: 100%;
 		padding: 0.5rem;
-	}
-
-	.col-6.indicator-lights {
-		/* padding: 0; */
-		/* line-height: 1rem; */
 	}
 
 	.hud-item {

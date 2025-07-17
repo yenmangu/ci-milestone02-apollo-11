@@ -1,7 +1,7 @@
 /* Fonts import */
 @font-face {
 	font-family: 'dseg7';
-	src: url('../fonts/DSEG7Classic-BoldItalic.woff2') format('woff2');
+	src: url('../fonts/DSEG7/DSEG7Classic-BoldItalic.woff2') format('woff2');
 	/* url('/assets/fonts/DSEG7Classic-BoldItalic.woff') format('woff') */
 	/* url('/assets/fonts/DSEG7Classic-BoldItalic.ttf') format('truetype'); */
 	font-weight: normal;
@@ -12,7 +12,7 @@
 
 @font-face {
 	font-family: 'dseg7-mini';
-	src: url('../fonts/DSEG7ClassicMini-BoldItalic.woff2') format('woff2');
+	src: url('../fonts/DSEG7/DSEG7ClassicMini-BoldItalic.woff2') format('woff2');
 	/* url('/assets/fonts/DSEG7Classic-BoldItalic.woff') format('woff') */
 	/* url('/assets/fonts/DSEG7Classic-BoldItalic.ttf') format('truetype'); */
 	font-weight: normal;
@@ -21,15 +21,28 @@
 	font-display: swap;
 }
 
+@font-face {
+	font-family: 'Jost';
+	src: url('../fonts/Jost/._Jost-VariableFont_wght.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
 /* CSS Variables */
 
 :root {
-	--dsky-yellow-values: 248, 230, 130;
+	--dsky-yellow-values: 255, 215, 100;
 	--dsky-button-values: 26, 26, 26;
 	--dsky-button-text-values: 238, 238, 238;
 	--dsky-display-bg-values: 92, 92, 92;
-	--dsky-display-blue-values: 0, 255, 255;
+	--dsky-display-blue-values: 180, 255, 255;
+	--dsky-light-white-values: 255, 255, 230;
+	--dsky-light-bg-values: 248, 230, 130;
 
+	--dsky-light-bg: rgba(var(--dsky-display-bg-values) 1);
+	--dsky-white-on: rgba(var(--dsky-light-white-values), 0.85);
+	--dsky-white-off: rgba(var(--dsky-light-white-values), 0.35);
 	--dsky-yellow-off: rgba(var(--dsky-yellow-values), 0.1);
 	--dsky-yellow-on: rgba(var(--dsky-yellow-values), 0.8);
 	--dsky-button: rgba(var(--dsky-button-values), 1);
@@ -79,14 +92,24 @@ section {
 }
 
 .seven-segment {
-	font-family: 'dseg7-mini', sans-serif;
-	font-size: 1rem;
-	font-weight: bold;
-	font-style: normal;
+	font-family: 'dseg7-mini', monospace;
+	font-size: 1.4rem;
+	line-height: 1.4rem;
+	font-variant-numeric: tabular-nums;
+	color: var(--dsky-display-blue); /* already defined in your vars */
 	text-align: center;
-	letter-spacing: 2px;
+	text-shadow: 0 0 1px rgba(var(--dsky-display-blue-values), 0.8),
+		0 0 1px rgba(var(--dsky-display-blue-values), 0.3);
+	background: none;
+	border: none;
+	padding: 0;
+	letter-spacing: 0.1ch;
+}
+
+.seven-segment .polarity {
 	color: var(--dsky-display-blue);
-	text-shadow: 0 0 0 21px var(--dsky-display-blue);
+	text-shadow: 0 0 1px rgba(var(--dsky-display-blue-values), 0.8),
+		0 0 2px rgba(var(--dsky-display-blue-values), 0.3);
 }
 
 /* Dev Styles */
@@ -274,13 +297,36 @@ header {
 }
 
 .row.lights-displays {
+	display: flex;
 	justify-content: center;
+	align-items: stretch;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	gap: 1rem;
 }
 
 .col-6.indicator-lights,
 .col-6.numerical-displays {
 	width: 100%;
 	max-width: 100%;
+}
+
+.col-6.indicator-lights {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 50%;
+	padding: 0;
+	line-height: 1rem;
+}
+
+.col-6.indicator-lights .container {
+	background-color: var(--dsky-display-bg);
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
+	padding-right: 0;
 }
 
 /* Display lights stles */
@@ -294,10 +340,15 @@ header {
 	gap: 0.5em;
 	background-color: rgba(var(--dsky-display-bg-values), 1);
 	font-size: 0.8rem;
+	text-align: center;
 }
 
 .light.yellow {
 	background-color: rgba(248, 230, 130, 0.1);
+}
+
+.light.white.active {
+	background-color: var(--);
 }
 
 .light.active {
@@ -311,24 +362,71 @@ button.btn.pressed {
 /* Numerical displays styles */
 
 .col-6.numerical-displays {
-	max-width: 200px;
-	width: 160px;
-	color: var(--dsky-display-bg);
-	text-align: center;
+	background-color: var(--dsky-display-bg); /* dark, but not full black */
+	border-radius: 2px;
 	padding: 0;
+	max-width: 130px;
+	width: 130px;
+
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+
+	box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4); /* mild recess effect */
+}
+
+.container.numerical-display-container {
+	/* width: 144px; */
+	padding-left: 0;
+	padding-right: 0;
+	width: 100%;
+	gap: 0.2rem;
+	padding: 4px;
+}
+
+.container.container.numerical-display-container .row:first-child {
+	border-radius: 2px 2px 0 0;
+}
+
+.container.numerical-display-container > .row:last-child {
+	border-radius: 0 0 2px 2px;
 }
 
 .static-display {
 	font-size: 0.8rem;
 }
 
-.row.prog {
-	height: 2.8rem;
+.row.static-display.verb-noun {
+	height: unset;
+	justify-content: space-between;
+	padding: 0.4rem 0.2rem;
+}
+
+.row.static-display.verb-noun .dsky-highlight {
+	width: fit-content;
+	padding: 0;
+}
+
+.row.static-display.top {
+	flex-direction: row-reverse;
+	padding: 0.4rem 0.2rem;
+}
+
+.col.invisible {
+	height: 0;
+	display: none;
 }
 
 .numerical-displays .row {
-	background-color: var(--dsky-display-bg);
+	background-color: var(--dsky-button);
 	flex-wrap: nowrap;
+	margin: 0;
+	padding: 0.1rem 0;
+	line-height: 1.1;
+}
+
+.comp-acty {
+	padding-bottom: 1rem;
 }
 
 .comp-acty.active {
@@ -337,11 +435,75 @@ button.btn.pressed {
 
 .dsky-highlight {
 	background-color: var(--dsky-display-blue);
+	color: var(--dsky-);
+	font-weight: normal;
+	font-family: 'Jost', sans-serif;
+	font-size: 0.75rem;
+	letter-spacing: 0.05rem;
+	text-align: center;
+	text-shadow: none;
+}
+
+.dsky-highlight.prog {
+	width: 36%;
+	flex: unset;
+	justify-self: flex-end;
+	padding: 0 0.2rem;
+}
+
+.row.verb-noun .row.prog {
+	height: 1.8rem;
+	text-align: center;
+}
+
+.row.prog {
+	align-items: center;
+}
+
+.row.prog .col.seven-segment,
+.row.prog .col.comp-acty {
+	padding: 0;
+}
+
+.row.prog .col.comp-acty {
+	text-align: center;
+}
+
+.row.prog .col.seven-segment {
+	text-align: end;
 }
 
 .row.verb-noun {
-	height: 1.6rem;
+	height: 2.2rem;
 }
+
+.row.verb-noun .col-6.seven-segment {
+	display: flex;
+	padding: 0;
+}
+
+.row.verb-noun > .col-6.seven-segment {
+	justify-content: flex-start;
+	padding-left: 0.5rem;
+}
+
+.row.verb-noun .col-6.seven-segment:last-of-type {
+	justify-content: flex-end;
+	padding-right: 0.5rem;
+}
+
+.row.data-register {
+	/* width: 100%; */
+	height: 1.8rem;
+	/* padding-right: 0.9rem; */
+	/* padding-left: 0.4rem; */
+	justify-content: center;
+}
+
+/* DEBUG */
+/* .row.data-register:last-of-type {
+	border: 1px dashed red;
+} */
 
 span[id^='register_'] {
 	height: 1rem;
@@ -357,19 +519,27 @@ span[id^='register_'] {
 	/* padding-left: 6px; */
 	justify-content: center;
 	align-items: center;
+	padding-bottom: 0.6rem;
+	width: auto;
 }
 
 span[id^='polarity'] {
-	position: relative;
+	/* position: relative;
 	bottom: 2px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	line-height: 1;
+	line-height: 1; */
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+	font-size: 1rem;
+	font-family: 'dseg7-mini', monospace;
 }
 
 .data-register .seven-segment {
 	padding: 0;
+	text-align: right;
 }
 
 /* Push-buttons UI styles */
@@ -379,6 +549,8 @@ span[id^='polarity'] {
 	/* overflow-x: auto; */
 	display: flex;
 	justify-content: center;
+	transform: scale(0.9);
+	transform-origin: top-center;
 }
 
 section#dsky-ui .col.py-2.custom-col {
@@ -415,7 +587,7 @@ section#dsky-ui .col.py-2.custom-col {
 	/* width: 18vw; */
 	/* height: 18vw; */
 	border: none;
-	border-radius: 10%;
+	border-radius: 5%;
 	padding: 50%;
 	font-size: 0.7em;
 	background-color: var(--dsky-button);
@@ -480,21 +652,21 @@ section#dsky-ui .col.py-2.custom-col {
 		flex-direction: column;
 	}
 
-	/* .hud-frame {
-		padding: 0.5rem;
-		max-width: 95%;
-	} */
-
 	.crt {
 		min-height: 200px;
 		height: 100%;
 		padding: 0.5rem;
 	}
 
-	.col-6.indicator-lights,
-	.col-6.numerical-displays {
-		margin-bottom: 1rem;
+	.row.lights-displays {
+		gap: 1rem;
 	}
+
+	.col-6.indicator-lights {
+		padding: 0;
+		line-height: 1rem;
+	}
+
 	.hud-item {
 		flex: 1 1 100%;
 		min-width: auto;
@@ -536,13 +708,13 @@ section#dsky-ui .col.py-2.custom-col {
 	}
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
 	.col-6.indicator-lights,
 	.col-6.numerical-displays {
 		width: 200px;
 		max-width: 200px;
 	}
-}
+} */
 
 /* Dev Panel Styles */
 

@@ -67,9 +67,58 @@
  * @property {HTMLElement} lemAnimation
  */
 
+/** @type {string[]} */
+export const segmentKeys = [
+	'prog',
+	'verb',
+	'noun',
+	'p_1',
+	'r_1',
+	'p_2',
+	'r_2',
+	'p_3',
+	'r_3'
+];
+
+/**
+ * Concrete map of all known seven-segment display fields.
+ *
+ * @typedef {Object} SegmentMap
+ * @property {HTMLElement} prog
+ * @property {HTMLElement} verb
+ * @property {HTMLElement} noun
+ * @property {HTMLElement} p_1
+ * @property {HTMLElement} r_1
+ * @property {HTMLElement} p_2
+ * @property {HTMLElement} r_2
+ * @property {HTMLElement} p_3
+ * @property {HTMLElement} r_3
+ */
+
 /**
  * @typedef {Record.<string, HTMLElement>} SegmentDisplayMap
  */
+
+/**
+ * Shorthand getter for typed HTML elements
+ *
+ * @param {string} id
+ * @returns {HTMLElement}
+ */
+const getEl = id => /** @type {HTMLElement} */ (document.getElementById(id));
+
+/** @type {SegmentMap} */
+export const sevenSegmentMap = {
+	prog: getEl('prog'),
+	verb: getEl('prog'),
+	noun: getEl('prog'),
+	p_1: getEl('prog'),
+	r_1: getEl('prog'),
+	r_2: getEl('prog'),
+	p_2: getEl('prog'),
+	p_3: getEl('prog'),
+	r_3: getEl('prog')
+};
 
 /**
  * @typedef {Record.<string, HTMLElement>} IndicatorLightsMap
@@ -85,7 +134,7 @@
 
 /**
  * @typedef {Object} DSKYStructure
- * @property {SegmentDisplayMap} segmentDisplays
+ * @property {SegmentMap} segmentDisplays
  * @property {IndicatorLightsMap} indicatorLights
  * @property {PushButtonsMap} pushButtons
  * @property {HTMLElement} progLight

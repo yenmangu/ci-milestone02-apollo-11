@@ -1,20 +1,31 @@
-import { cast } from '../util/cast.js';
-
 /**
  * @typedef {import('../types/uiTypes.js').UIStructure} UIStructure
+ * @typedef {import('../types/uiTypes.js').SegmentMap} SegmentMap
  */
 
+import { cast } from '../util/cast.js';
+import { segmentKeys } from '../types/uiTypes.js';
+
+/**
+ *
+ * @returns {import('../types/uiTypes.js').SegmentMap}
+ */
 function initSevenSegmentDisplay() {
-	/** @type {Record<string, HTMLElement>} */
-	const map = {};
+	/** @type {Partial<SegmentMap>} */ const map = {};
 
 	document.querySelectorAll('.seven-segment span[id]').forEach(el => {
 		// console.log('found segment: ', el);
 		const castEl = cast(el);
 		map[castEl.id] = castEl;
 	});
-	// console.debug('Map of seven segment: ', map);
-	return map;
+
+	segmentKeys.forEach(key => {
+		if (!map[key]) {
+			console.warn(`Missing segment element: ${key}`);
+		}
+	});
+
+	return /** @type {SegmentMap} */ (map);
 }
 
 /**
@@ -69,14 +80,14 @@ function queryDom() {
 		map[element.id] = cast(element);
 		return map;
 	}, {});
+
 	const progLight = cast(document.getElementById('compActy'));
 	if (!progLight) {
 		throw new Error('Error missing progLight in UI elements');
 	}
+
 	const segmentDisplays = initSevenSegmentDisplay();
-	if (!segmentDisplays) {
-		throw new Error('Missing segmentDisplays in UI elements');
-	}
+
 	const pushButtons = initPushButtons();
 	if (!pushButtons) {
 		throw new Error('Missing pushButtons in UI elements');

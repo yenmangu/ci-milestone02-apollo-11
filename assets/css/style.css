@@ -524,6 +524,11 @@ span[id^='polarity'] {
 	text-align: right;
 }
 
+/* Remove visible line bug at certain resolutions/ zoom levels */
+.container.numerical-display-container > .row {
+	margin-bottom: -1px;
+}
+
 /* Push-buttons UI styles */
 
 .dsky-keypad-wrapper {

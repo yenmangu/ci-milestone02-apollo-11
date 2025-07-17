@@ -1,6 +1,7 @@
 /**
  * @typedef {import("../types/timelineTypes.js").JSON_NonTimeAction} Action
  * @typedef {import('../ui/uiController.js').UIController} UIController
+ * @typedef {import('../fsm/phaseFSM.js').PhaseFSM} PhaseFSM
  */
 
 /**
@@ -12,6 +13,9 @@
  *
  * @property {Set<string>} playedCues
  * @property {Set<string>} completedActions
+ *
+ * @property {PhaseFSM} [fsm]
+ * @property {(fsm: PhaseFSM) => void} [setFSM]
  *
  * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} playCue
  * - Play a cue (updates playedCues and handles side effects)
@@ -65,7 +69,7 @@ function createSimulationState({
 	hooks,
 	ui
 }) {
-	return {
+	const state = {
 		currentPhaseId: initialPhaseId,
 		currentGet: initialGET,
 		currentPhase: timeline.getPhase(initialPhaseId),
@@ -73,6 +77,10 @@ function createSimulationState({
 		playedCues: new Set(),
 		completedActions: new Set(),
 		ui,
+
+		setFSM(fsmInstance) {
+			this.fsm = fsmInstance;
+		},
 
 		onCuePlayed: hooks?.onCuePlayed,
 		log: hooks?.log,
@@ -127,6 +135,8 @@ function createSimulationState({
 			return timeline.getPhase(id);
 		}
 	};
+
+	return state;
 }
 
 export { createSimulationState };

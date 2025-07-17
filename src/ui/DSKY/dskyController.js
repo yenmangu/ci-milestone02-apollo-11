@@ -29,6 +29,8 @@ export class DskyController {
 		this.init();
 	}
 	init() {
+		console.log('[DSKY CONTROLLER] init');
+
 		this.initKeypadStateManager();
 		this.initPushButtons();
 	}
@@ -68,7 +70,7 @@ export class DskyController {
 	}
 
 	setInitialState() {
-		this.segmentDisplays.clearAll();
+		this.segmentDisplays.init();
 		this.indicatorLights.clear();
 		this.clearProgLight();
 	}

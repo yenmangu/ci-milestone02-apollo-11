@@ -67,7 +67,26 @@
  * @property {HTMLElement} lemAnimation
  */
 
-/** @type {string[]} */
+/**
+ * @typedef {'prog'|'verb'|'noun'|'p_1'|'r_1'|'p_2'|'r_2'|'p_3'|'r_3'} SegmentKey
+ */
+
+/**
+ * @typedef {'r_1'|'r_2'|'r_3'} FiveCharSegments
+ */
+
+/**
+ *
+ * @typedef {'verb' | 'noun' | 'prog'} TwoCharSegments
+ */
+
+/** @type {SegmentKey[]} */
+export const fiveCharSegments = ['r_1', 'r_2', 'r_3'];
+
+/** @type {SegmentKey[]} */
+export const twoCharSegments = ['prog', 'verb', 'noun'];
+
+/** @type {SegmentKey[]} */
 export const segmentKeys = [
 	'prog',
 	'verb',

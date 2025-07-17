@@ -258,6 +258,19 @@ header {
 	overflow-y: auto;
 	max-height: 100%;
 	padding: 1rem 0.5rem;
+	/* Aesthetics */
+	background-color: #c2c7ca; /* grey-blue DSKY chassis */
+	border: 4px solid #666;
+	border-radius: 6px;
+	box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3), 2px 2px 6px rgba(0, 0, 0, 0.2);
+	/* padding: 1rem; */
+	max-width: 360px;
+	margin: 0 auto;
+}
+
+#dsky-ui .custom-container {
+	padding-left: 0;
+	padding-right: 0;
 }
 
 .row.lights-displays {
@@ -361,11 +374,16 @@ span[id^='polarity'] {
 
 /* Push-buttons UI styles */
 
-.keypad-wrapper {
+.dsky-keypad-wrapper {
 	width: 100%;
 	/* overflow-x: auto; */
 	display: flex;
 	justify-content: center;
+}
+
+section#dsky-ui .col.py-2.custom-col {
+	padding-right: 0;
+	padding-left: 0;
 }
 
 .push-buttons {
@@ -402,6 +420,10 @@ span[id^='polarity'] {
 	font-size: 0.7em;
 	background-color: var(--dsky-button);
 	color: var(--dsky-button-text);
+}
+
+.push-button.btn:focus-visible {
+	outline: 2px solid cyan;
 }
 
 .push-button[dsky-state='active'],
@@ -491,7 +513,7 @@ span[id^='polarity'] {
 		font-size: 0.7rem;
 	}
 
-	.keypad-wrapper {
+	.dsky-keypad-wrapper {
 		transform: scale(0.9);
 		transform-origin: top-center;
 	}
@@ -508,7 +530,7 @@ span[id^='polarity'] {
 		overflow-y: auto;
 	} */
 
-	#dsky-ui .keypad-wrapper {
+	#dsky-ui .dsky-keypad-wrapper {
 		height: 100%;
 		overflow-y: auto;
 	}

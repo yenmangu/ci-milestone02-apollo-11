@@ -52,6 +52,14 @@
 	box-sizing: border-box;
 }
 
+html,
+body {
+	height: 100%;
+	overflow: hidden;
+	/* iOS 100vh bug fix */
+	block-size: 100dvb;
+}
+
 body {
 	min-height: 100vh;
 	width: 100%;
@@ -60,9 +68,10 @@ body {
 }
 
 main {
+	flex-grow: 1;
 	display: flex;
 	flex-direction: column;
-	flex-grow: 1;
+	overflow-y: auto;
 }
 
 section {
@@ -241,13 +250,24 @@ header {
 
 /* DSKY styles */
 
+#dsky-ui {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	overflow-y: auto;
+	max-height: 100%;
+	padding: 1rem 0.5rem;
+}
+
 .row.lights-displays {
 	justify-content: center;
 }
 
 .col-6.indicator-lights,
 .col-6.numerical-displays {
-	width: 200px;
+	width: 100%;
+	max-width: 100%;
 }
 
 /* Display lights stles */
@@ -341,10 +361,19 @@ span[id^='polarity'] {
 
 /* Push-buttons UI styles */
 
+.keypad-wrapper {
+	width: 100%;
+	/* overflow-x: auto; */
+	display: flex;
+	justify-content: center;
+}
+
 .push-buttons {
+	width: 320px;
 	display: flex;
 	flex-direction: row;
-	justify-content: center;
+	justify-content: space-between;
+	/* justify-content: center; */
 	flex-wrap: nowrap;
 	gap: 0.4em;
 }
@@ -362,12 +391,15 @@ span[id^='polarity'] {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 50px;
-	height: 50px;
+	width: 40px;
+	height: 40px;
+	/* flex: 0 0 auto; */
+	/* width: 18vw; */
+	/* height: 18vw; */
 	border: none;
 	border-radius: 10%;
 	padding: 50%;
-	font-size: 0.9em;
+	font-size: 0.7em;
 	background-color: var(--dsky-button);
 	color: var(--dsky-button-text);
 }
@@ -426,9 +458,67 @@ span[id^='polarity'] {
 		flex-direction: column;
 	}
 
+	/* .hud-frame {
+		padding: 0.5rem;
+		max-width: 95%;
+	} */
+
+	.crt {
+		min-height: 200px;
+		height: 100%;
+		padding: 0.5rem;
+	}
+
+	.col-6.indicator-lights,
+	.col-6.numerical-displays {
+		margin-bottom: 1rem;
+	}
 	.hud-item {
 		flex: 1 1 100%;
 		min-width: auto;
+	}
+
+	.hud-item dt {
+		font-size: 0.9rem;
+	}
+
+	.hud-item dd {
+		font-size: 0.85rem;
+	}
+
+	#hud-transcript,
+	#hud-prompt {
+		font-size: 0.7rem;
+	}
+
+	.keypad-wrapper {
+		transform: scale(0.9);
+		transform-origin: top-center;
+	}
+
+	#landing-ui {
+		height: 35vh;
+	}
+	#dsky-ui {
+		height: 65vh;
+	}
+
+	/* #landing-ui .hud-frame {
+		height: 100%;
+		overflow-y: auto;
+	} */
+
+	#dsky-ui .keypad-wrapper {
+		height: 100%;
+		overflow-y: auto;
+	}
+}
+
+@media (min-width: 768px) {
+	.col-6.indicator-lights,
+	.col-6.numerical-displays {
+		width: 200px;
+		max-width: 200px;
 	}
 }
 

@@ -584,6 +584,8 @@ section#dsky-ui .col.py-2.custom-col {
 	border: none;
 	border-radius: 5%;
 	padding: 50%;
+	font-family: 'Jost', sans-serif;
+	font-weight: 600;
 	font-size: 0.7em;
 	background-color: var(--dsky-button);
 	color: var(--dsky-button-text);

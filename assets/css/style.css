@@ -23,8 +23,7 @@
 
 @font-face {
 	font-family: 'Jost';
-	src: url('../fonts/Jost/._Jost-VariableFont_wght.ttf') format('truetype');
-	font-weight: normal;
+	src: url('../fonts/Jost/Jost-VariableFont_wght.ttf') format('truetype');
 	font-style: normal;
 	font-display: swap;
 }

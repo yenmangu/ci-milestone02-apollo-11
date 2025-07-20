@@ -1,10 +1,12 @@
 /**
  * @typedef {import('../types/uiTypes.js').UIStructure} UIStructure
  * @typedef {import('../types/uiTypes.js').SegmentMap} SegmentMap
+ * @typedef {import('../types/uiTypes.js').HudElKey} HudElKey
  */
 
 import { cast } from '../util/cast.js';
 import { segmentKeys } from '../types/uiTypes.js';
+import { getHudKey } from '../util/uiKeys.js';
 
 /**
  *
@@ -35,8 +37,12 @@ function initPushButtons() {
 	/** @type {Object.<string, HTMLButtonElement>} */
 	const map = Array.from(document.querySelectorAll('.push-button')).reduce(
 		(map, el) => {
-			const castEl = cast(/** @type {HTMLButtonElement} */ el);
-			map[castEl.id] = castEl;
+			/** @type {HTMLButtonElement} */ const castEl = cast(
+				/** @type {HTMLButtonElement} */ el
+				// 'element'
+			);
+			const key = castEl.dataset.dsky;
+			map[key] = castEl;
 			return map;
 		},
 		{}
@@ -101,20 +107,22 @@ function queryDom() {
 	/** @type {any} */
 	const hudMap = Array.from(document.querySelectorAll('span[id^="hud-"]')).reduce(
 		(map, element) => {
-			const key = element.id.slice(element.id.indexOf('-') + 1);
+			const key = getHudKey(/** @type {HudElKey} */ (element.id));
 			map[key] = cast(element);
 			return map;
 		},
 		{}
 	);
+	console.log('HudMap: ', hudMap);
 
 	const requiredHudKeys = [
-		'lunar_altitude',
-		'velocity_fps',
-		'fuel_percent',
-		'get_stamp',
-		'phase_name',
-		'altitude_units',
+		'altUnits',
+		'altitude',
+		'velocity',
+		'fuel',
+		'getStamp',
+		'phaseName',
+		'prompt',
 		'transcript'
 	];
 	for (const key of requiredHudKeys) {

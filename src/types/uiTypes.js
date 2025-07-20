@@ -1,12 +1,39 @@
 /**
+ *
+ * @typedef {'hud-altitude_units'
+ * |'hud-lunar_altitude'
+ * |'hud-velocity_fps'
+ * |'hud-fuel_percent'
+ * |'hud-get_stamp'
+ * |'hud-phase_name'
+ * |'hud-transcript'
+ * |'hud-prompt' } HudElKey
+ */
+
+/**
+ * @type {{[k in HudElKey] : string}}
+ */
+export const hudKeyMap = {
+	'hud-altitude_units': 'altUnits',
+	'hud-lunar_altitude': 'altitude',
+	'hud-fuel_percent': 'fuel',
+	'hud-velocity_fps': 'velocity',
+	'hud-get_stamp': 'getStamp',
+	'hud-transcript': 'transcript',
+	'hud-phase_name': 'phaseName',
+	'hud-prompt': 'prompt'
+};
+
+/**
  * @typedef {Object} HudElements
  * @property {HTMLElement} altitude
- * @property {HTMLElement} altitude_units
+ * @property {HTMLElement} altUnits
  * @property {HTMLElement} velocity
  * @property {HTMLElement} fuel
  * @property {HTMLElement} phaseName
  * @property {HTMLElement} transcript
  * @property {HTMLElement} [prompt]
+ * @property {HTMLElement} getStamp
  */
 
 /**
@@ -27,12 +54,14 @@
  * @property {number} [velocity]
  * @property {string} [vUnits]
  * @property {number} [fuel]
- * @property {string} [cueTranscript]
+ * @property {string} [transcript]
+ * @property {string} [getStamp]
  * @property {string} [prompt]
+ * @property {string} [phaseName]
  */
 
 /**
- * @typedef {'altFeet' | 'altMiles' | 'velocity' | 'vUnits' | 'fuel'} TelemetryKey
+ * @typedef {'altFeet' | 'altMiles' | 'velocity' | 'vUnits' | 'fuel' } TelemetryKey
  */
 
 /**
@@ -117,27 +146,6 @@ export const segmentKeys = [
 /**
  * @typedef {Record.<string, HTMLElement>} SegmentDisplayMap
  */
-
-/**
- * Shorthand getter for typed HTML elements
- *
- * @param {string} id
- * @returns {HTMLElement}
- */
-const getEl = id => /** @type {HTMLElement} */ (document.getElementById(id));
-
-/** @type {SegmentMap} */
-export const sevenSegmentMap = {
-	prog: getEl('prog'),
-	verb: getEl('prog'),
-	noun: getEl('prog'),
-	p_1: getEl('prog'),
-	r_1: getEl('prog'),
-	r_2: getEl('prog'),
-	p_2: getEl('prog'),
-	p_3: getEl('prog'),
-	r_3: getEl('prog')
-};
 
 /**
  * @typedef {Record.<string, HTMLElement>} IndicatorLightsMap

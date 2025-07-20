@@ -20,6 +20,7 @@ export class PushButtons {
 				}
 			});
 		}
+		console.log('Push Buttons Map: ', buttons);
 	}
 
 	/**
@@ -28,5 +29,19 @@ export class PushButtons {
 	 */
 	setOnPress(callback) {
 		this.onPress = callback;
+	}
+
+	lock() {
+		for (const [key, val] of Object.entries(this.buttons)) {
+			if (this.buttons[key] === val) {
+				val.disabled = true;
+			}
+		}
+	}
+
+	unlock() {
+		Object.entries(this.buttons).forEach(([_, val]) => {
+			val.disabled = !val.disabled;
+		});
 	}
 }

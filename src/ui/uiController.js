@@ -5,6 +5,7 @@
  * @typedef {import('../types/uiTypes.js').Telemetry} Telemetry
  * @typedef {import('../types/uiTypes.js').altitudeUnits} AltitudeUnits
  * @typedef {import('../types/uiTypes.js').TelemetryKey} TKey
+ * @typedef {import('../types/runtimeTypes.js').RuntimeCue} RuntimeCue
  */
 
 import { cast } from '../util/cast.js';
@@ -31,6 +32,7 @@ export class UIController {
 		this.initStartButton();
 		/** @type {AltitudeUnits} */ this.altitudeUnits = 'miles';
 		/** @type {Telemetry} */ this.currentTelemetry;
+		/** @type {boolean} */ this.showTelemetry = true;
 	}
 
 	initStartButton() {
@@ -45,27 +47,37 @@ export class UIController {
 	}
 
 	init() {
-		this.hud.renderInitialState();
-		this.modals.prepare();
+		// if (!this.observer) {
+		// 	this.observer = new MutationObserver(mutations => {
+		// 		mutations.forEach(mutation => {
+		// 			const target = /** @type {HTMLElement} */ (mutation.target);
+		// 			if (target) {
+		// 				console.log(`attribute changed:  ${target.innerText}`);
+		// 			}
+		// 		});
+		// 	});
+		// }
+		// this.observer.observe(this.ui.hudMap.getStamp, {
+		// 	attributes: true,
+		// 	childList: true,
+		// 	subtree: true
+		// });
 		this.dsky.setInitialState();
+		this.modals.prepare();
 	}
 
 	start() {
 		this.startEmitter.emit('start');
+	}
+
+	setPreStartState() {
+		this.isIntro = true;
 		this.sections.init();
-		this.init();
+		this.dsky.unlockKeypad();
 	}
 
 	/**
-	 *
-	 * @param {UIState} initialData
-	 */
-	setInitialState(initialData) {
-		throw new Error('Method not implemented.');
-	}
-
-	/**
-	 *
+	 * Updates every tick, so no logging!
 	 * @param {UIState} status
 	 */
 	updateHUD(status) {
@@ -74,8 +86,16 @@ export class UIController {
 		if (status.prompt) {
 			this.hud.renderPrompt(status.prompt);
 		}
-		if (status.cueTranscript) {
-			this.hud.renderCue(status.cueTranscript);
+		if (status.transcript) {
+			this.hud.renderCue(status.transcript);
+		}
+
+		if (status.getStamp) {
+			this.updateMissionClock(status.getStamp);
+		}
+
+		if (status.phaseName) {
+			this.hud.renderPhaseName(status.phaseName);
 		}
 
 		if (!this.currentTelemetry) return;
@@ -123,10 +143,32 @@ export class UIController {
 
 	/**
 	 *
+	 * @param {string} getStamp
+	 */
+	updateMissionClock(getStamp) {
+		if (!this.showTelemetry) {
+			this.hud.updateMissionClock(getStamp);
+		}
+	}
+
+	/**
+	 *
 	 * @param {AltitudeUnits} altUnits
 	 */
 	updateAltitudeUnits(altUnits) {
 		this.altitudeUnits = altUnits;
+	}
+
+	/**
+	 * Route the cue to appropriate control methods
+	 * @param {RuntimeCue} cue
+	 */
+	routeCue(cue) {
+		if (cue.transcript || cue.hud) {
+			const message = `${cue.data.speaker}:
+				${cue.data.text}`;
+			this.hud.updateHudBasedOnType('transcript', message);
+		}
 	}
 
 	showInstructionModal(message) {}

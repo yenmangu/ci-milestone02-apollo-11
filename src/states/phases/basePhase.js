@@ -84,7 +84,7 @@ export class BasePhase {
 			velocity: fromTick.velocity ?? velocity,
 			vUnits: fromTick.vUnits ?? vUnits,
 			fuel: fromTick.fuel ?? fuel,
-			cueTranscript: fromTick.cueTranscript,
+			transcript: fromTick.transcript,
 			prompt: fromTick.prompt,
 			getStamp: fromTick.getStamp ?? this.phaseMeta?.startGET,
 			phaseName: fromTick.phaseName ?? this.phaseMeta?.phaseName
@@ -158,10 +158,10 @@ export class BasePhase {
 		// Determine if telemetry should be displayed
 		if (this.simulationState?.showTelemetry) {
 			this.uiController.updateHUD(this.uiState);
-		}
 
-		// Update Mission Clock
-		this.uiController.hud.updateMissionClock(tickPayload.getString);
+			// Update Mission Clock
+			this.uiController.hud.updateMissionClock(tickPayload.getString);
+		}
 
 		// Safely access the subclass methods
 		if (typeof this.onTick === 'function') {

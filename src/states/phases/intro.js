@@ -18,8 +18,13 @@ export class Intro extends BasePhase {
 	}
 
 	onEnter() {
-		this.log('Phase: Intro');
+		this.log('');
+		console.log('ActionCues for phase: ', this.actionCues);
+		console.log('Actions for phase: ', this.nonTimeActions);
+		this.uiController.setPreStartState();
+		this.dskyController.setReadyState();
 	}
+
 	onTick() {
 		if (this.simulationState.hasActionBeenCompleted('BEGIN_SIM')) {
 			if (this.hasStarted) return;

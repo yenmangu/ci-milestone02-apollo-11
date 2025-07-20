@@ -33,6 +33,8 @@ export class DskyController {
 
 		this.initKeypadStateManager();
 		this.initPushButtons();
+		this.lockKeypad();
+		this.segmentDisplays.init();
 	}
 	initPushButtons() {
 		this.pushButtons.setOnPress(key => {
@@ -70,9 +72,21 @@ export class DskyController {
 	}
 
 	setInitialState() {
-		this.segmentDisplays.init();
 		this.indicatorLights.clear();
 		this.clearProgLight();
+	}
+
+	setReadyState() {
+		this.segmentDisplays.setReady();
+	}
+
+	lockKeypad() {
+		console.log('Locking keypad');
+
+		this.pushButtons.lock();
+	}
+	unlockKeypad() {
+		this.pushButtons.unlock();
 	}
 
 	clearProgLight() {

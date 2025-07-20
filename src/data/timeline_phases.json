@@ -1545,6 +1545,72 @@
 			],
 			"non_time_specific_actions": [],
 			"fail_states": []
+		},
+		{
+			"phase_name": "Simulation Briefing",
+			"phase_id": "intro",
+			"start_get": "000:00:00",
+			"description": "Orientation before simulation begins",
+			"initial_state": {
+				"velocity": 0,
+				"v_units": "fps",
+				"altitude": {
+					"miles": 0,
+					"feet": 0
+				},
+				"fuel": 100
+			},
+			"end_state": {
+				"velocity": 0,
+				"v_units": "fps",
+				"altitude": {
+					"miles": 0,
+					"feet": 0
+				},
+				"fuel": 100
+			},
+			"timeline_cues": [{
+					"get": "000:00:01",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "Welcome to the Apollo 11 Mission Simulation",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:04",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "Use the controls below to explore the guidance computer (DSKY)",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:07",
+					"hud": true,
+					"dsky": true,
+					"data": {
+						"verb": "37",
+						"noun": "99",
+						"program": "99",
+						"speaker": "AGC/DSKY",
+						"text": "Enter V37N99E to begin simulation"
+					},
+					"input": true,
+					"requires_action": "BEGIN_SIM"
+				}
+			],
+			"non_time_specific_actions": [{
+				"action": "BEGIN_SIM",
+				"description": "Begin the mission",
+				"verb": "37",
+				"noun": "99",
+				"program": "99"
+
+			}],
+			"fail_states": []
 		}
 	],
 	"metadata": {

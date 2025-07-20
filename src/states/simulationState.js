@@ -2,7 +2,10 @@
  * @typedef {import("../types/timelineTypes.js").JSON_NonTimeAction} Action
  * @typedef {import('../ui/uiController.js').UIController} UIController
  * @typedef {import('../fsm/phaseFSM.js').PhaseFSM} PhaseFSM
+ * @typedef {import('../types/keypadTypes.js').KeypadState} KeypadState
  */
+
+import { pushButtonEmitter } from '../event/eventBus.js';
 
 /**
  *
@@ -35,6 +38,7 @@
  * @property {(id: string) => import("../types/runtimeTypes.js").RuntimePhase | undefined } [getPhase]
  *
  * @property {boolean} [showTelemetry]
+ * @property {(keypadState: KeypadState) => void} [receiveDskyCommand]
  * @property {boolean} [devMode]
  *
  * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} onCuePlayed
@@ -56,6 +60,12 @@
  * @property {UIController} [ui]
  */
 
+const dskyCommandMap = {
+	V37N99: 'BEGIN_SIM',
+	V37N63: 'V37N63',
+	PRO: 'pro'
+};
+
 /**
  * @description
  * SimulationState
@@ -66,6 +76,7 @@
  * @param {SimulationParameters} simulationParameters
  * @returns {SimulationState}
  */
+
 function createSimulationState({
 	initialPhaseId,
 	initialGET,
@@ -98,7 +109,7 @@ function createSimulationState({
 		},
 
 		onCuePlayed: hooks?.onCuePlayed,
-		log: hooks?.log,
+		log: hooks?.log || console.log,
 		devMode: !!hooks?.devMode,
 
 		playCue(cue) {
@@ -124,6 +135,31 @@ function createSimulationState({
 				this.ui.routeCue(cue);
 			}
 			this.log?.(`Cue dispatched:  ${cue.key}`, cue);
+		},
+
+		/**
+		 *
+		 * @param {KeypadState} keypadState
+		 */
+		receiveDskyCommand(keypadState) {
+			this.log('Receiving DSKY command');
+			const { verb, noun } = keypadState;
+			const command = `V${verb}N${noun}`;
+			const actionId = dskyCommandMap[command] ?? command;
+			this.log(`[SimulationState] Received DSKY input: `, command);
+
+			const match = Object.values(state.currentPhase.cuesByKey).find(
+				cue =>
+					cue.requiresAction === actionId && !state.hasActionBeenCompleted(actionId)
+			);
+
+			if (match) {
+				// log()
+				state.log(`[SimulationState] Found matching cue action: ${match.key}`);
+				state.completeAction(actionId);
+			} else {
+				state.log(`[SimulationState] No matching action for ${command}`);
+			}
 		},
 
 		/**
@@ -157,6 +193,9 @@ function createSimulationState({
 		}
 	};
 
+	pushButtonEmitter.on('finalise', keypadState =>
+		state.receiveDskyCommand(keypadState)
+	);
 	return state;
 }
 

@@ -103,8 +103,8 @@ function createSimulationState({
 
 		playCue(cue) {
 			if (this.hasCueBeenPlayed(cue.key)) return;
-			this.markCuePlayed(cue.key);
 			this.dispatchCue(cue);
+			this.markCuePlayed(cue.key);
 		},
 
 		hasCueBeenPlayed(cueKey) {

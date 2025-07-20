@@ -85,6 +85,7 @@ main {
 	display: flex;
 	flex-direction: column;
 	overflow-y: auto;
+	justify-content: space-between;
 }
 
 section {
@@ -266,12 +267,12 @@ header {
 /* DSKY styles */
 
 #dsky-ui {
-	flex-grow: 1;
+	flex-grow: 0;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	max-height: 100%;
-	padding: 1rem 0.5rem;
+	padding: 0.5rem 0.5rem;
 	/* Aesthetics */
 	background-color: #c2c7ca; /* grey-blue DSKY chassis */
 	border: 4px solid #666;

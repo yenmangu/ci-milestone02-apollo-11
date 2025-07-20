@@ -75,11 +75,11 @@ export class MissionClock {
 	}
 
 	_loop(now) {
-		console.log('[Clock Tick]', {
-			devMode: this.devMode,
-			isRunning: this.isRunning,
-			deltaUsed: this.devMode ? '1/60' : 'realDelta'
-		});
+		// console.log('[Clock Tick]', {
+		// 	devMode: this.devMode,
+		// 	isRunning: this.isRunning,
+		// 	deltaUsed: this.devMode ? '1/60' : 'realDelta'
+		// });
 		if (!this.isRunning) {
 			runningEmitter.emit('running', false);
 			return;

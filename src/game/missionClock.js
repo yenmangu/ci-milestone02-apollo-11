@@ -6,7 +6,7 @@ import { tickEmitter, runningEmitter } from '../event/eventBus.js';
 import { secondsFromGet } from '../util/GET.js';
 
 export class MissionClock {
-	constructor(startEpochMs, timeScale = 1, startGetSeconds = 0) {
+	constructor(startEpochMs, timeScale = 1, startGetSeconds = 0, devMode = false) {
 		this._loop = this._loop.bind(this);
 		this.startEpoch = startEpochMs;
 		this.lastRealTime = null; // Last real timestamp
@@ -16,6 +16,7 @@ export class MissionClock {
 		this.isRunning = false;
 		this.frame = null;
 		this.tickEmitter = tickEmitter;
+		this.devMode = devMode;
 	}
 
 	/**
@@ -74,24 +75,40 @@ export class MissionClock {
 	}
 
 	_loop(now) {
+		console.log('[Clock Tick]', {
+			devMode: this.devMode,
+			isRunning: this.isRunning,
+			deltaUsed: this.devMode ? '1/60' : 'realDelta'
+		});
 		if (!this.isRunning) {
 			runningEmitter.emit('running', false);
 			return;
 		}
 
-		if (this.lastRealTime === null || this.lastRealTime === undefined) {
+		if (
+			!this.devMode &&
+			(this.lastRealTime === null || this.lastRealTime === undefined)
+		) {
 			this.lastRealTime = now;
 			return;
-		} else {
-			const realDelta = this.getRealDelta(now);
+		}
 
-			if (isNaN(realDelta)) {
-				console.warn('[WARN] realDelta is NaN - skipping tick frame');
-				return;
-			}
-			this.elapsedMissionTime += realDelta * this.timeScale;
+		let deltaSeconds;
+
+		if (this.devMode) {
+			deltaSeconds = 1 / 60; // Fixed 60 fps
+			const MAX_DEV_DELTA = 0.1;
+			deltaSeconds = Math.min(deltaSeconds, MAX_DEV_DELTA);
+		} else {
+			deltaSeconds = this.getRealDelta(now);
 			this.lastRealTime = now;
 		}
+
+		if (isNaN(deltaSeconds)) {
+			console.warn('[WARN] realDelta is NaN - skipping tick frame');
+			return;
+		}
+		this.elapsedMissionTime += deltaSeconds * this.timeScale;
 
 		/** @type {TickPayload} */
 		const tick = {
@@ -129,7 +146,7 @@ export class MissionClock {
 		this.isRunning = true;
 		this.lastRealTime = null;
 
-		this.lastRealTime = performance.now();
+		this.lastRealTime = this.devMode ? null : performance.now();
 		this.frame = requestAnimationFrame(this._loop);
 	}
 
@@ -192,9 +209,11 @@ export class MissionClock {
 	 */
 	jumpToTES(targetElapsedSeconds) {
 		if (this.isRunning) {
-			const now = performance.now();
-			const realDelta = this.getRealDelta(now);
-			this.elapsedMissionTime += realDelta * this.timeScale;
+			if (!this.devMode) {
+				const now = performance.now();
+				const realDelta = this.getRealDelta(now);
+				this.elapsedMissionTime += realDelta * this.timeScale;
+			}
 
 			this.isRunning = false;
 			this.lastRealTime = null;
@@ -213,19 +232,10 @@ export class MissionClock {
 		};
 
 		this.emitTicks(tickPayload);
-		// tickEmitter.emit('tick', tickPayload);
 
-		this.lastRealTime = performance.now();
 		this.isRunning = true;
+		this.lastRealTime = this.devMode ? null : performance.now();
 		requestAnimationFrame(this._loop);
-
-		// No longer needed:
-		// const payload = {
-		// 	elapsed: this.elapsedMissionTime,
-		// 	get: this.currentGETSeconds,
-		// 	getFormatted: this.currentGET
-		// };
-		// tickEmitter.emit('tick', payload);
 	}
 
 	// For Debugging purposes

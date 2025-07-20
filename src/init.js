@@ -38,7 +38,7 @@ let dev = true;
 export async function initProgram() {
 	/** @type {DevController} */ let devController;
 	try {
-		const initialPhaseId = PhaseIds.CSM_SEPARATION;
+		const initialPhaseId = PhaseIds.INTRO;
 		/** @type {MissionTimeline} */ const timeline = await loadTimeline();
 		/** @type {RuntimePhase} */ const firstPhase =
 			timeline.getPhase(initialPhaseId);
@@ -65,7 +65,11 @@ export async function initProgram() {
 			phaseRegistry
 		);
 
-		const clock = new MissionClock(Date.now(), 1, initalGetSeconds);
+		// Inject after both fsm and simState have been constructed
+		// Avoid circular dependency
+		simState.setFSM(fsm);
+
+		const clock = new MissionClock(Date.now(), 1, initalGetSeconds, dev);
 
 		tickEmitter.on('tick', tickPayload => {
 			fsm.handleTick(tickPayload);
@@ -82,8 +86,10 @@ export async function initProgram() {
 			// Expose to global window object for browser testing
 			win.dev = devController;
 		}
-
+		simState.showTelemetry = false;
+		// inits ALL UI controllers frmo this one call
 		ui.init();
+		simState.setUI(ui);
 
 		startEmitter.on('start', () => {
 			clock.start();

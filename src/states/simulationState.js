@@ -17,6 +17,10 @@
  * @property {PhaseFSM} [fsm]
  * @property {(fsm: PhaseFSM) => void} [setFSM]
  *
+ * @property {UIController | null} [ui]
+ * @property {(ui: UIController) => void} [setUI]
+ * @property {() => UIController} [getUI]
+ *
  * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} playCue
  * - Play a cue (updates playedCues and handles side effects)
  * @property {(cueKey: string) => boolean} [hasCueBeenPlayed]
@@ -30,8 +34,8 @@
  * @property {(msg:string, data?: any) => void} [log] - Optional debug logger
  * @property {(id: string) => import("../types/runtimeTypes.js").RuntimePhase | undefined } [getPhase]
  *
+ * @property {boolean} [showTelemetry]
  * @property {boolean} [devMode]
- * @property {UIController} [ui]
  *
  * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} onCuePlayed
  */
@@ -76,10 +80,21 @@ function createSimulationState({
 
 		playedCues: new Set(),
 		completedActions: new Set(),
+		showTelemetry: true,
 		ui,
 
 		setFSM(fsmInstance) {
 			this.fsm = fsmInstance;
+		},
+
+		setUI(uiInstance) {
+			this.ui = uiInstance;
+		},
+
+		getUI() {
+			if (this.ui) {
+				return this.ui;
+			}
 		},
 
 		onCuePlayed: hooks?.onCuePlayed,
@@ -101,7 +116,13 @@ function createSimulationState({
 		},
 
 		dispatchCue(cue) {
+			console.log('Dispatching cue: ', cue);
+			console.log('Current GET: ', this.currentGet);
+
 			this.onCuePlayed?.(cue);
+			if (this.ui && typeof ui.routeCue === 'function') {
+				this.ui.routeCue(cue);
+			}
 			this.log?.(`Cue dispatched:  ${cue.key}`, cue);
 		},
 

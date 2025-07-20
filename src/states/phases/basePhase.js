@@ -5,6 +5,8 @@
  * @typedef {import("../../types/runtimeTypes.js").RuntimeCue} RuntimeCue
  * @typedef {import('../../types/runtimeTypes.js').NonTimeAction} NonTimeAction
  * @typedef {import('../../types/uiTypes.js').UIState} UIState
+ * @typedef {import('../simulationState.js').UIController} UIController
+ * @typedef {import('../../ui/DSKY/dskyController.js').DskyController} DSKY
  */
 
 import { compareGET, secondsFromGet } from '../../util/GET.js';
@@ -33,12 +35,17 @@ export class BasePhase {
 		this.phaseId = phaseMeta.phaseId;
 		/** @type {TickPayload} */ this.lastTickPayload = null;
 		/** @type {number} */ this.currentGETSeconds;
+		/** @type {number} */ this.previousGETSeconds;
 		// Cues
 		/** @type {RuntimeCue[]} */ this.chronologicalCues = [];
 		/** @type {RuntimeCue[]} */ this.actionCues = [];
 		/** @type {RuntimeCue[]} */ this.expiringCues = [];
 		/** @type {NonTimeAction[]} */ this.nonTimeActions = [];
 		/** @type {UIState} */ this.uiState;
+		/** @type {UIController} */ this.uiController = this.simulationState?.getUI();
+		if (this.uiController) {
+			/** @type {DSKY} */ this.dskyController = this.uiController.dsky;
+		}
 	}
 
 	enter() {
@@ -64,9 +71,13 @@ export class BasePhase {
 	 * @param {UIState} [data]
 	 */
 	setUiData(data = {}) {
+		if (!this.simulationState.showTelemetry) {
+			return;
+		}
 		const fromTick = data ?? {};
 
 		const { velocity, vUnits, altitude, fuel } = this.phaseMeta?.initialState ?? {};
+		const getStamp = this.phaseMeta?.startGET;
 
 		/** @type {UIState} */ const uiState = {
 			altitude: fromTick.altitude ?? altitude,
@@ -74,9 +85,12 @@ export class BasePhase {
 			vUnits: fromTick.vUnits ?? vUnits,
 			fuel: fromTick.fuel ?? fuel,
 			cueTranscript: fromTick.cueTranscript,
-			prompt: fromTick.prompt
+			prompt: fromTick.prompt,
+			getStamp: fromTick.getStamp ?? this.phaseMeta?.startGET,
+			phaseName: fromTick.phaseName ?? this.phaseMeta?.phaseName
 		};
-		this.simulationState.ui?.updateHUD(uiState);
+		this.uiState = uiState;
+		this.uiController.updateHUD(uiState);
 	}
 
 	getNonTimeActions() {
@@ -112,30 +126,48 @@ export class BasePhase {
 	 * @param {TickPayload} tickPayload
 	 */
 	tick(tickPayload) {
-		// console.log('Tick invoked');
+		// console.log('triggering debugger at GET:', tickPayload.getString);
+		// debugger;
 
 		if (this.lastTickPayload === null) {
 			this.lastTickPayload = tickPayload;
+			this.previousGETSeconds = tickPayload.getSeconds;
 			return;
 		}
 
 		this.lastTickPayload = tickPayload;
-		// console.log('[DEBUG] tickPayload.getSeconds:', tickPayload.getSeconds);
 		this.currentGETSeconds = tickPayload.getSeconds;
+
+		const prev = this.previousGETSeconds;
+		const current = this.currentGETSeconds;
+
+		this.previousGETSeconds = current;
+
+		// Trigger cues whose GET matches current tick
+		for (const cue of this.chronologicalCues) {
+			const time = cue.getSeconds;
+			if (
+				time > prev &&
+				time <= current &&
+				!this.simulationState.hasCueBeenPlayed(cue.key)
+			) {
+				this.simulationState.playCue(cue);
+			}
+		}
+
+		// Determine if telemetry should be displayed
+		if (this.simulationState?.showTelemetry) {
+			this.uiController.updateHUD(this.uiState);
+		}
+
+		// Update Mission Clock
+		this.uiController.hud.updateMissionClock(tickPayload.getString);
 
 		// Safely access the subclass methods
 		if (typeof this.onTick === 'function') {
 			this.onTick(tickPayload);
 		}
-		// Trigger cues whose GET matches current tick
-
-		for (const cue of this.chronologicalCues) {
-			if (cue.getSeconds !== this.currentGETSeconds) {
-				continue;
-			}
-			this.simulationState.playCue(cue);
-		}
-
+		// Check any fails after conditions
 		this.checkFailsAfter();
 	}
 

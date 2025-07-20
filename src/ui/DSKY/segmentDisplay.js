@@ -26,7 +26,19 @@ export class SegmentDisplay {
 	init() {
 		// this.bulkWrite()
 		console.log('[SEVEN SEG DISPLAY MAP]: ', this.displays);
-		this.setReady();
+		this.setLock();
+		// this.setReady();
+	}
+
+	setLock() {
+		this.bulkWrite({
+			prog: 0,
+			verb: 0,
+			noun: 0,
+			r_1: 'LOC',
+			r_2: 'LOC',
+			r_3: 'LOC'
+		});
 	}
 
 	setReady() {
@@ -69,6 +81,8 @@ export class SegmentDisplay {
 	 * @param {string|number} val
 	 */
 	write(id, val) {
+		// console.log(`writing ${id} with ${val}`);
+
 		const key = /** @type {SegmentKey} */ (id);
 
 		if (typeof val === 'number') val = val.toString();
@@ -80,7 +94,9 @@ export class SegmentDisplay {
 			}
 		}
 
-		if (fiveCharSegments.includes(key) && val.length > 5) {
+		if (fiveCharSegments.includes(key)) {
+			// console.log('Padding');
+
 			val = val.padStart(5, '0');
 			if (val.length > 5) {
 				throw new Error(`${val} has too many chars. Allowed chars: 5`);

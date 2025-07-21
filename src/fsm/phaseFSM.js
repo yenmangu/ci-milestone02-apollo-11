@@ -10,7 +10,7 @@
  * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
  */
 
-import { isValidPhaseId } from '../types/timelineTypes.js';
+import { isValidPhaseId, PhaseIds } from '../types/timelineTypes.js';
 import { tickEmitter } from '../event/eventBus.js';
 
 export class PhaseFSM {
@@ -43,6 +43,10 @@ export class PhaseFSM {
 	transitionTo(newPhaseId) {
 		if (this.devMode) {
 			isValidPhaseId(newPhaseId);
+		}
+
+		if (newPhaseId !== PhaseIds.INTRO) {
+			this.simulationState.showTelemetry = true;
 		}
 
 		if (

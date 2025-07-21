@@ -10,6 +10,7 @@
  */
 
 import { compareGET, secondsFromGet } from '../../util/GET.js';
+import { watchUntilComplete } from '../../util/watchUntilComplete.js';
 
 /**
  * @typedef {import("../../types/clockTypes.js").TickPayload} TickPayload
@@ -46,6 +47,7 @@ export class BasePhase {
 		if (this.uiController) {
 			/** @type {DSKY} */ this.dskyController = this.uiController.dsky;
 		}
+		this.actionWatcher = null;
 	}
 
 	enter() {
@@ -77,7 +79,6 @@ export class BasePhase {
 		const fromTick = data ?? {};
 
 		const { velocity, vUnits, altitude, fuel } = this.phaseMeta?.initialState ?? {};
-		const getStamp = this.phaseMeta?.startGET;
 
 		/** @type {UIState} */ const uiState = {
 			altitude: fromTick.altitude ?? altitude,
@@ -91,6 +92,7 @@ export class BasePhase {
 		};
 		this.uiState = uiState;
 		this.uiController.updateHUD(uiState);
+		this.uiController.clearHUD();
 	}
 
 	getNonTimeActions() {
@@ -119,6 +121,13 @@ export class BasePhase {
 
 	onEnter() {
 		// console.warn('Method not implemented.');
+	}
+
+	/**
+	 * @protected
+	 */
+	watchUntilComplete(onAction, onCue, onComplete) {
+		this.actionWatcher = watchUntilComplete(onAction, onCue, onComplete);
 	}
 
 	/**

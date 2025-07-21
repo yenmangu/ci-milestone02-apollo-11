@@ -5,7 +5,11 @@
  * @typedef {import('../types/keypadTypes.js').KeypadState} KeypadState
  */
 
-import { pushButtonEmitter } from '../event/eventBus.js';
+import {
+	actionEmitter,
+	pushButtonEmitter,
+	startEmitter
+} from '../event/eventBus.js';
 
 /**
  *
@@ -115,6 +119,8 @@ function createSimulationState({
 		playCue(cue) {
 			if (this.hasCueBeenPlayed(cue.key)) return;
 			this.dispatchCue(cue);
+			const { key } = cue;
+			actionEmitter.emit('cue', { key: key, cue });
 			this.markCuePlayed(cue.key);
 		},
 
@@ -179,6 +185,8 @@ function createSimulationState({
 		completeCueAction(actionKey) {
 			for (const cue of Object.values(this.currentPhase.cuesByKey)) {
 				if (cue.requiresAction === actionKey) {
+					const action = this.completedActions[actionKey];
+					actionEmitter.emit('action', { key: actionKey, action, cue });
 					cue.actionCompleted = true;
 				}
 			}

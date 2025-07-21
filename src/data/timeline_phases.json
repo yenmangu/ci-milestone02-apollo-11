@@ -1583,12 +1583,84 @@
 					"hud": true,
 					"dsky": false,
 					"data": {
-						"text": "Use the controls below to explore the guidance computer (DSKY)",
+						"text": "The Apollo Guidance Computer (AGC) controlled the spacecraft's flight path.",
 						"speaker": "Mission"
 					}
 				},
 				{
 					"get": "000:00:07",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "It responded to input using the numeric DSKY interface.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:10",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "Astronauts entered programs using VERB and NOUN commands.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:13",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "The VERB would usually indicate that the astronaughts wanted to <em>do</em> something.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:17",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "The NOUN would represent <em>what</em> action, or data the astronaughts wanted.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:20",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "A standard input directive would be written as VxxNxxE",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:23",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "Where 'Vxx' indicated which VERB command, 'Nxx' indicated which NOUN and 'E' signified 'Entr'",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:27",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "All DSKY input commands will be given in the same format.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:30",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "Use the controls below to explore the guidance computer (DSKY)",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:33",
 					"hud": true,
 					"dsky": true,
 					"data": {
@@ -1596,7 +1668,7 @@
 						"noun": "99",
 						"program": "99",
 						"speaker": "AGC/DSKY",
-						"text": "Enter V37N99E to begin simulation"
+						"text": "When ready, enter V37N99E (Entr) to begin simulation"
 					},
 					"input": true,
 					"requires_action": "BEGIN_SIM"

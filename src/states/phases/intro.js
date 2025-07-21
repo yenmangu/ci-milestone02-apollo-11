@@ -23,6 +23,24 @@ export class Intro extends BasePhase {
 		console.log('Actions for phase: ', this.nonTimeActions);
 		this.uiController.setPreStartState();
 		this.dskyController.setReadyState();
+		this.watchUntilComplete(
+			action => {
+				() => {};
+			},
+			cue => {
+				this.handleCueEvent(cue);
+			}
+		);
+	}
+	handleCueEvent(cue) {
+		console.log('Cue Event', cue);
+		if (cue.key === 'intro_09') {
+			this.dskyController.unlockKeypad();
+		}
+	}
+
+	handleActionEvent(event) {
+		console.log('Handle Action Event: ', event);
 	}
 
 	onTick() {
@@ -33,6 +51,10 @@ export class Intro extends BasePhase {
 			this.hasStarted = true;
 			this.simulationState.fsm?.transitionTo(PhaseIds.CSM_SEPARATION);
 		}
+	}
+
+	async showIntroModal() {
+		this.simulationState.fsm?.transitionTo(PhaseIds.CSM_SEPARATION);
 	}
 
 	onAction() {}

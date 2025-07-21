@@ -1,24 +1,35 @@
+/**
+ * @typedef {import('../types/runtimeTypes.js').RuntimeCue} RuntimeCue
+ * @typedef {import('../types/runtimeTypes.js').NonTimeAction} RuntimeAction
+ */
+
 import { actionEmitter, agcEmitter, phaseEmitter } from '../event/eventBus.js';
 
 /**
- * Subscribes to all 'action' events untill 'actionsComplete' is received.
+ * Subscribes to all 'action' and 'cue' events untill 'actionsComplete' is received.
  * Automatically unsubscribes both listeners upon completion.
  * Returns optional unsubscribe handle for early termination.
  *
- * @param {(event: {type: string, [key: string]: any}) => void} onAction
- * @param {(event: {type: string, [key: string]: any}) => void} onComplete
+ * @param {(event: { [key: string]: RuntimeAction}) => void} onAction
+ * @param {(event: { [key: string]: RuntimeCue}) => void} onCue
+ * @param {(event: string) => void} onComplete
  * @returns {{unsubscribe: () => void}}
  */
-export function watchUntilComplete(onAction, onComplete) {
+export function watchUntilComplete(onAction, onCue, onComplete) {
 	const actionSub = actionEmitter.on('action', onAction);
-	const completeSub = actionEmitter.on('actionsComplete', event => {
-		completeSub.unsubscribe();
-		actionSub.unsubscribe();
-		onComplete(event);
-	});
+	const cueSub = actionEmitter.on('cue', onCue);
+	const completeSub = actionEmitter.on(
+		'actionsComplete',
+		(/** @type {string} */ event) => {
+			completeSub.unsubscribe();
+			actionSub.unsubscribe();
+			onComplete(event);
+		}
+	);
 	return {
 		unsubscribe: () => {
 			actionSub.unsubscribe();
+			cueSub.unsubscribe();
 			completeSub.unsubscribe();
 		}
 	};

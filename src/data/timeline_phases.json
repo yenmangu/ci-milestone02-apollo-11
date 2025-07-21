@@ -3,7 +3,7 @@
 			"phase_name": "Lunar Orbit (CSM Separation)",
 			"phase_id": "csm_separation",
 			"start_get": "100:40:00",
-			"description": "Eagle separates from Columbia in lunar orbit",
+			"description": ["Eagle separates from Columbia in lunar orbit"],
 			"initial_state": {
 				"velocity": 5320,
 				"v_units": "fps",

@@ -86,7 +86,7 @@ export function isValidPhaseId(value) {
  * @property {string} phase_name
  * @property {string} phase_id
  * @property {string} start_get
- * @property {string} description
+ * @property {string|string[]} description
  * @property {PhaseState} initial_state
  * @property {PhaseState} end_state
  * @property {JSON_TimelineCue[]} timeline_cues

@@ -73,6 +73,8 @@ export class BasePhase {
 	 * @param {UIState} [data]
 	 */
 	setUiData(data = {}) {
+		this.uiController.updateDescription(this.phaseMeta.description);
+
 		if (!this.simulationState.showTelemetry) {
 			return;
 		}
@@ -92,7 +94,7 @@ export class BasePhase {
 		};
 		this.uiState = uiState;
 		this.uiController.updateHUD(uiState);
-		this.uiController.clearHUD();
+		this.uiController.clearHudTranscript();
 	}
 
 	getNonTimeActions() {

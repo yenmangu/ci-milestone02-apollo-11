@@ -78,7 +78,7 @@ import { PhaseIds } from './timelineTypes.js';
  * @typedef {Object} RuntimePhase
  * @property {string} phaseId
  * @property {string} phaseName
- * @property {string} description
+ * @property {string|string[]} description
  * @property {string} startGET
  * @property {string} [endGET]
  * @property {RuntimePhaseState} initialState

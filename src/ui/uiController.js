@@ -27,6 +27,7 @@ export class UIController {
 		this.modals = new ModalManager(ui.modals);
 		this.sections = new UISectionManager(ui.sections);
 		this.dsky = new DskyController(ui.dsky);
+		this.description = ui.description;
 		console.log('Init UI');
 		this.startEmitter = startEmitter;
 		/** @type {HTMLButtonElement} */ this.startButton = this.ui.controls.start;
@@ -182,8 +183,37 @@ export class UIController {
 		}
 	}
 
-	clearHUD() {
-		this.hud.clearHUD();
+	/**
+	 *
+	 * @param {string | string[]} description
+	 */
+	updateDescription(description) {
+		const descriptionArray = Array.isArray(description)
+			? description
+			: [description];
+
+		console.log('Description Array: ', descriptionArray);
+
+		const spanElArr = descriptionArray.map(text => {
+			const span = document.createElement('span');
+			span.innerHTML = text;
+			return span;
+		});
+
+		this.description.innerHTML = '';
+
+		spanElArr.forEach((el, i) => {
+			this.description.appendChild(el);
+			if (i < spanElArr.length - 1) {
+				this.description.appendChild(document.createElement('br'));
+			} else {
+				this.description.appendChild(el);
+			}
+		});
+	}
+
+	clearHudTranscript() {
+		this.hud.clearTranscript();
 	}
 
 	showInstructionModal(message) {}

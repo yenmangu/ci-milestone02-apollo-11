@@ -92,13 +92,26 @@
 							 class="hidden">
 				<div class="hud-frame">
 					<div class="hud-container crt">
-						<!-- Top row: Altitude, Velocity, Fuel -->
-						<div class="hud-row">
+						<div class="hud-row time-phase">
 							<div class="hud-item">
 								<dl>
-									<dt>Altitude <span id="hud-altitude_units"></span></dt>
+									<dt>Mission Time</dt>
+									<dd><span id="hud-get_stamp"></span></dd>
+								</dl>
+							</div>
+							<div class="hud-item">
+								<dl>
+									<dt>Phase</dt>
+									<dd><span id="hud-phase_name"></span></dd>
+								</dl>
+							</div>
+						</div>
+						<div class="hud-row telemetry">
+							<div class="hud-item">
+								<dl>
+									<dt>Altitude </dt>
 									<dd>
-										<span id="hud-lunar_altitude"></span>
+										<span id="hud-lunar_altitude"></span>&nbsp; <span id="hud-altitude_units"></span>
 									</dd>
 								</dl>
 							</div>
@@ -114,9 +127,11 @@
 									<dd><span id="hud-fuel_percent"></span></dd>
 								</dl>
 							</div>
+							<!-- <div class="hud-row telemetry-1">
+
+							</div> -->
 						</div>
-						<!-- Bottom row: Mission Time, Phase -->
-						<div class="hud-row">
+						<!-- <div class="hud-row">
 							<div class="hud-item">
 								<dl>
 									<dt>Mission Time</dt>
@@ -129,7 +144,7 @@
 									<dd><span id="hud-phase_name"></span></dd>
 								</dl>
 							</div>
-						</div>
+						</div> -->
 						<div class="hud-row">
 							<div class="transcript"><span id="hud-transcript"></span></div>
 						</div>

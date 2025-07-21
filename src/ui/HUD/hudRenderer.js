@@ -65,6 +65,10 @@ export class HudRenderer {
 	updateHudBasedOnType(type, data) {
 		console.log('Cue: ', data);
 
-		this.hudMap[type].innerText = data;
+		this.hudMap[type].innerHTML = data;
+	}
+
+	clearHUD() {
+		this.hudMap.transcript.innerHTML = '';
 	}
 }

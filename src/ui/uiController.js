@@ -6,6 +6,7 @@
  * @typedef {import('../types/uiTypes.js').altitudeUnits} AltitudeUnits
  * @typedef {import('../types/uiTypes.js').TelemetryKey} TKey
  * @typedef {import('../types/runtimeTypes.js').RuntimeCue} RuntimeCue
+ * @typedef {import('../types/uiTypes.js').Controls} Controls
  */
 
 import { cast } from '../util/cast.js';
@@ -28,21 +29,32 @@ export class UIController {
 		this.dsky = new DskyController(ui.dsky);
 		console.log('Init UI');
 		this.startEmitter = startEmitter;
-		/** @type {HTMLButtonElement | undefined} */ this.startButton;
-		this.initStartButton();
+		/** @type {HTMLButtonElement} */ this.startButton = this.ui.controls.start;
+		/** @type {HTMLButtonElement} */ this.playPause = this.ui.controls.playPause;
+		this.initControls();
 		/** @type {AltitudeUnits} */ this.altitudeUnits = 'miles';
 		/** @type {Telemetry} */ this.currentTelemetry;
 		/** @type {boolean} */ this.showTelemetry = true;
+		/** @type {Controls} */ this.controls = ui.controls;
+		/** @type {boolean} */ this.isPaused = false;
 	}
 
-	initStartButton() {
-		const startEl = document.getElementById('startBtn');
-		if (!startEl) {
-			throw new Error('Error no start button found');
-		}
-		this.startButton = /** @type {HTMLButtonElement} */ (startEl);
+	initControls() {
 		this.startButton.addEventListener('click', () => {
 			this.start();
+		});
+
+		this.playPause.addEventListener('click', e => {
+			e.preventDefault();
+			if (this.isPaused) {
+				this.startEmitter.emit('play');
+				this.playPause.classList.remove('paused');
+				this.isPaused = false;
+			} else {
+				this.startEmitter.emit('pause');
+				this.playPause.classList.add('paused');
+				this.isPaused = true;
+			}
 		});
 	}
 
@@ -73,7 +85,6 @@ export class UIController {
 	setPreStartState() {
 		this.isIntro = true;
 		this.sections.init();
-		this.dsky.unlockKeypad();
 	}
 
 	/**
@@ -169,6 +180,10 @@ export class UIController {
 				${cue.data.text}`;
 			this.hud.updateHudBasedOnType('transcript', message);
 		}
+	}
+
+	clearHUD() {
+		this.hud.clearHUD();
 	}
 
 	showInstructionModal(message) {}

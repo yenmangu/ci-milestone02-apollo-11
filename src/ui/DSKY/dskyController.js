@@ -38,16 +38,18 @@ export class DskyController {
 	}
 	initPushButtons() {
 		this.pushButtons.setOnPress(key => {
+			console.log('Key: ', key);
+
 			switch (key) {
-				case 'VERB':
-				case 'NOUN':
+				case 'verb':
+				case 'noun':
 					this.keypad.setMode(key.toLowerCase());
 					break;
-				case 'CLR':
-				case 'RESET':
+				case 'clr':
+				case 'rset':
 					this.keypad.reset();
 					break;
-				case 'PRO':
+				case 'entr':
 					this.keypad.finalise();
 					break;
 				case '+':

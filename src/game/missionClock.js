@@ -2,7 +2,7 @@
  * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
  */
 
-import { tickEmitter, runningEmitter } from '../event/eventBus.js';
+import { tickEmitter, runningEmitter, startEmitter } from '../event/eventBus.js';
 import { secondsFromGet } from '../util/GET.js';
 
 export class MissionClock {
@@ -16,7 +16,14 @@ export class MissionClock {
 		this.isRunning = false;
 		this.frame = null;
 		this.tickEmitter = tickEmitter;
+		this.startEmitter = startEmitter;
 		this.devMode = devMode;
+		startEmitter.on('pause', () => {
+			this.pause();
+		});
+		startEmitter.on('play', () => {
+			this.resume();
+		});
 	}
 
 	/**
@@ -60,7 +67,12 @@ export class MissionClock {
 
 	getRealDelta(now) {
 		// console.log('[DEBUG CLOCK] this.lastRealTime', this.lastRealTime);
-
+		if (this.devMode) {
+			let deltaSeconds = 1 / 60; // Fixed 60 fps
+			const MAX_DEV_DELTA = 0.1;
+			deltaSeconds = Math.min(deltaSeconds, MAX_DEV_DELTA);
+			return deltaSeconds;
+		}
 		return (now - this.lastRealTime) / 1000;
 	}
 

@@ -85,7 +85,8 @@ main {
 	display: flex;
 	flex-direction: column;
 	overflow-y: auto;
-	justify-content: space-between;
+	justify-content: flex-end;
+	align-items: center;
 }
 
 section {
@@ -149,6 +150,11 @@ header {
 	margin-top: 65px;
 }
 
+/* Landing UI Section */
+
+section#landing-ui {
+	width: 100%;
+}
 /* HUD Styles */
 
 /* Outer "monitor" frame */
@@ -159,6 +165,7 @@ header {
 	background: #001100;
 	box-shadow: 0 0 10px #00ff00, inset 0 0 30px #333333;
 	max-width: 80%;
+	min-width: 344px;
 	margin: 0 auto;
 }
 
@@ -171,7 +178,7 @@ header {
 	color: #00ff00;
 	font-family: 'Courier New', Courier, monospace;
 	text-shadow: 0 0 10px #00ff00;
-	min-height: 360px;
+	min-height: 260px;
 	padding: 1rem;
 	user-select: none;
 	max-width: 100%;
@@ -264,6 +271,73 @@ header {
 	}
 }
 
+/* HUD Description */
+
+.hud-bottom {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	align-items: center;
+	margin-top: 1rem;
+	margin-bottom: 0;
+}
+
+#hud-description.crt {
+	min-height: 3rem;
+	max-height: 6rem;
+	overflow-y: auto;
+	padding: 0;
+	color: #00ff00;
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 0.85rem;
+	line-height: 1.4;
+	text-shadow: 0 0 4px #00ff00;
+	width: 100%;
+}
+
+/* HUD Controls */
+
+#controls-ui {
+	margin-top: 0.4rem;
+}
+
+.hud-controls {
+	display: flex;
+	gap: 1rem;
+	justify-content: flex-start;
+	width: auto;
+	/* margin: auto; */
+	/* margin-left: 1rem; */
+	padding-bottom: 0.5rem;
+	flex-grow: 0;
+}
+
+.control-button.btn.play,
+.control-button.btn.start {
+	border-radius: 0;
+}
+
+.control-button.btn.play {
+	padding: 0;
+	width: 30px;
+	height: 30px;
+	font-size: 1rem;
+	border: 2px solid #333333;
+}
+
+.control-button.btn.play.paused {
+	color: black;
+	background-color: #666;
+}
+
+.control-button.btn.start {
+	width: auto;
+	height: 30px;
+	padding: 0.2rem 0.4rem;
+	background-color: #666;
+	color: #000000;
+}
+
 /* DSKY styles */
 
 #dsky-ui {
@@ -275,10 +349,10 @@ header {
 	padding: 0.5rem 0.5rem;
 	/* Aesthetics */
 	background-color: #c2c7ca; /* grey-blue DSKY chassis */
-	border: 4px solid #666;
+	border: 3px solid #666;
 	border-radius: 6px;
 	box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3), 2px 2px 6px rgba(0, 0, 0, 0.2);
-	max-width: 360px;
+	max-width: 344px;
 	margin: 0 auto;
 }
 
@@ -575,7 +649,8 @@ section#dsky-ui .col.py-2.custom-col {
 	gap: 0.4em;
 }
 
-.push-button.btn {
+.push-button.btn,
+.control-button.btn {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -642,6 +717,30 @@ section#dsky-ui .col.py-2.custom-col {
 	padding: 0.5rem 1rem;
 }
 
+/* Desktop View */
+.desktop {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	max-width: 80%;
+	gap: 1rem;
+	margin: 0 auto;
+}
+#desktop_description {
+	display: none;
+	margin: 0 auto;
+	flex-grow: 0;
+}
+
+#desktop_description .hud-frame {
+	display: flex;
+}
+
+#desktop_description .hud-container.crt {
+	display: flex;
+	flex-grow: 1;
+}
+
 /* Media Queries */
 /* Make layout stack vertically on very small screens */
 @media (max-width: 480px) {
@@ -678,9 +777,9 @@ section#dsky-ui .col.py-2.custom-col {
 		transform-origin: top-center;
 	}
 
-	#landing-ui {
+	/* #landing-ui {
 		height: 35vh;
-	}
+	} */
 	/* #dsky-ui {
 		height: 65vh;
 	} */
@@ -691,13 +790,11 @@ section#dsky-ui .col.py-2.custom-col {
 	} */
 }
 
-/* @media (min-width: 768px) {
-	.col-6.indicator-lights,
-	.col-6.numerical-displays {
-		width: 200px;
-		max-width: 200px;
+@media (min-width: 768px) {
+	#desktop_description {
+		display: flex;
 	}
-} */
+}
 
 /* Dev Panel Styles */
 

@@ -169,11 +169,24 @@ export const segmentKeys = [
  */
 
 /**
+ * @typedef {Record.<string, HTMLButtonElement>} ControlMap
+ */
+
+/**
+ * @typedef {Object} Controls
+ * @property {HTMLButtonElement} playPause
+ * @property {HTMLButtonElement} start
+ */
+
+/**
  * @typedef {Object} UIStructure
  * @property {HudMap} hudMap
+ * @property {HTMLElement} description
+ * @property {Controls} controls
  * @property {DSKYStructure} dsky
  * @property {ModalElements} modals
  * @property {UISections} [sections]
+ * @property {HTMLElement} [desktopDescription]
  */
 
 export {};

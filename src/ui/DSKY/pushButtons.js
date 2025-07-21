@@ -41,7 +41,7 @@ export class PushButtons {
 
 	unlock() {
 		Object.entries(this.buttons).forEach(([_, val]) => {
-			val.disabled = !val.disabled;
+			val.disabled = false;
 		});
 	}
 }

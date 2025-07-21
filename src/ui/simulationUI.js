@@ -2,11 +2,27 @@
  * @typedef {import('../types/uiTypes.js').UIStructure} UIStructure
  * @typedef {import('../types/uiTypes.js').SegmentMap} SegmentMap
  * @typedef {import('../types/uiTypes.js').HudElKey} HudElKey
+ * @typedef {import('../types/uiTypes.js').Controls} Controls
  */
 
 import { cast } from '../util/cast.js';
 import { segmentKeys } from '../types/uiTypes.js';
 import { getHudKey } from '../util/uiKeys.js';
+
+/**
+ *
+ * @returns {Controls}
+ */
+function initControls() {
+	/** @type {Controls} */ const map = {};
+	map.start = /** @type {HTMLButtonElement} */ (
+		document.getElementById('startBtn')
+	);
+	map.playPause = /** @type {HTMLButtonElement} */ (
+		document.getElementById('playPause')
+	);
+	return map;
+}
 
 /**
  *
@@ -74,10 +90,7 @@ function initSections() {
  * @returns {UIStructure}
  */
 function queryDom() {
-	// const segmentDisplays = cast(
-	// 	document.querySelectorAll('.seven-segment span[id]'),
-	// 	'nodeList'
-	// );
+	const controls = initControls();
 
 	/** @type {{[key: string]: HTMLElement}} */
 	const indicatorLights = Array.from(
@@ -147,8 +160,12 @@ function queryDom() {
 		)
 	};
 
+	const description = document.getElementById('hud-description');
+
 	return {
 		hudMap: hudMapTyped,
+		description,
+		controls,
 		modals,
 		dsky: {
 			indicatorLights,

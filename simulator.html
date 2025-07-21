@@ -71,8 +71,6 @@
 				<div class="container-fluid text-center">
 					<div class="row">
 						<div class="col-12">
-							<button class="btn btn-primary"
-											id="startBtn"> Start Simulation </button>
 						</div>
 					</div>
 				</div>
@@ -147,196 +145,216 @@
 							<div class="instructions"><span id="hud-prompt"></span></div>
 						</div>
 					</div>
+					<div class="hud-bottom">
+						<div id="hud-description"
+								 class="scrollable description crt"></div>
+					</div>
 				</div>
 			</section>
 			<!-- dsky section -->
-			<section id="dsky-ui"
-							 data-running="false"
-							 class="hidden">
-				<div class="container custom-container">
-					<div class="row lights-displays">
-						<div class="col-6 indicator-lights">
-							<div class="container">
-								<div class="row light-row">
-									<div id="uplinkLight"
-											 class="col light white">UPLINK ACTY</div>
-									<div id="tempLight"
-											 class="col light yellow">TEMP</div>
+			<div class="desktop">
+				<section id="dsky-ui"
+								 data-running="false"
+								 class="hidden">
+					<div class="hud-controls">
+						<button class="control-button btn start"
+										id="startBtn"> START </button>
+						<button id="playPause"
+										class="control-button btn play">&#x23EF;</button>
+					</div>
+					<div class="container custom-container">
+						<div class="row lights-displays">
+							<div class="col-6 indicator-lights">
+								<div class="container">
+									<div class="row light-row">
+										<div id="uplinkLight"
+												 class="col light white">UPLINK ACTY</div>
+										<div id="tempLight"
+												 class="col light yellow">TEMP</div>
+									</div>
+									<div class="row light-row">
+										<div id="noAttLight"
+												 class="col light white">NO ATT</div>
+										<div id="gimbalLockLight"
+												 class="col light yellow">GIMBAL<br>LOCK</div>
+									</div>
+									<div class="row light-row">
+										<div id="stbyLight"
+												 class="col light white">STBY</div>
+										<div id="progLight"
+												 class="col light yellow">PROG</div>
+									</div>
+									<div class="row light-row">
+										<div id="keyReleaseLight"
+												 class="col light white">KEY REL</div>
+										<div id="restartLight"
+												 class="col light yellow">RESTART</div>
+									</div>
+									<div class="row light-row">
+										<div id="opErrLight"
+												 class="col light white">OPR ERR</div>
+										<div id="trackerLight"
+												 class="col light yellow">TRACKER</div>
+									</div>
+									<div class="row light-row">
+										<div id="priorityDisp"
+												 class="col light">PRO DISP</div>
+										<div id="altitudeLight"
+												 class="col light yellow">ALT</div>
+									</div>
+									<div class="row light-row">
+										<div id="noDapLight"
+												 class="col light">NO DAP</div>
+										<div id="velocitLight"
+												 class="col light yellow">VEL</div>
+									</div>
 								</div>
-								<div class="row light-row">
-									<div id="noAttLight"
-											 class="col light white">NO ATT</div>
-									<div id="gimbalLockLight"
-											 class="col light yellow">GIMBAL<br>LOCK</div>
-								</div>
-								<div class="row light-row">
-									<div id="stbyLight"
-											 class="col light white">STBY</div>
-									<div id="progLight"
-											 class="col light yellow">PROG</div>
-								</div>
-								<div class="row light-row">
-									<div id="keyReleaseLight"
-											 class="col light white">KEY REL</div>
-									<div id="restartLight"
-											 class="col light yellow">RESTART</div>
-								</div>
-								<div class="row light-row">
-									<div id="opErrLight"
-											 class="col light white">OPR ERR</div>
-									<div id="trackerLight"
-											 class="col light yellow">TRACKER</div>
-								</div>
-								<div class="row light-row">
-									<div id="priorityDisp"
-											 class="col light">PRO DISP</div>
-									<div id="altitudeLight"
-											 class="col light yellow">ALT</div>
-								</div>
-								<div class="row light-row">
-									<div id="noDapLight"
-											 class="col light">NO DAP</div>
-									<div id="velocitLight"
-											 class="col light yellow">VEL</div>
+							</div>
+							<div class="col-6 numerical-displays">
+								<div class="container numerical-display-container">
+									<div class="row static-display top">
+										<div class="col-4 invisible"></div>
+										<div class="col-4 dsky-highlight prog">PROG</div>
+									</div>
+									<div class="row prog">
+										<div id="compActy"
+												 data-dsky="inactive"
+												 class="col-6 comp-acty active">COMP<br>ACTY </div>
+										<div class="col-6 seven-segment">
+											<span id="prog">63</span>
+										</div>
+									</div>
+									<div class="row static-display verb-noun">
+										<div class="col-4 dsky-highlight verb">VERB</div>
+										<div class="col-4 dsky-highlight noun">NOUN</div>
+									</div>
+									<div class="row verb-noun">
+										<div class="col-6 seven-segment">
+											<span id="verb">00</span>
+										</div>
+										<div id="nounSegment"
+												 class="col-6 seven-segment">
+											<span id="noun">00</span>
+										</div>
+									</div>
+									<div class="row data-register seven-segment">
+										<div id="polarity1Segment"
+												 class="col-2 polarity">
+											<span id="p_1">+</span>
+										</div>
+										<div class="col-10 seven-segment">
+											<span id="r_1">00000</span>
+										</div>
+									</div>
+									<div class="row data-register seven-segment">
+										<div class="col-2 polarity">
+											<span id="p_2">+</span>
+										</div>
+										<div class="col-10 seven-segment">
+											<span id="r_2">00000</span>
+										</div>
+									</div>
+									<div class="row data-register seven-segment">
+										<div class="col-2 polarity">
+											<span id="p_3">+</span>
+										</div>
+										<div class="col-10 seven-segment">
+											<span id="r_3">00000</span>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-6 numerical-displays">
-							<div class="container numerical-display-container">
-								<div class="row static-display top">
-									<div class="col-4 invisible"></div>
-									<div class="col-4 dsky-highlight prog">PROG</div>
-								</div>
-								<div class="row prog">
-									<div id="compActy"
-											 data-dsky="inactive"
-											 class="col-6 comp-acty active">COMP<br>ACTY </div>
-									<div class="col-6 seven-segment">
-										<span id="prog">63</span>
-									</div>
-								</div>
-								<div class="row static-display verb-noun">
-									<div class="col-4 dsky-highlight verb">VERB</div>
-									<div class="col-4 dsky-highlight noun">NOUN</div>
-								</div>
-								<div class="row verb-noun">
-									<div class="col-6 seven-segment">
-										<span id="verb">00</span>
-									</div>
-									<div id="nounSegment"
-											 class="col-6 seven-segment">
-										<span id="noun">00</span>
-									</div>
-								</div>
-								<div class="row data-register seven-segment">
-									<div id="polarity1Segment"
-											 class="col-2 polarity">
-										<span id="p_1">+</span>
-									</div>
-									<div class="col-10 seven-segment">
-										<span id="r_1">00000</span>
-									</div>
-								</div>
-								<div class="row data-register seven-segment">
-									<div class="col-2 polarity">
-										<span id="p_2">+</span>
-									</div>
-									<div class="col-10 seven-segment">
-										<span id="r_2">00000</span>
-									</div>
-								</div>
-								<div class="row data-register seven-segment">
-									<div class="col-2 polarity">
-										<span id="p_3">+</span>
-									</div>
-									<div class="col-10 seven-segment">
-										<span id="r_3">00000</span>
+						<div class="row mt-2">
+							<div class="col custom-col">
+								<div class="dsky-keypad-wrapper">
+									<div class="push-buttons">
+										<div class="column verb-noun">
+											<button data-state=""
+															data-dsky="verb"
+															class="push-button btn">VERB</button>
+											<button data-state=""
+															data-dsky="noun"
+															class="push-button btn">NOUN</button>
+										</div>
+										<div class="column numerical-one">
+											<button data-state=""
+															data-dsky="plus"
+															class="push-button btn">+</button>
+											<button data-state=""
+															data-dsky="minus"
+															class="push-button btn">-</button>
+											<button data-state=""
+															data-dsky="0"
+															class="push-button btn">0</button>
+										</div>
+										<div class="column numerical-two">
+											<button data-state=""
+															data-dsky="7"
+															class="push-button btn">7</button>
+											<button data-state=""
+															data-dsky="4"
+															class="push-button btn">4</button>
+											<button data-state=""
+															data-dsky="1"
+															class="push-button btn">1</button>
+										</div>
+										<div class="column numerical-three">
+											<button data-state=""
+															data-dsky="8"
+															class="push-button btn">8</button>
+											<button data-state=""
+															data-dsky="5"
+															class="push-button btn">5</button>
+											<button data-state=""
+															data-dsky="2"
+															class="push-button btn">2</button>
+										</div>
+										<div class="column numerical-four">
+											<button data-state=""
+															data-dsky="9"
+															class="push-button btn">9</button>
+											<button data-state=""
+															data-dsky="6"
+															class="push-button btn">6</button>
+											<button data-state=""
+															data-dsky="3"
+															class="push-button btn">3</button>
+										</div>
+										<div class="column actions-one">
+											<button data-state=""
+															data-dsky="clr"
+															class="push-button btn">CLR</button>
+											<button data-state=""
+															data-dsky="pro"
+															class="push-button btn">PRO</button>
+											<button data-state=""
+															data-dsky="key-rel"
+															class="push-button btn">KEY <br> REL</button>
+										</div>
+										<div class="column actions-two">
+											<button data-state=""
+															data-dsky="entr"
+															class="push-button btn">ENTR</button>
+											<button data-state=""
+															data-dsky="rset"
+															class="push-button btn">RSET</button>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="row mt-2">
-						<div class="col custom-col">
-							<div class="dsky-keypad-wrapper">
-								<div class="push-buttons">
-									<div class="column verb-noun">
-										<button data-state=""
-														data-dsky="verb"
-														class="push-button btn">VERB</button>
-										<button data-state=""
-														data-dsky="noun"
-														class="push-button btn">NOUN</button>
-									</div>
-									<div class="column numerical-one">
-										<button data-state=""
-														data-dsky="plus"
-														class="push-button btn">+</button>
-										<button data-state=""
-														data-dsky="minus"
-														class="push-button btn">-</button>
-										<button data-state=""
-														data-dsky="0"
-														class="push-button btn">0</button>
-									</div>
-									<div class="column numerical-two">
-										<button data-state=""
-														data-dsky="7"
-														class="push-button btn">7</button>
-										<button data-state=""
-														data-dsky="4"
-														class="push-button btn">4</button>
-										<button data-state=""
-														data-dsky="1"
-														class="push-button btn">1</button>
-									</div>
-									<div class="column numerical-three">
-										<button data-state=""
-														data-dsky="8"
-														class="push-button btn">8</button>
-										<button data-state=""
-														data-dsky="5"
-														class="push-button btn">5</button>
-										<button data-state=""
-														data-dsky="2"
-														class="push-button btn">2</button>
-									</div>
-									<div class="column numerical-four">
-										<button data-state=""
-														data-dsky="9"
-														class="push-button btn">9</button>
-										<button data-state=""
-														data-dsky="6"
-														class="push-button btn">6</button>
-										<button data-state=""
-														data-dsky="3"
-														class="push-button btn">3</button>
-									</div>
-									<div class="column actions-one">
-										<button data-state=""
-														data-dsky="clr"
-														class="push-button btn">CLR</button>
-										<button data-state=""
-														data-dsky="pro"
-														class="push-button btn">PRO</button>
-										<button data-state=""
-														data-dsky="key-rel"
-														class="push-button btn">KEY <br> REL</button>
-									</div>
-									<div class="column actions-two">
-										<button data-state=""
-														data-dsky="entr"
-														class="push-button btn">ENTR</button>
-										<button data-state=""
-														data-dsky="rset"
-														class="push-button btn">RSET</button>
-									</div>
-								</div>
-							</div>
+				</section>
+				<section id="desktop_description">
+					<div class="hud-frame">
+						<div class="hud-container crt">
+							<div id="hud-description_desktop"
+									 class="scrollable-description"></div>
 						</div>
 					</div>
-				</div>
-			</section>
+				</section>
+			</div>
 		</main>
 		<!-- Next Phase Modal -->
 		<div class="modal hidden"

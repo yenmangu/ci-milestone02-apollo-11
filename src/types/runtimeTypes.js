@@ -101,3 +101,11 @@ import { PhaseIds } from './timelineTypes.js';
  * @property {TimelineMetadata} metadata
  * @property {(state: PhaseId|string )=> RuntimePhase | undefined} getPhase
  */
+
+/**
+ * @typedef {{
+ * 		phaseId: string,
+ * 		startSeconds: number,
+ * 		endSeconds: number
+ * }} PhaseRange
+ */

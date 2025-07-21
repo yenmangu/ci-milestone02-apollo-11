@@ -2,7 +2,12 @@
  * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
  */
 
-import { tickEmitter, runningEmitter, startEmitter } from '../event/eventBus.js';
+import {
+	tickEmitter,
+	runningEmitter,
+	startEmitter,
+	controlsEmitter
+} from '../event/eventBus.js';
 import { secondsFromGet } from '../util/GET.js';
 
 export class MissionClock {
@@ -17,11 +22,12 @@ export class MissionClock {
 		this.frame = null;
 		this.tickEmitter = tickEmitter;
 		this.startEmitter = startEmitter;
+		this.controlsEmitter = controlsEmitter;
 		this.devMode = devMode;
-		startEmitter.on('pause', () => {
+		controlsEmitter.on('pause', () => {
 			this.pause();
 		});
-		startEmitter.on('play', () => {
+		controlsEmitter.on('play', () => {
 			this.resume();
 		});
 	}

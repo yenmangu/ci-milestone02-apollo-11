@@ -14,7 +14,7 @@ import { DskyController } from './DSKY/dskyController.js';
 import { HudRenderer } from './HUD/hudRenderer.js';
 import { ModalManager } from './modal/modalManager.js';
 import { UISectionManager } from './uiSections/uiSectionManager.js';
-import { startEmitter } from '../event/eventBus.js';
+import { startEmitter, controlsEmitter } from '../event/eventBus.js';
 
 export class UIController {
 	/**
@@ -30,14 +30,18 @@ export class UIController {
 		this.description = ui.description;
 		console.log('Init UI');
 		this.startEmitter = startEmitter;
+		this.controlsEmitter = controlsEmitter;
 		/** @type {HTMLButtonElement} */ this.startButton = this.ui.controls.start;
 		/** @type {HTMLButtonElement} */ this.playPause = this.ui.controls.playPause;
+		/** @type {HTMLButtonElement} */ this.fastForward =
+			this.ui.controls.fastForward;
 		this.initControls();
 		/** @type {AltitudeUnits} */ this.altitudeUnits = 'miles';
 		/** @type {Telemetry} */ this.currentTelemetry;
 		/** @type {boolean} */ this.showTelemetry = true;
 		/** @type {Controls} */ this.controls = ui.controls;
 		/** @type {boolean} */ this.isPaused = false;
+		this.targetGet = null;
 	}
 
 	initControls() {
@@ -48,15 +52,30 @@ export class UIController {
 		this.playPause.addEventListener('click', e => {
 			e.preventDefault();
 			if (this.isPaused) {
-				this.startEmitter.emit('play');
+				this.controlsEmitter.emit('play');
 				this.playPause.classList.remove('paused');
 				this.isPaused = false;
 			} else {
-				this.startEmitter.emit('pause');
+				this.controlsEmitter.emit('pause');
 				this.playPause.classList.add('paused');
 				this.isPaused = true;
 			}
 		});
+
+		this.fastForward.addEventListener('click', () => {
+			if (this.targetGet) {
+				this.handleFastForward(this.targetGet);
+				this.targetGet = null;
+			}
+		});
+	}
+
+	/**
+	 *
+	 * @param {string} target
+	 */
+	handleFastForward(target) {
+		this.controlsEmitter.emit('fastForward', { target });
 	}
 
 	init() {

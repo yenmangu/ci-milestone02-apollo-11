@@ -21,6 +21,9 @@ function initControls() {
 	map.playPause = /** @type {HTMLButtonElement} */ (
 		document.getElementById('playPause')
 	);
+	map.fastForward = /** @type {HTMLButtonElement} */ (
+		document.getElementById('ff')
+	);
 	return map;
 }
 

@@ -176,6 +176,7 @@ export const segmentKeys = [
  * @typedef {Object} Controls
  * @property {HTMLButtonElement} playPause
  * @property {HTMLButtonElement} start
+ * @property {HTMLButtonElement} fastForward
  */
 
 /**

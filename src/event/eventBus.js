@@ -10,7 +10,7 @@ const agcEmitter = new EventEmitter();
 const phaseEmitter = new EventEmitter();
 const runningEmitter = new EventEmitter();
 const telemetryEmitter = new EventEmitter();
-
+const controlsEmitter = new EventEmitter();
 // Dev emitter
 const devLightsEmitter = new EventEmitter();
 const devNavEmitter = new EventEmitter();
@@ -27,6 +27,7 @@ export {
 	runningEmitter,
 	telemetryEmitter,
 	startEmitter,
+	controlsEmitter,
 	// Dev emitters
 	devLightsEmitter,
 	devNavEmitter

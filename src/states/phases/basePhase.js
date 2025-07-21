@@ -254,6 +254,10 @@ export class BasePhase {
 		// console.warn('Method not implemented.');
 	}
 
+	setFastForwardTarget(targetGet) {
+		this.uiController.targetGet = targetGet;
+	}
+
 	exit() {
 		if (typeof this.onExit === 'function') {
 			this.onExit();

@@ -5,6 +5,8 @@
  * @typedef {import("../../types/uiElementTypes.js").HudRuntypeKey} HudRuntypeKey
  */
 
+import { createSvgUse, svgExport } from '../../util/svg.js';
+
 export class HudRenderer {
 	/**
 	 *
@@ -69,11 +71,24 @@ export class HudRenderer {
 	}
 
 	setFFPrompt() {
+		console.log('Setting FF prompt');
+
 		this.hudMap.prompt.innerHTML = '';
-		this.hudMap.prompt.classList.add('ff');
+		const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		icon.classList.add('icon', 'ff');
+		icon.setAttribute('width', '16');
+		icon.setAttribute('height', '16');
+		const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+		use.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#icon-ff');
+		icon.appendChild(use);
+
+		const ffIcon = createSvgUse();
+		this.hudMap.prompt.appendChild(ffIcon);
 	}
 
 	clearPrompt() {
+		console.log('Clearing prompt');
+
 		this.hudMap.prompt.innerHTML = '';
 		this.hudMap.prompt.classList.remove('ff');
 	}

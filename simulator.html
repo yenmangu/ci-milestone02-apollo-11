@@ -154,7 +154,13 @@
 										class="control-button btn play">&#x23EF;</button>
 						<button id="ff"
 										class="control-button btn ff">
-							<span></span>
+							<svg class="icon ff">
+								<use href="#icon-ff"
+										 x="4"
+										 y="3"
+										 width="13"
+										 height="13"></use>
+							</svg>
 						</button>
 					</div>
 					<div class="container custom-container">
@@ -375,5 +381,26 @@
 		<!-- <script src="https://code.jquery.com/jquery-3.7.1.js"
 						integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
 						crossorigin="anonymous"></script> -->
+		<div style="display: none;">
+			<?xml version="1.0" encoding="UTF-8"?>
+			<svg xmlns="http://www.w3.org/2000/svg"
+					 style="display:none;">
+				<!-- Home Icon -->
+				<symbol id="icon-ff"
+								viewBox="0 0 14 14">
+					<title>Fast Forward</title>
+					<path d="m13.896 6.799 -6.632 -4.667A0.245 0.245 0 0 0 6.877 2.333v4.366L0.387 2.135A0.246 0.246 0 0 0 0
+								2.337v9.327a0.246 0.246 0 0 0 0.246 0.245c0.05 0 0.099 -0.015 0.141 -0.045L6.877 7.3V11.667a0.246 0.246 0 0 0
+								0.246 0.246 0.246 0.246 0 0 0 0.141 -0.045l6.632 -4.667a0.245 0.245 0 0 0 0 -0.401" />
+				</symbol>
+				<!-- User Icon -->
+				<symbol id="icon-user"
+								viewBox="0 0 20 20">
+					<title>User</title>
+					<path
+								d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+				</symbol>
+			</svg>
+		</div>
 	</body>
 </html>

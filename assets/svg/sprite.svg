@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+  <!-- Home Icon -->
+  <symbol id="icon-ff" viewBox="0 0 24 24">
+    <title>Fast Forward</title>
+    <path style="fill:#00ff00;" d="M185.492,211.636v109.588l209.449-123.747L185.492,73.718v109.611L0,73.718v247.506L185.492,211.636
+		z"/>
+  </symbol>
+
+  <!-- User Icon -->
+  <symbol id="icon-user" viewBox="0 0 24 24">
+    <title>User</title>
+    <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+  </symbol>
+</svg>

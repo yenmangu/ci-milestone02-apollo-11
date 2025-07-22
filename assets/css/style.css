@@ -232,6 +232,14 @@ section#landing-ui {
 	filter: blur(0.8px);
 }
 
+.transcript {
+	filter: blur(0.8px);
+}
+
+.instructions {
+	filter: blur(0.4px);
+}
+
 /* Description list styling */
 .hud-item dl {
 	margin: 0;
@@ -250,6 +258,7 @@ section#landing-ui {
 	margin: 0;
 	font-variant-numeric: tabular-nums;
 	font-size: 1rem;
+	letter-spacing: 0.1rem;
 	border-left: 1px solid #00ff00;
 	padding-left: 0.5rem;
 	display: flex;
@@ -267,7 +276,15 @@ section#landing-ui {
 
 #hud-transcript,
 #hud-prompt {
-	font-size: 0.8rem;
+	font-variant-numeric: tabular-nums;
+}
+
+#hud-transcript {
+	font-size: 1rem;
+}
+
+#hud-prompt {
+	font-size: 1.2rem;
 }
 
 /* Optional: blinking effect for critical values */
@@ -328,12 +345,40 @@ section#landing-ui {
 	border-radius: 0;
 }
 
-.control-button.btn.play {
-	padding: 0;
+.control-button.btn.play,
+.control-button.btn.ff {
+	padding: 0rem;
 	width: 30px;
 	height: 30px;
 	font-size: 1rem;
 	border: 2px solid #333333;
+}
+
+.control-button.btn.ff {
+	padding: 0.3rem;
+	padding-left: 0.4rem;
+	/* background-color: black; */
+}
+
+.control-button.btn.ff:hover {
+	background-color: #c2c7ca;
+}
+
+.control-button.btn.ff:disabled {
+	background-color: #c2c7ca;
+}
+.control-button.btn.ff > span {
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: url('../svg/fast-forward-active.svg') center/cover no-repeat;
+}
+
+.control-button.btn.ff:hover > span {
+	background: url('../svg/fast-forward-active-hover.svg');
+}
+.control-button.btn.ff:disabled > span {
+	background: url('../svg/fast-forward-inactive.svg');
 }
 
 .control-button.btn.play.paused {
@@ -344,7 +389,7 @@ section#landing-ui {
 .control-button.btn.start {
 	width: auto;
 	height: 30px;
-	padding: 0.2rem 0.4rem;
+	padding: 0.4rem;
 	background-color: #666;
 	color: #000000;
 }
@@ -771,21 +816,24 @@ section#dsky-ui .col.py-2.custom-col {
 	}
 
 	.hud-item dt {
-		font-size: 0.9rem;
+		font-size: 1rem;
 	}
 
 	.hud-item dd {
-		font-size: 0.85rem;
+		font-size: 1rem;
 	}
 
 	#hud-transcript,
 	#hud-prompt {
-		font-size: 0.7rem;
+		font-size: 0.9rem;
 	}
 
 	.dsky-keypad-wrapper {
 		transform: scale(0.9);
 		transform-origin: top-center;
+	}
+	.desktop {
+		justify-content: center;
 	}
 
 	/* #landing-ui {

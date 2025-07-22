@@ -42,6 +42,7 @@ export class UIController {
 		/** @type {Controls} */ this.controls = ui.controls;
 		/** @type {boolean} */ this.isPaused = false;
 		this.targetGet = null;
+		this.ffInterval = null;
 	}
 
 	initControls() {
@@ -66,8 +67,10 @@ export class UIController {
 			if (this.targetGet) {
 				this.handleFastForward(this.targetGet);
 				this.targetGet = null;
+				this.ffInterval = null;
 			}
 		});
+		this.fastForward.disabled = true;
 	}
 
 	/**
@@ -75,7 +78,9 @@ export class UIController {
 	 * @param {string} target
 	 */
 	handleFastForward(target) {
-		this.controlsEmitter.emit('fastForward', { target });
+		const interval = this.ffInterval ?? undefined;
+		this.controlsEmitter.emit('fastForward', { target, interval });
+		this.fastForward.disabled = true;
 	}
 
 	init() {
@@ -96,10 +101,19 @@ export class UIController {
 		// });
 		this.dsky.setInitialState();
 		this.modals.prepare();
+		this.disablePP();
+		this.controlsEmitter.on('ff', payload => {
+			if (payload) {
+				this.hud.setFFPrompt();
+			}
+		});
 	}
 
 	start() {
 		this.startEmitter.emit('start');
+		this.startButton.disabled = true;
+
+		this.enablePP();
 	}
 
 	setPreStartState() {
@@ -233,6 +247,23 @@ export class UIController {
 
 	clearHudTranscript() {
 		this.hud.clearTranscript();
+	}
+
+	enablePP() {
+		this.playPause.disabled = false;
+	}
+
+	disablePP() {
+		this.playPause.disabled = true;
+	}
+
+	enableFF() {
+		this.fastForward.disabled = false;
+		this.hud.setFFPrompt();
+	}
+
+	disableFF() {
+		this.fastForward.disabled = true;
 	}
 
 	showInstructionModal(message) {}

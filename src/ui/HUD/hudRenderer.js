@@ -68,7 +68,17 @@ export class HudRenderer {
 		this.hudMap[type].innerHTML = data;
 	}
 
-	clearHUD() {
+	setFFPrompt() {
+		this.hudMap.prompt.innerHTML = '';
+		this.hudMap.prompt.classList.add('ff');
+	}
+
+	clearPrompt() {
+		this.hudMap.prompt.innerHTML = '';
+		this.hudMap.prompt.classList.remove('ff');
+	}
+
+	clearTranscript() {
 		this.hudMap.transcript.innerHTML = '';
 	}
 }

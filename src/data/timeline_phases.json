@@ -3,7 +3,7 @@
 			"phase_name": "Lunar Orbit (CSM Separation)",
 			"phase_id": "csm_separation",
 			"start_get": "100:40:00",
-			"description": ["Eagle separates from Columbia in lunar orbit"],
+			"description": ["Eagle separates from Columbia in lunar orbit."],
 			"initial_state": {
 				"velocity": 5320,
 				"v_units": "fps",
@@ -22,7 +22,44 @@
 				},
 				"fuel": 100
 			},
-			"timeline_cues": [{
+			"timeline_cues": [
+
+				{
+					"get": "100:40:01",
+					"key": "startFF",
+					"dsky": false,
+					"hud": true,
+					"input": false,
+					"output": false,
+					"data": {
+						"speaker": "Mission",
+						"text": "Press the 'Fast Forward' &#x23E9 button to fast-forward to the first major timeline cue in this phase."
+					}
+				},
+				{
+					"get": "100:40:04",
+					"dsky": false,
+					"hud": true,
+					"input": false,
+					"output": false,
+					"data": {
+						"speaker": "Mission",
+						"text": "This button will be available when it is appropriate to skip large chunks of time."
+					}
+				},
+				{
+					"get": "100:40:06",
+					"dsky": false,
+					"hud": true,
+					"input": false,
+					"output": false,
+					"data": {
+						"speaker": "Mission",
+						"text": "It will be displayed as a prompt below when available"
+					}
+				},
+				{
+					"key": "ffTarget_01",
 					"get": "100:40:32",
 					"transcript": true,
 					"dsky": false,
@@ -1550,7 +1587,9 @@
 			"phase_name": "Simulation Briefing",
 			"phase_id": "intro",
 			"start_get": "000:00:00",
-			"description": "Orientation before simulation begins",
+			"description": [
+				"Orientation before simulation begins."
+			],
 			"initial_state": {
 				"velocity": 0,
 				"v_units": "fps",

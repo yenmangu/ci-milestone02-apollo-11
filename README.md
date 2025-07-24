@@ -87,7 +87,19 @@ https://medium.com/@dovid11564/using-css-animations-to-mimic-the-look-of-a-crt-m
 https://tcf.pages.tcnj.edu/files/2013/12/Apollo-Guidance-Computer.pdf
 https://www.doneyles.com/LM/Tales.html
 https://javascript.plainenglish.io/building-a-simple-event-emitter-in-javascript-f82f68c214ad
-https://ia600205.us.archive.org/27/items/nasa_techdoc_19730061045/19730061045.pdf - Actual apollo ops handbook
+
+Nasa Archives - Apollo Operations Handbook
+https://ia600205.us.archive.org/27/items/nasa_techdoc_19730061045/19730061045.pdf
+
+Apollo 11 Guidance And Navigation
+by AC Electronics Division, General Motors Corporation, Milwaukee, Wisconsin
+https://www.ibiblio.org/apollo/Documents/AcElectronicsApollo11.pdf - A detailed description of the configuration and programming of the
+Apollo 11 guidance computers (AGCs). The description includes COLOSSUS
+2A, used in the Command Module, and LUMINARY 1A, used in the Lunar
+Module.
+
+
+
 
 
 

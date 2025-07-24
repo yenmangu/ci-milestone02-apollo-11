@@ -15,6 +15,7 @@ export class Intro extends BasePhase {
 	constructor(simState, phaseMeta) {
 		super(simState, phaseMeta);
 		this.hasStarted = false;
+		this.keyRelPressed = false;
 	}
 
 	onEnter() {
@@ -29,6 +30,13 @@ export class Intro extends BasePhase {
 			},
 			cue => {
 				this.handleCueEvent(cue);
+			},
+			undefined,
+			undefined,
+			key => {
+				if (key === 'key-rel') {
+					this.keyRelPressed = true;
+				}
 			}
 		);
 	}
@@ -36,6 +44,8 @@ export class Intro extends BasePhase {
 		console.log('Cue Event', cue);
 		if (cue.key === 'intro_09') {
 			this.dskyController.unlockKeypad();
+
+			this.dskyController.indicatorLights.flashLight('keyRelLight');
 		}
 	}
 
@@ -46,6 +56,7 @@ export class Intro extends BasePhase {
 	onTick() {
 		if (this.simulationState.hasActionBeenCompleted('BEGIN_SIM')) {
 			if (this.hasStarted) return;
+			if (!this.keyRelPressed) return;
 
 			this.log('Intro Complete. Transitioning');
 			this.hasStarted = true;

@@ -41,6 +41,8 @@ export class IndicatorLights {
 	 * @param {number} interval
 	 */
 	flashLight(key, interval = 200) {
+		console.log('Flashing lightL: ', key);
+
 		if (this.lightsInterval[key]) {
 			clearInterval(this.lightsInterval[key]);
 			delete this.lightsInterval[key];
@@ -59,6 +61,10 @@ export class IndicatorLights {
 	 * @param {LightKey} key
 	 */
 	clearLight(key) {
+		if (this.lightsInterval[key]) {
+			clearInterval(this.lightsInterval[key]);
+			delete this.lightsInterval[key];
+		}
 		if (key === 'compActy') {
 			this.lights[key].dataset.dsky = 'inactive';
 		}

@@ -4,11 +4,11 @@
  * @typedef {import('../../types/keypadTypes.js').DisplayInterface} DisplayInterface
  */
 
+import { pushButtonEmitter } from '../../event/eventBus.js';
 import { IndicatorLights } from './indicatorLights.js';
 import createKeypadStateManager from './keypadStateManager.js';
 import { PushButtons } from './pushButtons.js';
 import { SegmentDisplay } from './segmentDisplay.js';
-
 export class DskyController {
 	/**
 	 *
@@ -26,6 +26,16 @@ export class DskyController {
 		);
 		/** @type {HTMLElement} */ this.progLight = dsky.progLight;
 		this.progLightInterval = null;
+		this.pushButtonsEmitter = pushButtonEmitter;
+		this.pushButtonsEmitter.on('key-rel', () => {
+			this.indicatorLights.clearLight('keyRelLight');
+		});
+		this.pushButtonsEmitter.on('op-err', () => {
+			this.indicatorLights.setLight('opErrLight');
+		});
+		this.pushButtonsEmitter.on('cancel-err', () => {
+			this.indicatorLights.clearLight('opErrLight');
+		});
 		this.init();
 	}
 	init() {
@@ -35,6 +45,7 @@ export class DskyController {
 		this.initPushButtons();
 		this.lockKeypad();
 		this.segmentDisplays.init();
+		pushButtonEmitter;
 	}
 	initPushButtons() {
 		this.pushButtons.setOnPress(key => {

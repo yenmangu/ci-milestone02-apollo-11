@@ -29,6 +29,7 @@ const createKeypadStateManager = displayInterface => {
 	};
 
 	const manager = {
+		isFinalised: false,
 		/** @param {Mode} mode  */
 		setMode(mode) {
 			console.log('Invoked set mode');
@@ -46,6 +47,7 @@ const createKeypadStateManager = displayInterface => {
 			if (state.mode) {
 				state.buffer += digit;
 			}
+			this.checkOpError();
 		},
 
 		setPolarity(polarity) {
@@ -67,10 +69,13 @@ const createKeypadStateManager = displayInterface => {
 			state.mode = null;
 			state.buffer = '';
 			pushButtonEmitter.emit('finalise', state);
+			this.isFinalised = true;
 		},
 
 		keyRel() {
+			if (!this.isFinalised) return;
 			pushButtonEmitter.emit('key-rel', state);
+			this.isFinalised = false;
 		},
 
 		reset() {
@@ -82,11 +87,22 @@ const createKeypadStateManager = displayInterface => {
 			state.buffer = '';
 			state.polarity = null;
 			displayInterface.clearVerbNoun();
+			pushButtonEmitter.emit('cancel-err', state);
 			pushButtonEmitter.emit('keypad', state);
 		},
 
 		getState() {
 			return { ...state };
+		},
+
+		checkOpError() {
+			if (state.mode === 'verb' || state.mode === 'noun') {
+				if (state.buffer.length > 2) {
+					pushButtonEmitter.emit('op-err', state);
+				} else {
+					pushButtonEmitter.emit('cancel-err', state);
+				}
+			}
 		}
 	};
 	return manager;

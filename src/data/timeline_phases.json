@@ -1596,7 +1596,9 @@
 			"phase_id": "intro",
 			"start_get": "000:00:00",
 			"description": [
-				"Orientation before simulation begins."
+				"Orientation before simulation begins.",
+				"Hint: If you enter an invalid DSKY command, the 'OPR ERR' light will alight.",
+				"Press 'CLR' to reset or cancel any input.", "Hint: Pause or resume the simulation at any time with the play/pause button"
 			],
 			"initial_state": {
 				"velocity": 0,
@@ -1666,7 +1668,7 @@
 					"hud": true,
 					"dsky": false,
 					"data": {
-						"text": "The NOUN would represent <em>what</em> action, or data the astronaughts wanted.",
+						"text": "The NOUN would represent <em>what</em> action, or data the astronauts wanted.",
 						"speaker": "Mission"
 					}
 				},
@@ -1702,7 +1704,7 @@
 					"hud": true,
 					"dsky": false,
 					"data": {
-						"text": "They KEY-REL light will flash control needs to be handed back to the AGC.",
+						"text": "They KEY-REL light will flash if control needs to be handed back to the AGC.",
 						"speaker": "Mission"
 					}
 				},
@@ -1724,7 +1726,7 @@
 						"noun": "99",
 						"program": "99",
 						"speaker": "AGC/DSKY",
-						"text": "When ready, enter V37N99E (Entr) followed by KEY-REL to begin simulation"
+						"text": "When ready, enter V37N99E (ENTR) followed by KEY-REL to begin simulation"
 					},
 					"input": true,
 					"requires_action": "BEGIN_SIM"

@@ -69,6 +69,9 @@ export class IndicatorLights {
 		lightKeys.forEach(
 			/** @param {LightKey} key */ key => {
 				const el = this.lights[key];
+				if (!el) {
+					console.error('no light found for: ', key);
+				}
 				if (key === 'compActy') {
 					el.dataset.dsky = 'inactive';
 				}

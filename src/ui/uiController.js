@@ -229,7 +229,7 @@ export class UIController {
 
 		const spanElArr = descriptionArray.map(text => {
 			const span = document.createElement('span');
-			span.innerHTML = text;
+			span.innerHTML = `> ${text}`;
 			return span;
 		});
 

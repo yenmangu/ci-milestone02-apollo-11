@@ -1702,12 +1702,21 @@
 					"hud": true,
 					"dsky": false,
 					"data": {
-						"text": "Use the controls below to explore the guidance computer (DSKY)",
+						"text": "They KEY-REL light will flash control needs to be handed back to the AGC.",
 						"speaker": "Mission"
 					}
 				},
 				{
 					"get": "000:00:33",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "Use the controls below to explore the guidance computer (DSKY)",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:36",
 					"hud": true,
 					"dsky": true,
 					"data": {
@@ -1715,7 +1724,7 @@
 						"noun": "99",
 						"program": "99",
 						"speaker": "AGC/DSKY",
-						"text": "When ready, enter V37N99E (Entr) to begin simulation"
+						"text": "When ready, enter V37N99E (Entr) followed by KEY-REL to begin simulation"
 					},
 					"input": true,
 					"requires_action": "BEGIN_SIM"

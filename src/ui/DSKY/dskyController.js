@@ -78,6 +78,10 @@ export class DskyController {
 		this.clearProgLight();
 	}
 
+	setZeroState() {
+		this.segmentDisplays.clearAll();
+	}
+
 	setReadyState() {
 		this.segmentDisplays.setReady();
 	}

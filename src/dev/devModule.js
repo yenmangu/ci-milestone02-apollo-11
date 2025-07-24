@@ -7,6 +7,7 @@
  * @typedef {import('../types/runtimeTypes.js').RuntimePhase} RuntimePhase
  * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
  * @typedef {import('../types/uiTypes.js').UIStructure} UIStructure
+ * @typedef {import('../ui/uiController.js').UIController} UIController
  */
 
 /**
@@ -55,10 +56,19 @@ export class DevController {
 	 * @param {PartialFSM} fsm
 	 * @param {MissionClock} missionClock
 	 * @param {MissionTimeline} timeline
-	 * @param {UIStructure | {}} [ui={}]
+	 * @param {UIStructure | {}} [uiStruct={}]
+	 * @param {UIController | {}} [uiController={}]
+	 *
 	 */
 
-	constructor(simState, fsm, missionClock, timeline, ui = {}) {
+	constructor(
+		simState,
+		fsm,
+		missionClock,
+		timeline,
+		uiStruct = {},
+		uiController = {}
+	) {
 		/** @type {SimulationState} */ this.simState = simState;
 		/** @type {PartialFSM} */ this.fsm = fsm;
 		/** @type {MissionClock} */ this.clock = missionClock;
@@ -68,7 +78,8 @@ export class DevController {
 			timeline.runtimePhases
 		);
 		/** @type {number} */ this.lastComputedJumpSeconds = 0;
-		/** @type {UIStructure | {}} */ this.ui = ui;
+		/** @type {UIStructure | {}} */ this.uiStructure = uiStruct;
+		/** @type {UIController | {}} */ this.ui = uiController;
 	}
 
 	/**

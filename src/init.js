@@ -31,6 +31,7 @@ import { secondsFromGet } from './util/GET.js';
 import { startEmitter, tickEmitter } from './event/eventBus.js';
 import { queryDom } from './ui/simulationUI.js';
 import { UIController } from './ui/uiController.js';
+import { ClockControls } from './game/clockControls.js';
 
 // just for now
 let dev = true;
@@ -71,6 +72,15 @@ export async function initProgram() {
 
 		const clock = new MissionClock(Date.now(), 1, initalGetSeconds, dev);
 
+		/** @type {ClockControls} */ const clockControls = new ClockControls(
+			clock,
+			fsm,
+			timeline
+		);
+
+		clockControls.init();
+		simState.setClockControls(clockControls);
+
 		tickEmitter.on('tick', tickPayload => {
 			fsm.handleTick(tickPayload);
 		});
@@ -81,7 +91,8 @@ export async function initProgram() {
 				fsm,
 				clock,
 				timeline,
-				uiStructure
+				uiStructure,
+				ui
 			);
 			// Expose to global window object for browser testing
 			win.dev = devController;

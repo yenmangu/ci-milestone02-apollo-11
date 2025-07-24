@@ -45,7 +45,7 @@ export const hudKeyMap = {
  */
 
 /**
- * @typedef {import("./timelineTypes.js").Altitude} Altitude
+ * @typedef {import('./timelineTypes.js').Altitude} Altitude
  */
 
 /**
@@ -146,6 +146,44 @@ export const segmentKeys = [
 /**
  * @typedef {Record.<string, HTMLElement>} SegmentDisplayMap
  */
+
+/**
+ * @typedef {(
+ * 'compActy'|
+ *   'uplink' |
+ *   'tempLight' |
+ *   'noAttLight' |
+ *   'stbyLight' |
+ *   'progLight' |
+ *   'keyRelLight' |
+ *   'restartLight' |
+ *   'opErrLight' |
+ *   'trackerLight' |
+ *   'priorityDisp' |
+ *   'altitudeLight' |
+ *   'noDapLight' |
+ *   'velocityLight'
+ * )} IndicatorLightKey
+ */
+
+/**
+ * @type {IndicatorLightKey[]}
+ */
+export const lightKeys = [
+	'uplink',
+	'tempLight',
+	'noAttLight',
+	'stbyLight',
+	'progLight',
+	'keyRelLight',
+	'restartLight',
+	'opErrLight',
+	'trackerLight',
+	'priorityDisp',
+	'altitudeLight',
+	'noDapLight',
+	'velocityLight'
+];
 
 /**
  * Concrete map of indicator lights

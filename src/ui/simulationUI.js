@@ -84,6 +84,7 @@ function initLightsMap() {
 		},
 		{}
 	);
+	map.compActy = document.getElementById('compActy');
 	return map;
 }
 

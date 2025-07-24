@@ -11,7 +11,7 @@ function fireTwoTicks(/** @type {BasePhase} */ instancePhase, overrides = {}) {
 		{
 			getSeconds: overrides.get || 0,
 			getString: overrides.getFormatted || '000:00:00',
-			elapsed: overrides.elapsed || 0
+			elapsedSeconds: overrides.elapsed || 0
 		};
 
 	instancePhase.tick(tickPayload);
@@ -38,7 +38,7 @@ describe('BasePhase cue triggering', () => {
 		tick = {
 			getSeconds: cue.getSeconds, // Numeric match
 			getString: cue.get,
-			elapsed: cue.getSeconds
+			elapsedSeconds: cue.getSeconds
 		};
 
 		runtimeMetaData = mockMeta.metaData;
@@ -68,10 +68,11 @@ describe('BasePhase cue triggering', () => {
 		/** @type {BasePhase} */ instancePhase = phase,
 		override = {}
 	) {
+		/** @type {import('../../../types/clockTypes.js').TickPayload} */
 		const tickPayload = {
-			get: cue.getSeconds, // Numeric match
-			getFormatted: cue.get,
-			elapsed: cue.getSeconds,
+			getSeconds: cue.getSeconds, // Numeric match
+			getString: cue.get,
+			elapsedSeconds: cue.getSeconds,
 			...override
 		};
 		instancePhase.tick(tickPayload);

@@ -51,6 +51,7 @@ export class BasePhase {
 	}
 
 	enter() {
+		this.actionWatcher.unsubscribe();
 		// console.log('Phase meta.allCues: ', this.phaseMeta.allCues);
 		this.chronologicalCues = [...this.phaseMeta.allCues].sort((a, b) =>
 			compareGET(a.get, b.get)
@@ -62,6 +63,7 @@ export class BasePhase {
 		// console.log('actionCues: ', this.actionCues);
 
 		this.setUiData();
+		this.uiController.disableFF();
 
 		if (typeof this.onEnter === 'function') {
 			this.onEnter();
@@ -128,8 +130,17 @@ export class BasePhase {
 	/**
 	 * @protected
 	 */
-	watchUntilComplete(onAction, onCue, onComplete) {
-		this.actionWatcher = watchUntilComplete(onAction, onCue, onComplete);
+	watchUntilComplete(
+		onAction = () => {},
+		onCue = () => {},
+		onComplete = () => {},
+		onTick = () => {}
+	) {
+		if (this.actionWatcher) {
+			this.actionWatcher.unsubscribe();
+			this.actionWatcher = null;
+		}
+		this.actionWatcher = watchUntilComplete(onAction, onCue, onComplete, onTick);
 	}
 
 	/**
@@ -254,11 +265,33 @@ export class BasePhase {
 		// console.warn('Method not implemented.');
 	}
 
+	/**
+	 *
+	 * @param {number} interval
+	 * @param {string} target
+	 */
+	setFF(interval, target) {
+		this.setFastForwardInterval(interval);
+		this.setFastForwardTarget(target);
+	}
+
 	setFastForwardTarget(targetGet) {
 		this.uiController.targetGet = targetGet;
 	}
 
+	/**
+	 * Interval for the fast forward function
+	 * @param {number} interval
+	 */
+	setFastForwardInterval(interval) {
+		this.uiController.ffInterval = interval;
+	}
+
 	exit() {
+		if (this.actionWatcher) {
+			this.actionWatcher.unsubscribe();
+			this.actionWatcher = null;
+		}
 		if (typeof this.onExit === 'function') {
 			this.onExit();
 		}

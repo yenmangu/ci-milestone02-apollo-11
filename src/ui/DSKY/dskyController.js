@@ -56,6 +56,9 @@ export class DskyController {
 				case '-':
 					this.keypad.setPolarity(key === '+' ? 'plus' : 'minus');
 					break;
+				case 'key-rel':
+					this.keypad.keyRel();
+					break;
 				default:
 					if (/^\d$/.test(key)) {
 						this.keypad.appendDigit(key);
@@ -74,7 +77,6 @@ export class DskyController {
 	}
 
 	setInitialState() {
-		this.indicatorLights.clear();
 		this.clearProgLight();
 	}
 
@@ -84,6 +86,7 @@ export class DskyController {
 
 	setReadyState() {
 		this.segmentDisplays.setReady();
+		this.indicatorLights.clearAll();
 	}
 
 	lockKeypad() {

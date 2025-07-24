@@ -373,6 +373,11 @@ svg.icon.ff {
 	height: 16px;
 	fill: currentColor;
 }
+
+.ff-flash {
+	animation: blink 1s steps(1, start) infinite;
+}
+
 #ff.control-button.btn {
 	max-height: 30px;
 }

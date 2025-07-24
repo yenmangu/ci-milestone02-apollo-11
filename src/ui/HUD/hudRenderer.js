@@ -83,6 +83,10 @@ export class HudRenderer {
 		icon.appendChild(use);
 
 		const ffIcon = createSvgUse();
+		this.hudMap.prompt.innerHTML = '';
+		ffIcon.classList.add('ff');
+
+		ffIcon.classList.add('ff-flash');
 		this.hudMap.prompt.appendChild(ffIcon);
 	}
 
@@ -90,7 +94,6 @@ export class HudRenderer {
 		console.log('Clearing prompt');
 
 		this.hudMap.prompt.innerHTML = '';
-		this.hudMap.prompt.classList.remove('ff');
 	}
 
 	clearTranscript() {

@@ -148,6 +148,25 @@ export const segmentKeys = [
  */
 
 /**
+ * Concrete map of indicator lights
+ *
+ * @typedef {Object} IndicatorLights
+ * @property {HTMLElement} uplink
+ * @property {HTMLElement} tempLight
+ * @property {HTMLElement} noAttLight
+ * @property {HTMLElement} stbyLight
+ * @property {HTMLElement} progLight
+ * @property {HTMLElement} keyRelLight
+ * @property {HTMLElement} restartLight
+ * @property {HTMLElement} opErrLight
+ * @property {HTMLElement} trackerLight
+ * @property {HTMLElement} priorityDisp
+ * @property {HTMLElement} altitudeLight
+ * @property {HTMLElement} noDapLight
+ * @property {HTMLElement} velocityLight
+ */
+
+/**
  * @typedef {Record.<string, HTMLElement>} IndicatorLightsMap
  */
 
@@ -162,7 +181,7 @@ export const segmentKeys = [
 /**
  * @typedef {Object} DSKYStructure
  * @property {SegmentMap} segmentDisplays
- * @property {IndicatorLightsMap} indicatorLights
+ * @property {IndicatorLights} indicatorLights
  * @property {PushButtonsMap} pushButtons
  * @property {HTMLElement} progLight
  * @property {StaticDisplayMap} [staticDisplays]

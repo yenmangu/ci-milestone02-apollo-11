@@ -3,6 +3,7 @@
  * @typedef {import('../types/uiTypes.js').SegmentMap} SegmentMap
  * @typedef {import('../types/uiTypes.js').HudElKey} HudElKey
  * @typedef {import('../types/uiTypes.js').Controls} Controls
+ * @typedef {import('../types/uiTypes.js').IndicatorLights} Lights
  */
 
 import { cast } from '../util/cast.js';
@@ -70,6 +71,23 @@ function initPushButtons() {
 }
 
 /**
+ * @returns {import('../types/uiTypes.js').IndicatorLightsMap}
+ */
+function initLightsMap() {
+	/** @type {Object.<string, HTMLElement>} */
+	const map = Array.from(document.querySelectorAll('.col.light')).reduce(
+		(map, el) => {
+			/** @type {HTMLElement} */ const castEl = cast(/** @type {HTMLElement} */ el);
+			const key = castEl.id;
+			map[key] = castEl;
+			return map;
+		},
+		{}
+	);
+	return map;
+}
+
+/**
  *
  * @returns {any}
  */
@@ -95,13 +113,7 @@ function initSections() {
 function queryDom() {
 	const controls = initControls();
 
-	/** @type {{[key: string]: HTMLElement}} */
-	const indicatorLights = Array.from(
-		document.querySelectorAll('.indicator-lights .light')
-	).reduce((map, element) => {
-		map[element.id] = cast(element);
-		return map;
-	}, {});
+	const indicatorLights = initLightsMap();
 
 	const progLight = cast(document.getElementById('compActy'));
 	if (!progLight) {
@@ -146,10 +158,14 @@ function queryDom() {
 			throw new Error(`Missing HUD element for ${key}`);
 		}
 	}
+
 	const hudMapTyped = /** @type {import('../types/uiTypes.js').HudMap} */ (hudMap);
+
 	const sectionsTyped = /** @type {import('../types//uiTypes.js').UISections} */ (
 		sections
 	);
+
+	const lightsTyped = /** @type {Lights} */ (indicatorLights);
 
 	/** @type {import('../types/uiTypes.js').ModalElements} */
 	const modals = {
@@ -171,7 +187,7 @@ function queryDom() {
 		controls,
 		modals,
 		dsky: {
-			indicatorLights,
+			indicatorLights: lightsTyped,
 			segmentDisplays,
 			pushButtons,
 			progLight

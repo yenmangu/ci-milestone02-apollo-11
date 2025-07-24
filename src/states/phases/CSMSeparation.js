@@ -48,7 +48,6 @@ export class CSMSeparation extends BasePhase {
 			// console.log(`[csm_end] Scheduling transition (tag ${tag})`);
 			setTimeout(() => {
 				// console.log(`[csm_end] Timeout firing (tag ${tag})`);
-
 				this.simulationState.fsm.transitionTo(PhaseIds.PDI);
 			}, 1000);
 		}

@@ -68,6 +68,11 @@ const createKeypadStateManager = displayInterface => {
 			state.buffer = '';
 			pushButtonEmitter.emit('finalise', state);
 		},
+
+		keyRel() {
+			pushButtonEmitter.emit('key-rel', state);
+		},
+
 		reset() {
 			console.log('From keypadStateManager: reset selected');
 

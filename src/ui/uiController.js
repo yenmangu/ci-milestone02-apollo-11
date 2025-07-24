@@ -264,6 +264,7 @@ export class UIController {
 
 	disableFF() {
 		this.fastForward.disabled = true;
+		this.hud.clearPrompt();
 	}
 
 	showInstructionModal(message) {}

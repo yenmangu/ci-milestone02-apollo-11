@@ -83,7 +83,7 @@ export class HudRenderer {
 		icon.appendChild(use);
 
 		const ffIcon = createSvgUse();
-		this.hudMap.prompt.innerHTML = '';
+		this.clearPrompt();
 		ffIcon.classList.add('ff');
 
 		ffIcon.classList.add('ff-flash');

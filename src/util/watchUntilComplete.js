@@ -18,8 +18,8 @@ import {
  * Automatically unsubscribes both listeners upon completion.
  * Returns optional unsubscribe handle for early termination.
  *
- * @param {(event: { [key: string]: RuntimeAction}) => void} onAction
- * @param {(event: { [key: string]: RuntimeCue}) => void} onCue
+ * @param {(event: RuntimeAction) => void} onAction
+ * @param {(event: RuntimeCue) => void} onCue
  * @param {(event: string) => void} onComplete
  * @param {(tick: TickPayload) => void} onTick
  * @param {(key: string,state: KeypadState) => void} onPushButtons
@@ -41,6 +41,10 @@ export function watchUntilComplete(
 	const pushButtonsFinaliseSub = pushButtonEmitter.on('finalise', data => {
 		onPushButtons('finalise', data);
 	});
+
+	const opErrorSub = pushButtonEmitter.on('op-err', data => {
+		onPushButtons('op-err', data);
+	});
 	const completeSub = actionEmitter.on(
 		'actionsComplete',
 		(/** @type {string} */ event) => {
@@ -48,6 +52,7 @@ export function watchUntilComplete(
 			actionSub.unsubscribe();
 			keyRelSub.unsubscribe();
 			pushButtonsFinaliseSub.unsubscribe();
+			opErrorSub.unsubscribe();
 			onComplete(event);
 		}
 	);
@@ -58,6 +63,7 @@ export function watchUntilComplete(
 			tickSub.unsubscribe();
 			keyRelSub.unsubscribe();
 			pushButtonsFinaliseSub.unsubscribe();
+			opErrorSub.unsubscribe();
 			completeSub.unsubscribe();
 		}
 	};

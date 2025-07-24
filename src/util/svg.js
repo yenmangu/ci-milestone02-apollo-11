@@ -1,10 +1,10 @@
 const svgExport = {
 	fastForward: `<svg class="icon ff">
 								<use href="#icon-ff"
-										 x="3.5"
-										 y="2.5"
-										 width="14"
-										 height="14"></use>
+										 x="2.5"
+										 y="2"
+										 width="13"
+										 height="13"></use>
 							</svg>`
 };
 

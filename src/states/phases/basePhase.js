@@ -60,7 +60,7 @@ export class BasePhase {
 		this.expiringCues = this.getExpiringCues();
 		this.nonTimeActions = this.getNonTimeActions();
 		// console.log('actionCues: ', this.actionCues);
-
+		this.uiController.dsky.segmentDisplays.clearAll();
 		this.setUiData();
 		this.uiController.disableFF();
 

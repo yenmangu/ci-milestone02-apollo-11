@@ -28,12 +28,12 @@ export class CSMSeparation extends BasePhase {
 	 * @param {RuntimeCue} cue
 	 */
 	handleCueEvent(cue) {
-		console.log(
-			'[cue]',
-			cue.key,
-			'TES:',
-			this.simulationState?.clockControls?.clock?.secondsElapsed
-		);
+		// console.log(
+		// 	'[cue]',
+		// 	cue.key,
+		// 	'TES:',
+		// 	this.simulationState?.clockControls?.clock?.secondsElapsed
+		// );
 
 		if (cue.key === 'startFF') {
 			this.uiController.enableFF();

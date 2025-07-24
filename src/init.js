@@ -35,12 +35,13 @@ import { ClockControls } from './game/clockControls.js';
 
 // just for now
 let dev = true;
+
 const devStartPhase = PhaseIds.PDI;
 
 export async function initProgram() {
 	/** @type {DevController} */ let devController;
 	try {
-		const initialPhaseId = devStartPhase ?? PhaseIds.INTRO;
+		const initialPhaseId = dev ? devStartPhase : PhaseIds.INTRO;
 		/** @type {MissionTimeline} */ const timeline = await loadTimeline();
 		/** @type {RuntimePhase} */ const firstPhase =
 			timeline.getPhase(initialPhaseId);
@@ -109,6 +110,9 @@ export async function initProgram() {
 				throw new Error('Critical error on start.');
 			}
 			fsm.transitionTo(initialPhaseId);
+			if (dev) {
+				ui.setPreStartState();
+			}
 		});
 	} catch (error) {
 		console.error('[initPogram] failed: ', error);

@@ -56,94 +56,85 @@
 		</header>
 		<!-- main -->
 		<main>
-			<section id="go-back"
-							 class="hidden">
-				<div class="container-fluid text-center">
-					<div class="row">
-						<!-- <div class="col-12">
-							<button class="btn btn-primary"
-											id="goBack">Reset</button>
-						</div> -->
+			<div class="main-content">
+				<!-- lunar altitude animation section -->
+				<section id="lemAnimation-ui"
+								 data-running="false"
+								 class="hidden">
+					<div class="container text-center">
+						<div class="row">
+							<div class="col">
+							</div>
+							<h1 id="phaseName"></h1>
+						</div>
 					</div>
-				</div>
-			</section>
-			<!-- lunar altitude animation section -->
-			<p>&#x23E9;</p>
-			<section id="lemAnimation-ui"
-							 data-running="false"
-							 class="hidden">
-				<div class="container text-center">
 					<div class="row">
 						<div class="col">
-						</div>
-						<h1 id="phaseName"></h1>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col">
-						<div class="landing-display text-center"
-								 id="lemUI"> Landing Display Placeholder 1 </div>
-					</div>
-				</div>
-				</div>
-			</section>
-			<!-- landing ui section -->
-			<section id="landing-ui"
-							 data-running="false"
-							 class="hidden">
-				<div class="hud-frame">
-					<div class="hud-container crt">
-						<div class="hud-row time-phase">
-							<div class="hud-item">
-								<dl>
-									<dt>Mission Time</dt>
-									<dd><span id="hud-get_stamp"></span></dd>
-								</dl>
-							</div>
-							<div class="hud-item">
-								<dl>
-									<dt>Phase</dt>
-									<dd><span id="hud-phase_name"></span></dd>
-								</dl>
-							</div>
-						</div>
-						<div class="hud-row telemetry">
-							<div class="hud-item">
-								<dl>
-									<dt>Altitude </dt>
-									<dd>
-										<span id="hud-lunar_altitude"></span>&nbsp; <span id="hud-altitude_units"></span>
-									</dd>
-								</dl>
-							</div>
-							<div class="hud-item">
-								<dl>
-									<dt>Velocity </dt>
-									<dd><span id="hud-velocity_fps"></span></dd>
-								</dl>
-							</div>
-							<div class="hud-item">
-								<dl>
-									<dt>Fuel</dt>
-									<dd><span id="hud-fuel_percent"></span></dd>
-								</dl>
-							</div>
-						</div>
-						<div class="hud-row">
-							<div class="transcript"><span id="hud-transcript"></span></div>
-						</div>
-						<div class="hud-row">
-							<div class="instructions"><span id="hud-prompt"></span></div>
+							<div class="landing-display text-center"
+									 id="lemUI"> Landing Display Placeholder 1 </div>
 						</div>
 					</div>
-					<div class="hud-bottom">
-						<div id="hud-description"
-								 class="scrollable description crt"></div>
+				</section>
+				<!-- landing ui section -->
+				<section id="landing-ui"
+								 data-running="false"
+								 class="hidden">
+					<div class="hud-frame">
+						<div class="hud-container crt">
+							<div class="hud-row time-phase">
+								<div class="hud-item">
+									<dl>
+										<dt>Phase</dt>
+										<dd><span id="hud-phase_name"></span></dd>
+									</dl>
+								</div>
+							</div>
+							<div class="hud-row time-phase">
+								<div class="hud-item">
+									<dl>
+										<dt>Mission Time</dt>
+										<dd><span id="hud-get_stamp"></span></dd>
+									</dl>
+								</div>
+							</div>
+							<div class="hud-row telemetry">
+								<div class="hud-item">
+									<dl>
+										<dt>Altitude </dt>
+										<dd>
+											<span id="hud-lunar_altitude"></span>&nbsp; <span id="hud-altitude_units"></span>
+										</dd>
+									</dl>
+								</div>
+								<div class="hud-item">
+									<dl>
+										<dt>Velocity </dt>
+										<dd><span id="hud-velocity_fps"></span></dd>
+									</dl>
+								</div>
+								<div class="hud-item">
+									<dl>
+										<dt>Fuel</dt>
+										<dd><span id="hud-fuel_percent"></span></dd>
+									</dl>
+								</div>
+							</div>
+							<div class="hud-row">
+								<div class="transcript"><span id="hud-transcript"></span></div>
+							</div>
+							<div class="hud-row">
+								<div class="instructions"><span id="hud-prompt"></span></div>
+							</div>
+						</div>
+						<div class="hud-bottom">
+							<div id="hud-description"
+									 class="scrollable description crt"></div>
+						</div>
 					</div>
-				</div>
-			</section>
+				</section>
+			</div>
 			<!-- dsky section -->
-			<div class="desktop">
+			<div class="desktop dsky-ui">
 				<section id="dsky-ui"
 								 data-running="false"
 								 class="hidden">

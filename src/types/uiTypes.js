@@ -150,7 +150,7 @@ export const segmentKeys = [
 /**
  * @typedef {(
  * 'compActy'|
- *   'uplink' |
+ *   'uplinkLight' |
  *   'tempLight' |
  *   'noAttLight' |
  *   'stbyLight' |
@@ -170,7 +170,7 @@ export const segmentKeys = [
  * @type {IndicatorLightKey[]}
  */
 export const lightKeys = [
-	'uplink',
+	'uplinkLight',
 	'tempLight',
 	'noAttLight',
 	'stbyLight',
@@ -189,7 +189,8 @@ export const lightKeys = [
  * Concrete map of indicator lights
  *
  * @typedef {Object} IndicatorLights
- * @property {HTMLElement} uplink
+ * @property {HTMLElement} compActy
+ * @property {HTMLElement} uplinkLight
  * @property {HTMLElement} tempLight
  * @property {HTMLElement} noAttLight
  * @property {HTMLElement} stbyLight

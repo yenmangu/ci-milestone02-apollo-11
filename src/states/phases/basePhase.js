@@ -51,7 +51,6 @@ export class BasePhase {
 	}
 
 	enter() {
-		this.actionWatcher.unsubscribe();
 		// console.log('Phase meta.allCues: ', this.phaseMeta.allCues);
 		this.chronologicalCues = [...this.phaseMeta.allCues].sort((a, b) =>
 			compareGET(a.get, b.get)

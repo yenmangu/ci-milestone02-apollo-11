@@ -27,5 +27,8 @@
 	// "typescript.preferences.importModuleSpecifier": "relative",
 	// "typescript.preferences.importModuleSpecifierEnding": "js"
 	"jest.jestCommandLine": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
-	"jest.runMode": "on-demand"
+	"jest.runMode": "on-demand",
+	"workbench.editorAssociations": {
+		"\"*.svg\"": "default"
+	}
 }

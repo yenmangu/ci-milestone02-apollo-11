@@ -26,6 +26,15 @@
 
 ### Existing Features
 
+#### User Facing Features
+
+#### Development Features
+
+Custom Event Emitter
+
+
+
+
 ### Future Features
 
 ## Agile Development Process
@@ -77,8 +86,8 @@ https://fontsinuse.com/typefaces/4496/spartan
 https://medium.com/@dovid11564/using-css-animations-to-mimic-the-look-of-a-crt-monitor-3919de3318e2
 https://tcf.pages.tcnj.edu/files/2013/12/Apollo-Guidance-Computer.pdf
 https://www.doneyles.com/LM/Tales.html
-
-
+https://javascript.plainenglish.io/building-a-simple-event-emitter-in-javascript-f82f68c214ad
+https://ia600205.us.archive.org/27/items/nasa_techdoc_19730061045/19730061045.pdf - Actual apollo ops handbook
 
 
 

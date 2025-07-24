@@ -11,6 +11,7 @@
 
 import { compareGET, secondsFromGet } from '../../util/GET.js';
 import { watchUntilComplete } from '../../util/watchUntilComplete.js';
+import { pushButtonEmitter } from '../../event/eventBus.js';
 
 /**
  * @typedef {import("../../types/clockTypes.js").TickPayload} TickPayload
@@ -48,9 +49,12 @@ export class BasePhase {
 			/** @type {DSKY} */ this.dskyController = this.uiController.dsky;
 		}
 		this.actionWatcher = null;
+		this.pushButtonEmitter = pushButtonEmitter;
+		this.keyRel = false;
 	}
 
 	enter() {
+		this.keyRel = false;
 		// console.log('Phase meta.allCues: ', this.phaseMeta.allCues);
 		this.chronologicalCues = [...this.phaseMeta.allCues].sort((a, b) =>
 			compareGET(a.get, b.get)
@@ -67,6 +71,10 @@ export class BasePhase {
 		if (typeof this.onEnter === 'function') {
 			this.onEnter();
 		}
+
+		pushButtonEmitter.on('key-rel', () => {
+			this.keyRel = true;
+		});
 	}
 
 	/**
@@ -133,13 +141,20 @@ export class BasePhase {
 		onAction = () => {},
 		onCue = () => {},
 		onComplete = () => {},
-		onTick = () => {}
+		onTick = () => {},
+		onPushButtons = () => {}
 	) {
 		if (this.actionWatcher) {
 			this.actionWatcher.unsubscribe();
 			this.actionWatcher = null;
 		}
-		this.actionWatcher = watchUntilComplete(onAction, onCue, onComplete, onTick);
+		this.actionWatcher = watchUntilComplete(
+			onAction,
+			onCue,
+			onComplete,
+			onTick,
+			onPushButtons
+		);
 	}
 
 	/**

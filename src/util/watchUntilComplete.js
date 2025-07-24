@@ -2,13 +2,15 @@
  * @typedef {import('../types/runtimeTypes.js').RuntimeCue} RuntimeCue
  * @typedef {import('../types/runtimeTypes.js').NonTimeAction} RuntimeAction
  * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
+ * @typedef {import('../types/keypadTypes.js').KeypadState} KeypadState
  */
 
 import {
 	actionEmitter,
 	agcEmitter,
 	phaseEmitter,
-	tickEmitter
+	tickEmitter,
+	pushButtonEmitter
 } from '../event/eventBus.js';
 
 /**
@@ -19,18 +21,33 @@ import {
  * @param {(event: { [key: string]: RuntimeAction}) => void} onAction
  * @param {(event: { [key: string]: RuntimeCue}) => void} onCue
  * @param {(event: string) => void} onComplete
- * @param {(tick:TickPayload) => void} onTick
+ * @param {(tick: TickPayload) => void} onTick
+ * @param {(key: string,state: KeypadState) => void} onPushButtons
  * @returns {{unsubscribe: () => void}}
  */
-export function watchUntilComplete(onAction, onCue, onComplete, onTick) {
+export function watchUntilComplete(
+	onAction,
+	onCue,
+	onComplete,
+	onTick,
+	onPushButtons
+) {
 	const actionSub = actionEmitter.on('action', onAction);
 	const cueSub = actionEmitter.on('cue', onCue);
 	const tickSub = tickEmitter.on('tick', onTick);
+	const keyRelSub = pushButtonEmitter.on('key-rel', data => {
+		onPushButtons('key-rel', data);
+	});
+	const pushButtonsFinaliseSub = pushButtonEmitter.on('finalise', data => {
+		onPushButtons('finalise', data);
+	});
 	const completeSub = actionEmitter.on(
 		'actionsComplete',
 		(/** @type {string} */ event) => {
 			completeSub.unsubscribe();
 			actionSub.unsubscribe();
+			keyRelSub.unsubscribe();
+			pushButtonsFinaliseSub.unsubscribe();
 			onComplete(event);
 		}
 	);
@@ -39,6 +56,8 @@ export function watchUntilComplete(onAction, onCue, onComplete, onTick) {
 			actionSub.unsubscribe();
 			cueSub.unsubscribe();
 			tickSub.unsubscribe();
+			keyRelSub.unsubscribe();
+			pushButtonsFinaliseSub.unsubscribe();
 			completeSub.unsubscribe();
 		}
 	};

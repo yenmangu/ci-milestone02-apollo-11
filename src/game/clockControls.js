@@ -6,6 +6,7 @@
  * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
  */
 
+import { controlsEmitter } from '../event/eventBus.js';
 import { PhaseIds } from '../types/timelineTypes.js';
 import { getFromSeconds, secondsFromGet } from '../util/GET.js';
 import { buildPhaseRanges } from '../util/phaseRanges.js';
@@ -17,20 +18,29 @@ export class ClockControls {
 	 * @param {FSM} fsm
 	 * @param {MissionTimeline} timeline
 	 */
-	constructor(missionClock, fsm, timeline) {
+	constructor(missionClock, fsm, timeline, dev = false) {
 		/** @type {MissionClock} */ this.clock = missionClock;
 		/** @type {FSM} */ this.fsm = fsm;
 		/** @type {MissionTimeline} */ this.timeline = timeline;
 		/** @type {PhaseRange[]} */ this.phaseRanges = buildPhaseRanges(
 			timeline.runtimePhases
 		);
+		this.controlsEmitter = controlsEmitter;
+		this.dev = dev;
+	}
+
+	init() {
+		this.controlsEmitter.on('fastForward', payload => {
+			if (payload.target) this.handleFastForward(payload.target, payload.interval);
+		});
 	}
 
 	/**
 	 *
 	 * @param {string} targetGet
+	 * @param {number} [interval=20] - Interval set to 20ms ~60x speed by default
 	 */
-	handleFastForward(targetGet) {
+	handleFastForward(targetGet, interval = 20) {
 		const targetSeconds = secondsFromGet(targetGet);
 		const currentSeconds = this.clock.currentGETSeconds;
 
@@ -47,18 +57,53 @@ export class ClockControls {
 			return;
 		}
 
-		this.fsm.transitionTo(phaseId);
+		// this.fsm.transitionTo(phaseId);
 
-		for (let s = currentSeconds + 1; s <= targetSeconds; s++) {
-			const fakeGet = getFromSeconds(s);
-			/** @type {TickPayload} */ const tickPayload = {
-				getString: fakeGet,
-				getSeconds: s,
-				elapsedSeconds: this.clock.elapsedMissionTime
-			};
-			this.clock.emitTicks(tickPayload);
+		let s = currentSeconds + 1;
+
+		if (!this.dev) {
+			this.clock.pause();
+			// const interval = 20; // 1 tick every 20ms ~60x speed
+			// Clear interval to avoid button spamming
+			if (this.fastForwardInterval) clearInterval(this.fastForwardInterval);
+			this.fastForwardInterval = setInterval(() => {
+				if (s > targetSeconds) {
+					clearInterval(this.fastForwardInterval);
+					this.clock.jumpToTES(targetSeconds);
+					this.clock.start();
+					return;
+				}
+				const fakeGet = getFromSeconds(parseInt(s.toFixed(2)));
+
+				/** @type {TickPayload} */
+				const tickPayload = {
+					getString: fakeGet,
+					getSeconds: parseFloat(s.toFixed(2)),
+					elapsedSeconds: this.clock.elapsedMissionTime
+				};
+				// console.log('[CockControls DEBUG]: ', tickPayload);
+
+				this.clock.emitTicks(tickPayload);
+				s++;
+			}, interval);
+			this.controlsEmitter.emit('ff', false);
+			this.clock.resume;
+		} else {
+			// IS DEV
+
+			this.clock.pause();
+			for (s; s <= targetSeconds; s++) {
+				const fakeGet = getFromSeconds(s);
+				/** @type {TickPayload} */ const tickPayload = {
+					getString: fakeGet,
+					getSeconds: s,
+					elapsedSeconds: this.clock.elapsedMissionTime
+				};
+				this.clock.emitTicks(tickPayload);
+				this.controlsEmitter.emit('ff', true);
+			}
+			this.clock.jumpToTES(this.lastComputedJumpSeconds);
 		}
-		this.clock.jumpToTES(this.lastComputedJumpSeconds);
 	}
 
 	/**

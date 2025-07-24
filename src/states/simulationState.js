@@ -3,6 +3,7 @@
  * @typedef {import('../ui/uiController.js').UIController} UIController
  * @typedef {import('../fsm/phaseFSM.js').PhaseFSM} PhaseFSM
  * @typedef {import('../types/keypadTypes.js').KeypadState} KeypadState
+ * @typedef {import('../game/clockControls.js').ClockControls} ClockControls
  */
 
 import {
@@ -23,6 +24,8 @@ import {
  *
  * @property {PhaseFSM} [fsm]
  * @property {(fsm: PhaseFSM) => void} [setFSM]
+ * @property {ClockControls} [clockControls]
+ * @property {(clockControls: ClockControls) => void} [setClockControls]
  *
  * @property {UIController | null} [ui]
  * @property {(ui: UIController) => void} [setUI]
@@ -100,6 +103,10 @@ function createSimulationState({
 
 		setFSM(fsmInstance) {
 			this.fsm = fsmInstance;
+		},
+
+		setClockControls(clockControls) {
+			this.clockControls = clockControls;
 		},
 
 		setUI(uiInstance) {

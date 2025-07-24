@@ -33,7 +33,7 @@
 					"output": false,
 					"data": {
 						"speaker": "Mission",
-						"text": "Press the 'Fast Forward' &#x23E9 button to fast-forward to the first major timeline cue in this phase."
+						"text": "Press the 'Fast Forward' <span class='ff-icon'></span> button to fast-forward to the first major timeline cue in this phase."
 					}
 				},
 				{
@@ -72,6 +72,7 @@
 					}
 				},
 				{
+					"key": "csm_end",
 					"get": "100:40:36",
 					"transcript": true,
 					"dsky": false,
@@ -91,7 +92,14 @@
 			"phase_name": "Powered Descent Initiation (PDI)",
 			"phase_id": "pdi",
 			"start_get": "102:28:00",
-			"description": "The short time before P63 (BRAKING) Ignition",
+			"description": [
+				"The Lunar Module prepares to begin its descent to the Moon's surface.",
+				"Houston will give Eagle a 'Go' for powered descent.",
+				"The crew will enter Program 63 into the AGC to initiate braking.",
+				"The DSKY will confirm the program selection and display countdown data.",
+				"The descent engine will be armed and ignition will be triggered automatically.",
+				"This phase will end as the braking program begins under P63 guidance."
+			],
 			"initial_state": {
 				"velocity": 5280,
 				"v_units": "fps",

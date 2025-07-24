@@ -31,7 +31,7 @@
  * @property {(digit: string) => void} appendDigit
  * @property {(polarity: string) => void} setPolarity
  * @property {() =>  void} finalise
- *
+ * @property {()=> void} keyRel
  * @property {() =>  void} reset
  * @property {() =>  KeypadState} getState
  */

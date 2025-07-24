@@ -35,11 +35,12 @@ import { ClockControls } from './game/clockControls.js';
 
 // just for now
 let dev = true;
+const devStartPhase = PhaseIds.PDI;
 
 export async function initProgram() {
 	/** @type {DevController} */ let devController;
 	try {
-		const initialPhaseId = PhaseIds.INTRO;
+		const initialPhaseId = devStartPhase ?? PhaseIds.INTRO;
 		/** @type {MissionTimeline} */ const timeline = await loadTimeline();
 		/** @type {RuntimePhase} */ const firstPhase =
 			timeline.getPhase(initialPhaseId);

@@ -3,10 +3,11 @@
  * @typedef {import("../../types/timelineTypes.js").PhaseId} PhaseId
  * @typedef {import("../../types/runtimeTypes.js").RuntimePhase} RuntimePhase
  * @typedef {import("../../types/runtimeTypes.js").RuntimeCue} RuntimeCue
- * @typedef {import('../../types/runtimeTypes.js').NonTimeAction} NonTimeAction
+ * @typedef {import('../../types/runtimeTypes.js').NonTimeAction} RuntimeAction
  * @typedef {import('../../types/uiTypes.js').UIState} UIState
  * @typedef {import('../simulationState.js').UIController} UIController
  * @typedef {import('../../ui/DSKY/dskyController.js').DskyController} DSKY
+ * @typedef {import('../../types/keypadTypes.js').KeypadState} KeypadState
  */
 
 import { compareGET, secondsFromGet } from '../../util/GET.js';
@@ -42,7 +43,7 @@ export class BasePhase {
 		/** @type {RuntimeCue[]} */ this.chronologicalCues = [];
 		/** @type {RuntimeCue[]} */ this.actionCues = [];
 		/** @type {RuntimeCue[]} */ this.expiringCues = [];
-		/** @type {NonTimeAction[]} */ this.nonTimeActions = [];
+		/** @type {RuntimeAction[]} */ this.nonTimeActions = [];
 		/** @type {UIState} */ this.uiState;
 		/** @type {UIController} */ this.uiController = this.simulationState?.getUI();
 		if (this.uiController) {
@@ -55,6 +56,7 @@ export class BasePhase {
 
 	enter() {
 		this.keyRel = false;
+		this.dskyController.indicatorLights.clearLight('keyRelLight');
 		// console.log('Phase meta.allCues: ', this.phaseMeta.allCues);
 		this.chronologicalCues = [...this.phaseMeta.allCues].sort((a, b) =>
 			compareGET(a.get, b.get)
@@ -71,10 +73,6 @@ export class BasePhase {
 		if (typeof this.onEnter === 'function') {
 			this.onEnter();
 		}
-
-		pushButtonEmitter.on('key-rel', () => {
-			this.keyRel = true;
-		});
 	}
 
 	/**
@@ -120,7 +118,7 @@ export class BasePhase {
 	/**
 	 *
 	 * @param {string} requiresAction
-	 * @returns {NonTimeAction}
+	 * @returns {RuntimeAction}
 	 */
 	getActionByKey(requiresAction) {
 		return this.nonTimeActions.find(action => action.action === requiresAction);
@@ -136,6 +134,12 @@ export class BasePhase {
 
 	/**
 	 * @protected
+	 *
+	 * @param {(event: RuntimeAction )=> void} [onAction]
+	 * @param {(event: RuntimeCue )=> void} [onCue]
+	 * @param {(event: string)=> void} [onComplete]
+	 * @param {(tick: TickPayload)=> void} [onTick]
+	 * @param {(key: 'keypad'|'finalise'|'key-rel' , state:KeypadState)=> void} [onPushButtons]
 	 */
 	watchUntilComplete(
 		onAction = () => {},
@@ -211,7 +215,7 @@ export class BasePhase {
 		for (const cue of Object.values(this.phaseMeta.cuesByKey)) {
 			if (!cue?.requiresAction) continue;
 
-			/** @type {NonTimeAction | undefined} */ const action =
+			/** @type {RuntimeAction | undefined} */ const action =
 				this.phaseMeta.nonTimeActions.find(a => a.action === cue.requiresAction);
 			if (!action?.failsAfter) continue;
 
@@ -228,7 +232,7 @@ export class BasePhase {
 	/**
 	 *
 	 * @param {RuntimeCue} cue
-	 * @param {NonTimeAction} action
+	 * @param {RuntimeAction} action
 	 */
 	triggerCueFailure(cue, action) {
 		// console.warn('Method not implemented.');

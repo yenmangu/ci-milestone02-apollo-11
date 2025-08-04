@@ -17,7 +17,7 @@
 		<header>
 			<!-- nav -->
 			<nav class="navbar navbar-expand-lg bg-body-tertiary">
-				<div class="container-fluid">
+				<div class="container-fluid mobile">
 					<a class="navbar-brand"
 						 href="#">Navbar</a>
 					<button class="navbar-toggler"
@@ -27,7 +27,7 @@
 									aria-controls="navbarNav"
 									aria-expanded="false"
 									aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
+						<span class="navbar-toggler-icon mobile"></span>
 					</button>
 					<div class="collapse navbar-collapse"
 							 id="navbarNav">
@@ -82,7 +82,7 @@
 					<div class="hud-frame">
 						<div class="hud-container crt">
 							<div class="hud-row time-phase">
-								<div class="hud-item">
+								<div class="hud-item phase">
 									<dl>
 										<dt>Phase</dt>
 										<dd><span id="hud-phase_name"></span></dd>
@@ -90,7 +90,7 @@
 								</div>
 							</div>
 							<div class="hud-row time-phase">
-								<div class="hud-item">
+								<div class="hud-item time">
 									<dl>
 										<dt>Mission Time</dt>
 										<dd><span id="hud-get_stamp"></span></dd>
@@ -98,7 +98,7 @@
 								</div>
 							</div>
 							<div class="hud-row telemetry">
-								<div class="hud-item">
+								<div class="hud-item altitude">
 									<dl>
 										<dt>Altitude </dt>
 										<dd>
@@ -106,13 +106,13 @@
 										</dd>
 									</dl>
 								</div>
-								<div class="hud-item">
+								<div class="hud-item velocity">
 									<dl>
 										<dt>Velocity </dt>
 										<dd><span id="hud-velocity_fps"></span></dd>
 									</dl>
 								</div>
-								<div class="hud-item">
+								<div class="hud-item fuel">
 									<dl>
 										<dt>Fuel</dt>
 										<dd><span id="hud-fuel_percent"></span></dd>
@@ -232,7 +232,7 @@
 									<div class="row data-register seven-segment">
 										<div id="polarity1Segment"
 												 class="col-2 polarity">
-											<span id="p_1">+</span>
+											<span id="p_1">&nbsp;</span>
 										</div>
 										<div class="col-10 seven-segment">
 											<span id="r_1">00000</span>
@@ -240,7 +240,7 @@
 									</div>
 									<div class="row data-register seven-segment">
 										<div class="col-2 polarity">
-											<span id="p_2">+</span>
+											<span id="p_2">&nbsp;</span>
 										</div>
 										<div class="col-10 seven-segment">
 											<span id="r_2">00000</span>
@@ -248,7 +248,7 @@
 									</div>
 									<div class="row data-register seven-segment">
 										<div class="col-2 polarity">
-											<span id="p_3">+</span>
+											<span id="p_3">&nbsp;</span>
 										</div>
 										<div class="col-10 seven-segment">
 											<span id="r_3">00000</span>

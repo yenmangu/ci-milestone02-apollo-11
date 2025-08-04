@@ -159,6 +159,7 @@ function createSimulationState({
 		receiveDskyCommand(keypadState) {
 			this.log('Receiving DSKY command');
 			const { verb, noun } = keypadState;
+
 			const command = `V${verb}N${noun}`;
 			const actionId = dskyCommandMap[command] ?? command;
 			this.log(`[SimulationState] Received DSKY input: `, command);
@@ -223,6 +224,7 @@ function createSimulationState({
 	pushButtonEmitter.on('finalise', keypadState =>
 		state.receiveDskyCommand(keypadState)
 	);
+
 	return state;
 }
 

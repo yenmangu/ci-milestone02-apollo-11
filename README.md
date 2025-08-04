@@ -28,14 +28,18 @@
 
 #### User Facing Features
 
+Linear interpolation of telemetry
+Time controls (fast forward, pause, resume)
+
+
 #### Development Features
 
 Custom Event Emitter
-
-
+Custom event watchers with default no-ops
 
 
 ### Future Features
+Animation??
 
 ## Agile Development Process
 
@@ -84,26 +88,20 @@ links to add to write up:
 https://fontsinuse.com/uses/56966/nasa-apollo-11-mission
 https://fontsinuse.com/typefaces/4496/spartan
 https://medium.com/@dovid11564/using-css-animations-to-mimic-the-look-of-a-crt-monitor-3919de3318e2
-https://tcf.pages.tcnj.edu/files/2013/12/Apollo-Guidance-Computer.pdf
-https://www.doneyles.com/LM/Tales.html
+[AGC references](https://tcf.pages.tcnj.edu/files/2013/12/Apollo-Guidance-Computer.pdf)
+[Don Eyles Blog](https://www.doneyles.com/LM/Tales.html)
+
+EventEmitter architecture for the [EventEmitter]('./src/event/eventEmitter.js) -
 https://javascript.plainenglish.io/building-a-simple-event-emitter-in-javascript-f82f68c214ad
 
-Nasa Archives - Apollo Operations Handbook
-https://ia600205.us.archive.org/27/items/nasa_techdoc_19730061045/19730061045.pdf
+Nasa Archives - [Apollo Operations Handbook](https://ia600205.us.archive.org/27/items/nasa_techdoc_19730061045/19730061045.pdf)
 
-Apollo 11 Guidance And Navigation
-by AC Electronics Division, General Motors Corporation, Milwaukee, Wisconsin
-https://www.ibiblio.org/apollo/Documents/AcElectronicsApollo11.pdf - A detailed description of the configuration and programming of the
+[Apollo 11 Guidance And Navigationby AC Electronics Division, General Motors Corporation, Milwaukee, Wisconsin](https://www.ibiblio.org/apollo/Documents/AcElectronicsApollo11.pdf) - A detailed description of the configuration and programming of the
 Apollo 11 guidance computers (AGCs). The description includes COLOSSUS
 2A, used in the Command Module, and LUMINARY 1A, used in the Lunar
 Module.
 
-Linear interpolation functions for the [telemetry]('./src/telemetry/telemetryController.js) - https://www.trysmudford.com/blog/linear-interpolation-functions/
-
-
-
-
-
+Linear interpolation functions for the [telemetry]('./src/telemetry/telemetryController.js) - [Trys Mudford blog](https://www.trysmudford.com/blog/linear-interpolation-functions/)
 
 
 ### Content

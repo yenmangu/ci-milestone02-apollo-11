@@ -89,8 +89,9 @@ export class DevController {
 	 */
 
 	fastForwardTo(getString) {
-		const targetSeconds = secondsFromGet(getString);
-		const currentSeconds = this.clock.currentGETSeconds;
+		const targetGETSeconds = secondsFromGet(getString);
+		const targetSeconds = targetGETSeconds - this.clock.startGetSeconds;
+		const currentSeconds = this.clock.elapsedMissionTime;
 
 		if (targetSeconds < currentSeconds) {
 			console.warn('[DEV] Cannot fast forward backwards');
@@ -98,8 +99,8 @@ export class DevController {
 		}
 
 		this.lastComputedJumpSeconds = targetSeconds;
-
-		const phaseId = this.findPhaseFromGetSeconds(this.lastComputedJumpSeconds);
+		this.clock.pause();
+		const phaseId = this.findPhaseFromGetSeconds(targetGETSeconds);
 
 		if (!Object.values(PhaseIds).includes(phaseId)) {
 			console.warn(`[DEV] Unknown or invalid phase for GET ${getString}`);
@@ -108,18 +109,20 @@ export class DevController {
 
 		this.fsm.transitionTo(phaseId);
 
+		this.clock.jumpToTES(this.lastComputedJumpSeconds);
 		// Fast-forward simulation second by second
 
-		for (let s = currentSeconds + 1; s <= targetSeconds; s++) {
-			const fakeGet = getFromSeconds(s);
-			/** @type {TickPayload} */ const tickPayload = {
-				getString: fakeGet,
-				getSeconds: s,
-				elapsedSeconds: this.clock.elapsedMissionTime
-			};
-			this.clock.emitTicks(tickPayload);
-		}
-		this.clock.jumpToTES(this.lastComputedJumpSeconds);
+		const getSeconds =
+			this.clock.startGetSeconds + Math.floor(this.clock.elapsedMissionTime);
+		const getStringFinal = getFromSeconds(getSeconds);
+
+		/** @type {TickPayload} */ const tickPayload = {
+			getString: getStringFinal,
+			getSeconds: getSeconds,
+			elapsedSeconds: this.clock.elapsedMissionTime
+		};
+		this.clock.emitTicks(tickPayload);
+		this.clock.resume();
 	}
 
 	/**

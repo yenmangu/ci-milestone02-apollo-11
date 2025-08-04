@@ -167,7 +167,16 @@ export async function loadTimeline() {
 			with: { type: 'json' }
 		});
 
-		const runtimePhases = timelineJsonRaw.phases.map(buildMissionPhase);
+		const rawPhases = timelineJsonRaw.phases;
+		const runtimePhases = rawPhases.map(buildMissionPhase);
+
+		for (let i = 0; i < runtimePhases.length; i++) {
+			const thisPhase = runtimePhases[i];
+			const raw = rawPhases[i];
+			const nextRaw = rawPhases[i + 1];
+
+			thisPhase.endGET = raw.end_get ?? nextRaw?.start_get ?? null;
+		}
 
 		const metadata = parseMetadata(timelineJsonRaw.metadata);
 

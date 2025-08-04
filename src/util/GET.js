@@ -33,3 +33,15 @@ export function getFromSeconds(seconds) {
 	const ss = String(seconds % 60).padStart(2, '0');
 	return `${hh}:${mm}:${ss}`;
 }
+
+/**
+ *
+ * @param {number} seconds
+ * @returns {string}
+ */
+export function getCountdownString(seconds) {
+	const h = String(Math.floor(seconds / 3600)).padStart(1, '0');
+	const mm = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+	const ss = String(seconds % 60).padStart(2, '0');
+	return `${h}${mm}${ss}`;
+}

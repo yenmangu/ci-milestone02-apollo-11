@@ -242,6 +242,7 @@ export class MissionClock {
 		}
 
 		this.elapsedMissionTime = targetElapsedSeconds;
+		// this.currentGETSeconds = this.elapsedMissionTime
 
 		/** @type {TickPayload} */ const tickPayload = {
 			elapsedSeconds: this.elapsedMissionTime,
@@ -253,6 +254,7 @@ export class MissionClock {
 
 		this.isRunning = true;
 		this.lastRealTime = this.devMode ? null : performance.now();
+		this.lastRealTime = null;
 		requestAnimationFrame(this._loop);
 	}
 

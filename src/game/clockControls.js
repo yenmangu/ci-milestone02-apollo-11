@@ -30,8 +30,9 @@ export class ClockControls {
 	}
 
 	init() {
-		this.controlsEmitter.on('fastForward', payload => {
-			if (payload.target) this.handleFastForward(payload.target, payload.interval);
+		this.controlsEmitter.on('fastForward', async payload => {
+			if (payload.target)
+				await this.handleFastForward(payload.target, payload.interval);
 		});
 	}
 
@@ -39,29 +40,22 @@ export class ClockControls {
 	 *
 	 * @param {string} targetGet
 	 * @param {number} [interval=20] - Interval set to 20ms ~60x speed by default
+	 * @returns {Promise<void>} resolves when fast forward completes
 	 */
 	handleFastForward(targetGet, interval = 20) {
-		const targetSeconds = secondsFromGet(targetGet);
-		const currentSeconds = this.clock.currentGETSeconds;
+		return new Promise(resolve => {
+			const targetGETSeconds = secondsFromGet(targetGet);
+			const targetSeconds = targetGETSeconds - this.clock.startGetSeconds;
+			const currentSeconds = this.clock.elapsedMissionTime;
 
-		if (targetSeconds < currentSeconds) {
-			console.warn('[ClockControls] Cannot fast forward backwards');
-			return;
-		}
+			if (targetSeconds < currentSeconds) {
+				console.warn('[ClockControls] Cannot fast forward backwards');
+				return;
+			}
 
-		this.lastComputedJumpSeconds = targetSeconds;
+			this.lastComputedJumpSeconds = targetSeconds;
+			let s = currentSeconds + 1;
 
-		const phaseId = this.findPhaseFromGetSeconds(this.lastComputedJumpSeconds);
-		if (!Object.values(PhaseIds).includes(phaseId)) {
-			console.warn(`[ClockControls] Unknown or invalid phase for GET ${targetGet}`);
-			return;
-		}
-
-		// this.fsm.transitionTo(phaseId);
-
-		let s = currentSeconds + 1;
-
-		if (!this.dev) {
 			this.clock.pause();
 			// const interval = 20; // 1 tick every 20ms ~60x speed
 			// Clear interval to avoid button spamming
@@ -70,40 +64,36 @@ export class ClockControls {
 				if (s > targetSeconds) {
 					clearInterval(this.fastForwardInterval);
 					this.clock.jumpToTES(targetSeconds);
-					this.clock.start();
-					return;
+					console.log('[DEBUG] elapsedMissionTime:', this.clock.elapsedMissionTime);
+					console.log('[DEBUG] currentGETSeconds:', this.clock.currentGETSeconds);
+					console.log('[DEBUG] currentGET:', this.clock.currentGET);
+					this.clock.resume();
+					this.controlsEmitter.emit('ff', false);
+					resolve();
 				}
-				const fakeGet = getFromSeconds(parseInt(s.toFixed(2)));
+
+				/**
+				 *
+				 * @type {(s: number) => string}
+				 */
+				const getFromMissionGet = s =>
+					getFromSeconds(this.clock.startGetSeconds + Math.floor(s));
+
+				const fakeGet = getFromMissionGet(s);
 
 				/** @type {TickPayload} */
 				const tickPayload = {
 					getString: fakeGet,
 					getSeconds: parseFloat(s.toFixed(2)),
-					elapsedSeconds: this.clock.elapsedMissionTime
+					elapsedSeconds: s
 				};
 				// console.log('[CockControls DEBUG]: ', tickPayload);
 
 				this.clock.emitTicks(tickPayload);
+				this.controlsEmitter.emit('ff', true);
 				s++;
 			}, interval);
-			this.controlsEmitter.emit('ff', false);
-			this.clock.resume;
-		} else {
-			// IS DEV
-
-			this.clock.pause();
-			for (s; s <= targetSeconds; s++) {
-				const fakeGet = getFromSeconds(s);
-				/** @type {TickPayload} */ const tickPayload = {
-					getString: fakeGet,
-					getSeconds: s,
-					elapsedSeconds: this.clock.elapsedMissionTime
-				};
-				this.clock.emitTicks(tickPayload);
-				this.controlsEmitter.emit('ff', true);
-			}
-			this.clock.jumpToTES(this.lastComputedJumpSeconds);
-		}
+		});
 	}
 
 	/**

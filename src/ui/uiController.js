@@ -7,6 +7,7 @@
  * @typedef {import('../types/uiTypes.js').TelemetryKey} TKey
  * @typedef {import('../types/runtimeTypes.js').RuntimeCue} RuntimeCue
  * @typedef {import('../types/uiTypes.js').Controls} Controls
+ * @typedef {import('../game/clockControls.js').ClockControls} ClockControls
  */
 
 import { cast } from '../util/cast.js';
@@ -15,6 +16,7 @@ import { HudRenderer } from './HUD/hudRenderer.js';
 import { ModalManager } from './modal/modalManager.js';
 import { UISectionManager } from './uiSections/uiSectionManager.js';
 import { startEmitter, controlsEmitter } from '../event/eventBus.js';
+import { getClockControls } from '../game/clockControlsService.js';
 
 export class UIController {
 	/**
@@ -35,14 +37,19 @@ export class UIController {
 		/** @type {HTMLButtonElement} */ this.playPause = this.ui.controls.playPause;
 		/** @type {HTMLButtonElement} */ this.fastForward =
 			this.ui.controls.fastForward;
-		this.initControls();
 		/** @type {AltitudeUnits} */ this.altitudeUnits = 'miles';
 		/** @type {Telemetry} */ this.currentTelemetry;
 		/** @type {boolean} */ this.showTelemetry = true;
 		/** @type {Controls} */ this.controls = ui.controls;
 		/** @type {boolean} */ this.isPaused = false;
+		/** @type {ClockControls | null} */ this.clockControls = null;
 		this.targetGet = null;
 		this.ffInterval = null;
+		this.initControls();
+	}
+
+	initClockControls() {
+		this.clockControls = getClockControls();
 	}
 
 	initControls() {
@@ -63,9 +70,9 @@ export class UIController {
 			}
 		});
 
-		this.fastForward.addEventListener('click', () => {
+		this.fastForward.addEventListener('click', async () => {
 			if (this.targetGet) {
-				this.handleFastForward(this.targetGet);
+				await this.handleFastForward(this.targetGet);
 				this.targetGet = null;
 				this.ffInterval = null;
 			}
@@ -77,13 +84,14 @@ export class UIController {
 	 *
 	 * @param {string} target
 	 */
-	handleFastForward(target) {
+	async handleFastForward(target) {
 		const interval = this.ffInterval ?? undefined;
-		this.controlsEmitter.emit('fastForward', { target, interval });
-		this.fastForward.disabled = true;
+		await this.clockControls.handleFastForward(target, interval);
+		this.clearHudTranscript();
+		this.hud.clearPrompt();
 	}
 
-	init() {
+	initUI() {
 		// if (!this.observer) {
 		// 	this.observer = new MutationObserver(mutations => {
 		// 		mutations.forEach(mutation => {
@@ -102,11 +110,6 @@ export class UIController {
 		this.dsky.setInitialState();
 		this.modals.prepare();
 		this.disablePP();
-		this.controlsEmitter.on('ff', payload => {
-			if (payload) {
-				this.hud.setFFPrompt();
-			}
-		});
 	}
 
 	start() {

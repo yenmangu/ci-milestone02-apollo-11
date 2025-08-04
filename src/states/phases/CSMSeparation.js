@@ -36,7 +36,7 @@ export class CSMSeparation extends BasePhase {
 		// );
 
 		if (cue.key === 'startFF') {
-			this.uiController.enableFF();
+			// this.uiController.enableFF();
 			this.ffTarget =
 				secondsFromGet(this.phaseMeta.cuesByKey['ffTarget_01'].get) - 1;
 

@@ -25,6 +25,8 @@ export class TelemetryController {
 		/** @type {boolean} */ this.shouldInterpolate = false;
 		/** @type {number} */ this.durationSec = 0;
 		/** @type {number} */ this.interpolationStartGET = null;
+
+		/** @type {((value?: any) => void) | null} */ this.resolveInterpolation = null;
 		// this.tickWatcher = tickEmitter.on('tick', tickPayload => {
 		// 	this.handleTick(tickPayload);
 		// });
@@ -56,6 +58,25 @@ export class TelemetryController {
 		if (!this.shouldInterpolate) return;
 		this.interpolateTelemetry(tickPayload);
 	}
+
+	// /**
+	//  *
+	//  * @param {{ interpolationStartGET: string | number, durationSec: number }} options
+	//  * @returns {Promise<void>}
+	//  */
+	// startInterpolationAsync({ interpolationStartGET, durationSec }) {
+	// 	this.shouldInterpolate = true;
+	// 	this.durationSec = durationSec;
+	// 	this.interpolationStartGET =
+	// 		typeof interpolationStartGET === 'string'
+	// 			? secondsFromGet(interpolationStartGET)
+	// 			: interpolationStartGET;
+
+	// 	return new Promise(resolve => {
+	// 		this.interpolationResolver = resolve;
+
+	// 	});
+	// }
 
 	/**
 	 *
@@ -107,19 +128,25 @@ export class TelemetryController {
 
 		if (t >= 1) {
 			this.shouldInterpolate = false;
+			if (this.resolveInterpolation) {
+				this.resolveInterpolation();
+				this.resolveInterpolation = null;
+			}
 		}
 	}
 
 	/**
 	 *
 	 * @param {() => void} [onTrigger] // optional and probably not needed but added in case
+	 * @returns {void}
 	 */
 	watchForTrigger(onTrigger) {
 		this.telemetryWatcher = watchTelemetryAction(
 			/**
 			 * @param {{type: 'start' | 'stop',
 			 * durationSec: number,
-			 * interpolationStartGET: string | number
+			 * interpolationStartGET: string | number,
+			 * async?: boolean
 			 * }} data
 			 */
 			data => {
@@ -133,7 +160,6 @@ export class TelemetryController {
 								? secondsFromGet(data.interpolationStartGET)
 								: data.interpolationStartGET;
 					}
-					this.tickWatcher;
 				} else if (data.type === 'stop') {
 					this.shouldInterpolate = false;
 				} else {
@@ -144,7 +170,22 @@ export class TelemetryController {
 		);
 	}
 
+	/**
+	 *
+	 * @returns {Promise<void>}
+	 */
+	waitForInterpolationToEnd() {
+		return new Promise(resolve => {
+			this.resolveInterpolation = resolve;
+		});
+	}
+
 	exit() {
+		if (this.resolveInterpolation) {
+			this.resolveInterpolation();
+			this.resolveInterpolation = null;
+		}
+
 		if (this.telemetryWatcher) {
 			this.telemetryWatcher.unsubscribe();
 			this.telemetryWatcher = null;

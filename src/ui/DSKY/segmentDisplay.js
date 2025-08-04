@@ -22,6 +22,10 @@ export class SegmentDisplay {
 	 */
 	constructor(displays) {
 		/** @type {SegmentMap} */ this.displays = displays;
+		this.flashingFields = new Set();
+		this.segmentIntervals = null;
+		this.flashInterval = null;
+		this.isFlashing = undefined;
 	}
 	init() {
 		// this.bulkWrite()
@@ -49,6 +53,54 @@ export class SegmentDisplay {
 			prog: 0,
 			verb: 0
 		});
+	}
+
+	/**
+	 *
+	 * @param {SegmentKey} key
+	 * @param {string | number} value
+	 * @param {number} [interval]
+	 * @returns {void}
+	 */
+
+	flash(key, value, interval = 200) {
+		if (this.flashingFields.has(key)) return;
+		if (this.segmentIntervals && this.segmentIntervals[key]) {
+			clearInterval(this.segmentIntervals[key]);
+			delete this.segmentIntervals[key];
+		}
+
+		let isVisible = false;
+		this.segmentIntervals = {};
+		this.segmentIntervals[key] = setInterval(() => {
+			if (isVisible) {
+				this.write(key, '');
+			} else {
+				this.write(key, value);
+			}
+			isVisible = !isVisible;
+		}, interval);
+		this.isFlashing = true;
+	}
+
+	/**
+	 *
+	 * @param {SegmentKey | string} key
+	 */
+	stopFlashTarget(key) {
+		if (this.segmentIntervals[key]) {
+			clearInterval(this.segmentIntervals[key]);
+			delete this.segmentIntervals[key];
+		}
+	}
+
+	stopFlash() {
+		for (const [key, value] of Object.entries(this.segmentIntervals)) {
+			clearInterval(this.segmentIntervals[key]);
+			delete this.segmentIntervals[key];
+		}
+		this.segmentIntervals = null;
+		this.isFlashing = false;
 	}
 
 	/**
@@ -81,6 +133,9 @@ export class SegmentDisplay {
 	 * @param {string|number} val
 	 */
 	write(id, val) {
+		if (this.flashingFields.has(id)) {
+			return;
+		}
 		// console.log(`writing ${id} with ${val}`);
 
 		const key = /** @type {SegmentKey} */ (id);
@@ -102,9 +157,17 @@ export class SegmentDisplay {
 				throw new Error(`${val} has too many chars. Allowed chars: 5`);
 			}
 		}
-		const el = this.displays[id];
+
+		// Ensure visual spacing for polarity when blanked
+		const polarityFields = ['p_1', 'p_2', 'p_3'];
+		if (polarityFields.includes(key)) {
+			if (val === '' || val === ' ') {
+				val = '&nbsp;';
+			}
+		}
+		const el = /** @type {HTMLElement} */ (this.displays[id]);
 		if (el) {
-			el.innerText = val;
+			el.innerHTML = `${val}`;
 		}
 	}
 
@@ -137,7 +200,10 @@ export class SegmentDisplay {
 			verb: 0,
 			r_1: 0,
 			r_2: 0,
-			r_3: 0
+			r_3: 0,
+			p_1: '+',
+			p_2: '+',
+			p_3: '+'
 		});
 	}
 }

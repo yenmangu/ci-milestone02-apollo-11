@@ -14,12 +14,14 @@ export class HudRenderer {
 	 */
 	constructor(hudMap) {
 		/** @type {HudMap} */ this.hudMap = hudMap;
+		this.currentPrompt = null;
 	}
 	renderCue(cueText) {
-		throw new Error('Method not implemented.');
+		this.hudMap.transcript.innerText = cueText;
 	}
 	renderPrompt(prompt) {
-		throw new Error('Method not implemented.');
+		this.currentPrompt = prompt;
+		this.updateHudBasedOnType('prompt', prompt);
 	}
 	/**
 	 *
@@ -65,8 +67,6 @@ export class HudRenderer {
 	 * @param {any} data
 	 */
 	updateHudBasedOnType(type, data) {
-		console.log('Cue: ', data);
-
 		this.hudMap[type].innerHTML = data;
 	}
 
@@ -90,10 +90,10 @@ export class HudRenderer {
 		this.hudMap.prompt.appendChild(ffIcon);
 	}
 
-	clearPrompt() {
+	clearPrompt(resume = true) {
 		console.log('Clearing prompt');
 
-		this.hudMap.prompt.innerHTML = '';
+		this.hudMap.prompt.innerHTML = this.currentPrompt;
 	}
 
 	clearTranscript() {

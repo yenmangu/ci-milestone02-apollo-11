@@ -22,6 +22,7 @@
  * }} PhaseRange
  */
 
+import { tickEmitter } from '../event/eventBus.js';
 import { PhaseIds } from '../types/timelineTypes.js';
 import { getFromSeconds, secondsFromGet } from '../util/GET.js';
 
@@ -80,6 +81,11 @@ export class DevController {
 		/** @type {number} */ this.lastComputedJumpSeconds = 0;
 		/** @type {UIStructure | {}} */ this.uiStructure = uiStruct;
 		/** @type {UIController | {}} */ this.ui = uiController;
+		this.timeStamp = document.getElementById('json');
+
+		tickEmitter.on('tick', (/** @type {TickPayload} */ payload) => {
+			this.timeStamp.innerHTML = `${payload.getString}`;
+		});
 	}
 
 	/**

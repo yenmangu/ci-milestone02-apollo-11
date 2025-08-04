@@ -22,8 +22,8 @@ export class TelemetryController {
 		/** @type {Altitude} */ this.initialAlt = initialState.altitude;
 		/** @type {Altitude} */ this.endAlt = endState.altitude;
 		/** @type {boolean} */ this.shouldInterpolate = false;
-		/** @type {number} */ this.burnDurationSec = 0;
-		/** @type {number} */ this.burnStartGet = null;
+		/** @type {number} */ this.durationSec = 0;
+		/** @type {number} */ this.interpolationStartGET = null;
 		this.tickWatcher = tickEmitter.on('tick', tickPayload => {
 			this.handleTick(tickPayload);
 		});
@@ -49,10 +49,10 @@ export class TelemetryController {
 
 		const currentGET = tickPayload.getSeconds;
 
-		const elapsed = currentGET - this.burnStartGet;
+		const elapsed = currentGET - this.interpolationStartGET;
 
 		// Clamp between 0 and 1
-		const t = Math.min(Math.max(elapsed / this.burnDurationSec, 0), 1);
+		const t = Math.min(Math.max(elapsed / this.durationSec, 0), 1);
 
 		// Linear interpolation (lerp) helper
 		const lerp = (start, end, t) => start * (1 - t) + end * t;
@@ -92,15 +92,19 @@ export class TelemetryController {
 	 */
 	watchForTrigger(onTrigger) {
 		this.telemetryWatcher = watchTelemetryAction(data => {
-			this.shouldInterpolate = true;
-			if (data.burnDurationSec && data.burnStartGET) {
-				this.burnDurationSec = data.burnDurationSec;
-				this.burnStartGet =
-					typeof data.burnStartGET === 'string'
-						? secondsFromGet(data.burnStartGET)
-						: data.burnStartGET;
+			if (data.type === 'start') {
+				this.shouldInterpolate = true;
+				if (data.durationSec && data.interpolationStartGET) {
+					this.durationSec = data.durationSec;
+					this.interpolationStartGET =
+						typeof data.interpolationStartGET === 'string'
+							? secondsFromGet(data.interpolationStartGET)
+							: data.interpolationStartGET;
+				}
+			} else if (data.type === 'stop') {
+				this.shouldInterpolate = false;
 			}
-			onTrigger();
+			if (onTrigger) onTrigger();
 		});
 	}
 

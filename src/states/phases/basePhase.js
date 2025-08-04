@@ -13,7 +13,7 @@
 
 import { compareGET, secondsFromGet } from '../../util/GET.js';
 import { watchUntilComplete } from '../../util/watchUntilComplete.js';
-import { pushButtonEmitter } from '../../event/eventBus.js';
+import { phaseEmitter, pushButtonEmitter } from '../../event/eventBus.js';
 import { TelemetryController } from '../../telemetry/telemetryController.js';
 
 /**
@@ -298,6 +298,34 @@ export class BasePhase {
 	 */
 	onTick(tick) {
 		// console.warn('Method not implemented.');
+	}
+
+	/**
+	 *
+	 * @param {{
+	 * type: string,
+	 * interpolationStartGET: string,
+	 * durationSec: number
+	 * } | null} [data]
+	 */
+	triggerInterpolation(data = null) {
+		const triggerPayload = {
+			type: 'start',
+			durationSec: data.durationSec ?? this.getPhaseDuration(),
+			interpolationStartGET: data.interpolationStartGET ?? this.phaseMeta.startGET
+		};
+
+		phaseEmitter.emit('telemetry', triggerPayload);
+	}
+
+	stopInterpolation() {
+		phaseEmitter.emit('stop');
+	}
+
+	getPhaseDuration() {
+		const phaseStartSec = secondsFromGet(this.phaseMeta.startGET);
+		const phaseEndSec = secondsFromGet(this.phaseMeta.endGET);
+		return phaseEndSec - phaseStartSec;
 	}
 
 	/**

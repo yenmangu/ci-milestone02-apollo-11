@@ -76,13 +76,20 @@ export function watchUntilComplete(
  * @returns
  */
 export function watchTelemetryAction(onTelemetryAction) {
-	const phaseSub = phaseEmitter.on('action', data => {
-		onTelemetryAction(data);
+	const handler = data => {
+		if (typeof data === 'object' && data.type) {
+			onTelemetryAction(data);
+		}
+	};
+	const telemetrySub = phaseEmitter.on('telemetry', handler);
+	const telemetryStop = phaseEmitter.on('STOP', () => {
+		onTelemetryAction({ type: 'stop' });
 	});
 
 	return {
 		unsubscribe: () => {
-			phaseSub.unsubscribe();
+			telemetrySub.unsubscribe();
+			telemetryStop.unsubscribe();
 		}
 	};
 }

@@ -45,6 +45,7 @@ export class UIController {
 		/** @type {ClockControls | null} */ this.clockControls = null;
 		this.targetGet = null;
 		this.ffInterval = null;
+		this.fastJump = false;
 		this.initControls();
 	}
 
@@ -72,7 +73,14 @@ export class UIController {
 
 		this.fastForward.addEventListener('click', async () => {
 			if (this.targetGet) {
-				await this.handleFastForward(this.targetGet);
+				if (!this.fastJump) {
+					await this.handleFastForward(this.targetGet);
+					this.playPause.disabled = false;
+				} else {
+					this.clockControls.fastJump(this.targetGet);
+					this.fastJump = false;
+					this.playPause.disabled = false;
+				}
 				this.targetGet = null;
 				this.ffInterval = null;
 			}
@@ -80,11 +88,17 @@ export class UIController {
 		this.fastForward.disabled = true;
 	}
 
+	enableFastJump() {
+		this.fastJump = true;
+	}
+
 	/**
 	 *
 	 * @param {string} target
 	 */
 	async handleFastForward(target) {
+		this.playPause.disabled = true;
+		this.fastForward.disabled = true;
 		const interval = this.ffInterval ?? undefined;
 		await this.clockControls.handleFastForward(target, interval);
 		this.clearHudTranscript();
@@ -228,7 +242,7 @@ export class UIController {
 			? description
 			: [description];
 
-		console.log('Description Array: ', descriptionArray);
+		// console.log('Description Array: ', descriptionArray);
 
 		const spanElArr = descriptionArray.map(text => {
 			const span = document.createElement('span');

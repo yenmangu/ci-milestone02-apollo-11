@@ -97,6 +97,41 @@ export class ClockControls {
 	}
 
 	/**
+	 * @param {string} targetGet
+	 */
+	fastJump(targetGet) {
+		return new Promise(resolve => {
+			const targetGETSeconds = secondsFromGet(targetGet);
+			const targetSeconds = targetGETSeconds - this.clock.startGetSeconds;
+			const currentSeconds = this.clock.elapsedMissionTime;
+
+			if (targetSeconds < currentSeconds) {
+				console.warn('[ClockControls] Cannot fast forward backwards');
+				return;
+			}
+
+			this.clock.pause();
+
+			this.clock.jumpToTES(targetSeconds);
+
+			const newGetSeconds =
+				this.clock.startGetSeconds + this.clock.elapsedMissionTime;
+			const newGetString = getFromSeconds(newGetSeconds);
+
+			/** @type {TickPayload} */
+			const tickPayload = {
+				getString: newGetString,
+				getSeconds: newGetSeconds,
+				elapsedSeconds: this.clock.elapsedMissionTime
+			};
+			this.clock.emitTicks(tickPayload);
+
+			this.clock.resume();
+			resolve(true);
+		});
+	}
+
+	/**
 	 *
 	 * @param {string} getString
 	 * @returns {string | null} phaseId

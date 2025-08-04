@@ -98,6 +98,9 @@ Apollo 11 guidance computers (AGCs). The description includes COLOSSUS
 2A, used in the Command Module, and LUMINARY 1A, used in the Lunar
 Module.
 
+Linear interpolation functions for the [telemetry]('./src/telemetry/telemetryController.js) - https://www.trysmudford.com/blog/linear-interpolation-functions/
+
+
 
 
 

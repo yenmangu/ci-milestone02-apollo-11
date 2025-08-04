@@ -36,21 +36,26 @@ export function watchUntilComplete(
 	const actionSub = actionEmitter.on('action', onAction);
 	const cueSub = actionEmitter.on('cue', onCue);
 	const tickSub = tickEmitter.on('tick', onTick);
+
+	const pushButtonsSub = pushButtonEmitter.on('keypad', data => {
+		onPushButtons('keypad', data);
+	});
 	const keyRelSub = pushButtonEmitter.on('key-rel', data => {
 		onPushButtons('key-rel', data);
 	});
 	const pushButtonsFinaliseSub = pushButtonEmitter.on('finalise', data => {
 		onPushButtons('finalise', data);
 	});
-
 	const opErrorSub = pushButtonEmitter.on('op-err', data => {
 		onPushButtons('op-err', data);
 	});
+
 	const completeSub = actionEmitter.on(
 		'actionsComplete',
 		(/** @type {string} */ event) => {
 			completeSub.unsubscribe();
 			actionSub.unsubscribe();
+			pushButtonsSub.unsubscribe();
 			keyRelSub.unsubscribe();
 			pushButtonsFinaliseSub.unsubscribe();
 			opErrorSub.unsubscribe();

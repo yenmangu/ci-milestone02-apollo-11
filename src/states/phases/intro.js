@@ -1,9 +1,11 @@
 /**
  * @typedef {import('../simulationState.js').SimulationState} SimulationState
  * @typedef {import('../../types/runtimeTypes.js').RuntimePhase} RuntimePhase
+ * @typedef {import('../../types/clockTypes.js').TickPayload} TickPayload
  */
 
 import { PhaseIds } from '../../types/timelineTypes.js';
+import { secondsFromGet } from '../../util/GET.js';
 import { BasePhase } from './basePhase.js';
 
 export class Intro extends BasePhase {
@@ -49,17 +51,26 @@ export class Intro extends BasePhase {
 		}
 	}
 
-	handleActionEvent(event) {
-		console.log('Handle Action Event: ', event);
-	}
+	// handleActionEvent(event) {
+	// 	console.log('Handle Action Event: ', event);
+	// }
 
-	onTick() {
+	/**
+	 *
+	 * @param {TickPayload} tick
+	 * @returns
+	 */
+	onTick(tick) {
 		if (this.simulationState.hasActionBeenCompleted('BEGIN_SIM')) {
-			if (this.hasStarted) return;
+			// if (this.hasStarted) return;
 			if (!this.keyRelPressed) return;
+			this.setFF(1, this.phaseMeta?.endGET);
+			this.uiController.enableFastJump();
 
-			this.log('Intro Complete. Transitioning');
 			this.hasStarted = true;
+		}
+		if (tick.getSeconds >= secondsFromGet(this.phaseMeta?.endGET)) {
+			this.log('Intro Complete. Transitioning');
 			this.simulationState.fsm?.transitionTo(PhaseIds.CSM_SEPARATION);
 		}
 	}

@@ -1,6 +1,8 @@
 /**
  * @typedef {import('../../types/runtimeTypes.js').RuntimeCue} RuntimeCue
+ * @typedef {import('../../types/runtimeTypes.js').ActionEvent} Action
  * @typedef {import('../../types/clockTypes.js').TickPayload} TickPayload
+ * @typedef {import('../../types/keypadTypes.js').KeypadState} KeypadState
  */
 
 import { createTag } from '../../dev/tagger.js';
@@ -11,12 +13,30 @@ import { BasePhase } from './basePhase.js';
 export class CSMSeparation extends BasePhase {
 	constructor(simState, phaseMeta) {
 		super(simState, phaseMeta);
+		// /** @type {((val:any)=> void) | null} */ this.resolveAction = null;
+		// /** @type {((val:any)=> void) | null} */ this.resolveKeypad = null;
+		// /** @type {Promise<void>} */ this.readyToTransition = Promise.all([
+		// 	new Promise(resolve => {
+		// 		this.resolveAction = resolve;
+		// 	}),
+		// 	new Promise(resolve => {
+		// 		this.resolveKeypad = resolve;
+		// 	})
+		// ]).then(() => this.onReadyToTransition());
 	}
+
 	onEnter() {
 		this.watchUntilComplete(
-			undefined, // action
+			action => {
+				this.handleAction(action);
+			}, // action
 			cue => {
 				this.handleCueEvent(cue);
+			},
+			undefined,
+			undefined,
+			(event, state) => {
+				this.handleKeypad(event, state);
 			}
 		);
 
@@ -25,16 +45,32 @@ export class CSMSeparation extends BasePhase {
 
 	/**
 	 *
+	 * @param {Action} action
+	 */
+	handleAction(action) {
+		console.log('handling action with: ', action);
+
+		if (action.actionKey === 'CSM_PRO') {
+			this.onReadyToTransition();
+		}
+	}
+
+	/**
+	 *
+	 * @param {'key-rel'|'finalise'|'opp-err'|'keypad'} event
+	 * @param {KeypadState} state
+	 */
+	handleKeypad(event, state) {
+		if (event === 'keypad' && state.mode === 'pro') {
+			this.simulationState.completeAction('CSM_PRO');
+		}
+	}
+
+	/**
+	 *
 	 * @param {RuntimeCue} cue
 	 */
 	handleCueEvent(cue) {
-		// console.log(
-		// 	'[cue]',
-		// 	cue.key,
-		// 	'TES:',
-		// 	this.simulationState?.clockControls?.clock?.secondsElapsed
-		// );
-
 		if (cue.key === 'startFF') {
 			// this.uiController.enableFF();
 			this.ffTarget =
@@ -43,13 +79,8 @@ export class CSMSeparation extends BasePhase {
 			const target = getFromSeconds(this.ffTarget);
 			this.setFF(60, target);
 		}
-		if (cue.key === 'csm_end') {
-			// const tag = createTag();
-			// console.log(`[csm_end] Scheduling transition (tag ${tag})`);
-			setTimeout(() => {
-				// console.log(`[csm_end] Timeout firing (tag ${tag})`);
-				this.simulationState.fsm.transitionTo(PhaseIds.PDI);
-			}, 1000);
+		if (cue.key === 'pro') {
+			this.dskyController.unlockKeypad();
 		}
 	}
 	/**
@@ -62,6 +93,20 @@ export class CSMSeparation extends BasePhase {
 			this.uiController.disableFF();
 			this.targetReached = true;
 		}
+	}
+
+	async onReadyToTransition() {
+		console.log('ready to transition');
+
+		const endGet = this.phaseMeta.endGET;
+		const targetGet = getFromSeconds(secondsFromGet(endGet) - 1);
+
+		this.setFF(1, targetGet);
+		await this.simulationState.clockControls.fastJump(targetGet);
+		this.uiController.disableFF();
+		setTimeout(() => {
+			this.simulationState.fsm.transitionTo(PhaseIds.PDI);
+		}, 1000);
 	}
 
 	onExit() {

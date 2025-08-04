@@ -306,12 +306,17 @@ export class BasePhase {
 	 * @param {{
 	 * type?: 'start',
 	 * interpolationStartGET?: string|number,
-	 * durationSec?: number
+	 * durationSec?: number,
+	 * async?: boolean
 	 * } | null} [data]
 	 */
 	triggerInterpolation(data = null) {
 		/**
-		 * @type {{ type: 'start', durationSec: number, interpolationStartGET: string|number}}
+		 * @type {{
+		 * type: 'start',
+		 * durationSec: number,
+		 * interpolationStartGET: string|number
+		 * }}
 		 */
 		const triggerPayload = {
 			type: 'start',

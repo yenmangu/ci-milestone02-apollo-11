@@ -36,6 +36,7 @@ export class DskyController {
 		this.pushButtonsEmitter.on('cancel-err', () => {
 			this.indicatorLights.clearLight('opErrLight');
 		});
+		this.keypadLocked = false;
 		this.init();
 	}
 	init() {
@@ -54,6 +55,7 @@ export class DskyController {
 			switch (key) {
 				case 'verb':
 				case 'noun':
+				case 'pro':
 					this.keypad.setMode(key.toLowerCase());
 					break;
 				case 'clr':
@@ -70,6 +72,7 @@ export class DskyController {
 				case 'key-rel':
 					this.keypad.keyRel();
 					break;
+
 				default:
 					if (/^\d$/.test(key)) {
 						this.keypad.appendDigit(key);
@@ -101,12 +104,16 @@ export class DskyController {
 	}
 
 	lockKeypad() {
-		console.log('Locking keypad');
-
-		this.pushButtons.lock();
+		if (!this.keypadLocked) {
+			this.pushButtons.lock();
+			this.keypadLocked = true;
+		}
 	}
 	unlockKeypad() {
-		this.pushButtons.unlock();
+		if (!this.keypadLocked) {
+			this.pushButtons.unlock();
+			this.keypadLocked = false;
+		}
 	}
 
 	clearProgLight() {
@@ -115,6 +122,23 @@ export class DskyController {
 
 	setProgLight() {
 		this.progLight.classList.add('active');
+	}
+
+	/**
+	 * Wrapper to operate key release light.
+	 * Default behaviour flashes light.
+	 * Pass 'flash = false' to stop flashing.
+	 *
+	 * @param {boolean} [flash]
+	 */
+	keyRelLight(flash = true) {
+		if (flash) {
+			this.indicatorLights.flashLight('keyRelLight');
+		} else {
+			{
+				this.indicatorLights.clearLight('keyRelLight');
+			}
+		}
 	}
 
 	flashProgLight(interval = 200) {

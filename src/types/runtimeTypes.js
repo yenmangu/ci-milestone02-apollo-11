@@ -109,3 +109,10 @@ import { PhaseIds } from './timelineTypes.js';
  * 		endSeconds: number
  * }} PhaseRange
  */
+
+/**
+ * @typedef {Object} ActionEvent
+ * @property {string} actionKey
+ * @property {NonTimeAction} action
+ * @property {RuntimeCue} cue
+ */

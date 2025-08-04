@@ -1,9 +1,11 @@
 /**
- * @typedef {import("../types/timelineTypes.js").JSON_NonTimeAction} Action
+ * @typedef {import("../types/runtimeTypes.js").NonTimeAction} Action
+ * @typedef {import('../types/runtimeTypes.js').RuntimeCue} RuntimeCue
  * @typedef {import('../ui/uiController.js').UIController} UIController
  * @typedef {import('../fsm/phaseFSM.js').PhaseFSM} PhaseFSM
  * @typedef {import('../types/keypadTypes.js').KeypadState} KeypadState
  * @typedef {import('../game/clockControls.js').ClockControls} ClockControls
+ * @typedef {import('../types/runtimeTypes.js').ActionEvent} ActionEvent
  */
 
 import {
@@ -189,18 +191,28 @@ function createSimulationState({
 			return this.completedActions.has(actionKey);
 		},
 
+		/**
+		 *
+		 * @param {string} actionKey
+		 */
 		completeCueAction(actionKey) {
 			for (const cue of Object.values(this.currentPhase.cuesByKey)) {
 				if (cue.requiresAction === actionKey) {
-					const action = this.completedActions[actionKey];
-					actionEmitter.emit('action', { key: actionKey, action, cue });
+					const action = /** @type {Action} */ (this.completedActions[actionKey]);
+					/** @type {ActionEvent} */
+					const payload = {
+						actionKey: actionKey,
+						action,
+						cue
+					};
+					actionEmitter.emit('action', payload);
 					cue.actionCompleted = true;
 				}
 			}
 		},
 
 		triggerInterrupt(code) {
-			console.warn(`Interrupt triggered: ${code}`);
+			console.warn(`Interrupt triggered: ${code}. Actual implementation needed`);
 		},
 
 		getPhase(id) {

@@ -30,6 +30,7 @@ const createKeypadStateManager = displayInterface => {
 
 	const manager = {
 		isFinalised: false,
+
 		/** @param {Mode} mode  */
 		setMode(mode) {
 			console.log('Invoked set mode');
@@ -76,6 +77,10 @@ const createKeypadStateManager = displayInterface => {
 			if (!this.isFinalised) return;
 			pushButtonEmitter.emit('key-rel', state);
 			this.isFinalised = false;
+		},
+
+		pro() {
+			pushButtonEmitter.emit('keypad', state);
 		},
 
 		reset() {

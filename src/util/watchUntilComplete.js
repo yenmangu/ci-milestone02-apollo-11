@@ -1,6 +1,7 @@
 /**
  * @typedef {import('../types/runtimeTypes.js').RuntimeCue} RuntimeCue
  * @typedef {import('../types/runtimeTypes.js').NonTimeAction} RuntimeAction
+ * @typedef {import('../types/runtimeTypes.js').ActionEvent} ActionEvent
  * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
  * @typedef {import('../types/keypadTypes.js').KeypadState} KeypadState
  */
@@ -18,7 +19,7 @@ import {
  * Automatically unsubscribes both listeners upon completion.
  * Returns optional unsubscribe handle for early termination.
  *
- * @param {(event: RuntimeAction) => void} onAction
+ * @param {(event: ActionEvent) => void} onAction
  * @param {(event: RuntimeCue) => void} onCue
  * @param {(event: string) => void} onComplete
  * @param {(tick: TickPayload) => void} onTick
@@ -69,8 +70,15 @@ export function watchUntilComplete(
 	};
 }
 
-export function watchPhaseAction(onAction) {
-	const phaseSub = phaseEmitter.on('action', onAction);
+/**
+ *
+ * @param {(data: any) => void} onTelemetryAction
+ * @returns
+ */
+export function watchTelemetryAction(onTelemetryAction) {
+	const phaseSub = phaseEmitter.on('action', data => {
+		onTelemetryAction(data);
+	});
 
 	return {
 		unsubscribe: () => {

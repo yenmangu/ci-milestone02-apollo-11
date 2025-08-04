@@ -4,6 +4,7 @@
  * @typedef {import("../../types/runtimeTypes.js").RuntimePhase} RuntimePhase
  * @typedef {import("../../types/runtimeTypes.js").RuntimeCue} RuntimeCue
  * @typedef {import('../../types/runtimeTypes.js').NonTimeAction} RuntimeAction
+ * @typedef {import('../../types/runtimeTypes.js').ActionEvent} ActionEvent
  * @typedef {import('../../types/uiTypes.js').UIState} UIState
  * @typedef {import('../simulationState.js').UIController} UIController
  * @typedef {import('../../ui/DSKY/dskyController.js').DskyController} DSKY
@@ -13,6 +14,7 @@
 import { compareGET, secondsFromGet } from '../../util/GET.js';
 import { watchUntilComplete } from '../../util/watchUntilComplete.js';
 import { pushButtonEmitter } from '../../event/eventBus.js';
+import { TelemetryController } from '../../telemetry/telemetryController.js';
 
 /**
  * @typedef {import("../../types/clockTypes.js").TickPayload} TickPayload
@@ -52,6 +54,7 @@ export class BasePhase {
 		this.actionWatcher = null;
 		this.pushButtonEmitter = pushButtonEmitter;
 		this.keyRel = false;
+		/** @type {TelemetryController | null} */ this.telemetryController = null;
 	}
 
 	enter() {
@@ -69,6 +72,19 @@ export class BasePhase {
 		this.uiController.dsky.segmentDisplays.clearAll();
 		this.setUiData();
 		this.uiController.disableFF();
+
+		this.telemetryController = new TelemetryController(
+			this.phaseMeta.initialState,
+			this.phaseMeta.endState,
+			telemetry => {
+				this.setUiData({
+					altitude: telemetry.altitude,
+					velocity: telemetry.velocity,
+					vUnits: telemetry.vUnits,
+					fuel: telemetry.fuel
+				});
+			}
+		);
 
 		if (typeof this.onEnter === 'function') {
 			this.onEnter();
@@ -135,7 +151,7 @@ export class BasePhase {
 	/**
 	 * @protected
 	 *
-	 * @param {(event: RuntimeAction )=> void} [onAction]
+	 * @param {(event: ActionEvent)=> void} [onAction]
 	 * @param {(event: RuntimeCue )=> void} [onCue]
 	 * @param {(event: string)=> void} [onComplete]
 	 * @param {(tick: TickPayload)=> void} [onTick]
@@ -218,6 +234,7 @@ export class BasePhase {
 			/** @type {RuntimeAction | undefined} */ const action =
 				this.phaseMeta.nonTimeActions.find(a => a.action === cue.requiresAction);
 			if (!action?.failsAfter) continue;
+			if (this.simulationState.completedActions.has(action.action)) continue;
 
 			// console.log('[CHECK] evaluating failsAfter timeout logic');
 			// console.log('[CHECK] currentGETSeconds:', this.currentGETSeconds);
@@ -289,6 +306,7 @@ export class BasePhase {
 	 * @param {string} target
 	 */
 	setFF(interval, target) {
+		this.uiController.enableFF();
 		this.setFastForwardInterval(interval);
 		this.setFastForwardTarget(target);
 	}
@@ -309,6 +327,11 @@ export class BasePhase {
 		if (this.actionWatcher) {
 			this.actionWatcher.unsubscribe();
 			this.actionWatcher = null;
+		}
+		// Clean up instance of telemetry controller
+		if (this.telemetryController) {
+			this.telemetryController.exit();
+			this.telemetryController = null;
 		}
 		if (typeof this.onExit === 'function') {
 			this.onExit();

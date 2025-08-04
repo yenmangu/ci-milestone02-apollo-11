@@ -110,7 +110,7 @@ export class DskyController {
 		}
 	}
 	unlockKeypad() {
-		if (!this.keypadLocked) {
+		if (this.keypadLocked) {
 			this.pushButtons.unlock();
 			this.keypadLocked = false;
 		}

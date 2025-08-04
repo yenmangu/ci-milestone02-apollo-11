@@ -303,12 +303,15 @@ export class BasePhase {
 	/**
 	 *
 	 * @param {{
-	 * type: string,
-	 * interpolationStartGET: string,
-	 * durationSec: number
+	 * type?: 'start',
+	 * interpolationStartGET?: string|number,
+	 * durationSec?: number
 	 * } | null} [data]
 	 */
 	triggerInterpolation(data = null) {
+		/**
+		 * @type {{ type: 'start', durationSec: number, interpolationStartGET: string|number}}
+		 */
 		const triggerPayload = {
 			type: 'start',
 			durationSec: data.durationSec ?? this.getPhaseDuration(),
@@ -319,7 +322,7 @@ export class BasePhase {
 	}
 
 	stopInterpolation() {
-		phaseEmitter.emit('stop');
+		phaseEmitter.emit('telemetry', { type: 'stop' });
 	}
 
 	getPhaseDuration() {

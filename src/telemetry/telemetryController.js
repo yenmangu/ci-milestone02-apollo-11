@@ -88,24 +88,35 @@ export class TelemetryController {
 
 	/**
 	 *
-	 * @param {() => void} [onTrigger]
+	 * @param {() => void} [onTrigger] // optional and probably not needed but added in case
 	 */
 	watchForTrigger(onTrigger) {
-		this.telemetryWatcher = watchTelemetryAction(data => {
-			if (data.type === 'start') {
-				this.shouldInterpolate = true;
-				if (data.durationSec && data.interpolationStartGET) {
-					this.durationSec = data.durationSec;
-					this.interpolationStartGET =
-						typeof data.interpolationStartGET === 'string'
-							? secondsFromGet(data.interpolationStartGET)
-							: data.interpolationStartGET;
+		this.telemetryWatcher = watchTelemetryAction(
+			/**
+			 * @param {{type: 'start' | 'stop',
+			 * durationSec: number,
+			 * interpolationStartGET: string | number
+			 * }} data
+			 */
+			data => {
+				if (data.type === 'start') {
+					this.shouldInterpolate = true;
+					// != loose equality checks for undefined as well as null
+					if (data.durationSec != null && data.interpolationStartGET != null) {
+						this.durationSec = data.durationSec;
+						this.interpolationStartGET =
+							typeof data.interpolationStartGET === 'string'
+								? secondsFromGet(data.interpolationStartGET)
+								: data.interpolationStartGET;
+					}
+				} else if (data.type === 'stop') {
+					this.shouldInterpolate = false;
+				} else {
+					console.warn(`Unknown telemetry action type: ${data.type}`);
 				}
-			} else if (data.type === 'stop') {
-				this.shouldInterpolate = false;
+				if (onTrigger) onTrigger();
 			}
-			if (onTrigger) onTrigger();
-		});
+		);
 	}
 
 	exit() {

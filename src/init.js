@@ -32,16 +32,20 @@ import { startEmitter, tickEmitter } from './event/eventBus.js';
 import { queryDom } from './ui/simulationUI.js';
 import { UIController } from './ui/uiController.js';
 import { ClockControls } from './game/clockControls.js';
+import {
+	getClockControls,
+	registerClockControls
+} from './game/clockControlsService.js';
 
 // just for now
 let dev = true;
 
-const devStartPhase = PhaseIds.PDI;
-
+let devStartPhase = PhaseIds.PDI;
+// devStartPhase = null;
 export async function initProgram() {
 	/** @type {DevController} */ let devController;
 	try {
-		const initialPhaseId = dev ? devStartPhase : PhaseIds.INTRO;
+		const initialPhaseId = devStartPhase ?? PhaseIds.INTRO;
 		/** @type {MissionTimeline} */ const timeline = await loadTimeline();
 		/** @type {RuntimePhase} */ const firstPhase =
 			timeline.getPhase(initialPhaseId);
@@ -77,11 +81,14 @@ export async function initProgram() {
 		/** @type {ClockControls} */ const clockControls = new ClockControls(
 			clock,
 			fsm,
-			timeline
+			timeline,
+			dev
 		);
 
 		clockControls.init();
-		simState.setClockControls(clockControls);
+		registerClockControls(clockControls);
+		simState.setClockControls(getClockControls());
+		ui.initClockControls();
 
 		tickEmitter.on('tick', tickPayload => {
 			fsm.handleTick(tickPayload);
@@ -101,7 +108,7 @@ export async function initProgram() {
 		}
 		simState.showTelemetry = false;
 		// inits ALL UI controllers frmo this one call
-		ui.init();
+		ui.initUI();
 		simState.setUI(ui);
 
 		startEmitter.on('start', () => {

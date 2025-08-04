@@ -72,7 +72,7 @@ export class BasePhase {
 		this.uiController.dsky.segmentDisplays.clearAll();
 		this.setUiData();
 		this.uiController.disableFF();
-
+		console.log('[DEBUG] PhaseMeta: ', this.phaseMeta);
 		this.telemetryController = new TelemetryController(
 			this.phaseMeta.initialState,
 			this.phaseMeta.endState,
@@ -85,6 +85,7 @@ export class BasePhase {
 				});
 			}
 		);
+		this.telemetryController.init();
 
 		if (typeof this.onEnter === 'function') {
 			this.onEnter();
@@ -155,7 +156,7 @@ export class BasePhase {
 	 * @param {(event: RuntimeCue )=> void} [onCue]
 	 * @param {(event: string)=> void} [onComplete]
 	 * @param {(tick: TickPayload)=> void} [onTick]
-	 * @param {(key: 'keypad'|'finalise'|'key-rel' , state:KeypadState)=> void} [onPushButtons]
+	 * @param {(key: 'keypad'|'finalise'|'key-rel'|'opp-err' , state:KeypadState)=> void} [onPushButtons]
 	 */
 	watchUntilComplete(
 		onAction = () => {},
@@ -317,7 +318,6 @@ export class BasePhase {
 			durationSec: data?.durationSec ?? this.getPhaseDuration(),
 			interpolationStartGET: data?.interpolationStartGET ?? this.phaseMeta.startGET
 		};
-
 		phaseEmitter.emit('telemetry', triggerPayload);
 	}
 

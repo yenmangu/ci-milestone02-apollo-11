@@ -6,6 +6,7 @@
 
 import { tickEmitter } from '../event/eventBus.js';
 import { secondsFromGet } from '../util/GET.js';
+import { lerp, roundToDecimals } from '../util/math.js';
 import { watchTelemetryAction } from '../util/watchUntilComplete.js';
 
 export class TelemetryController {
@@ -24,10 +25,26 @@ export class TelemetryController {
 		/** @type {boolean} */ this.shouldInterpolate = false;
 		/** @type {number} */ this.durationSec = 0;
 		/** @type {number} */ this.interpolationStartGET = null;
-		this.tickWatcher = tickEmitter.on('tick', tickPayload => {
-			this.handleTick(tickPayload);
-		});
+		// this.tickWatcher = tickEmitter.on('tick', tickPayload => {
+		// 	this.handleTick(tickPayload);
+		// });
+		this.tickWatcher = null;
 		this.telemetryWatcher = null;
+	}
+
+	/**
+	 *
+	 * @param {()=> void} [telemetryTrigger]
+	 * @returns
+	 */
+	init(telemetryTrigger = () => {}) {
+		if (this.tickWatcher) return;
+
+		this.tickWatcher = tickEmitter.on('tick', payload => {
+			this.handleTick(payload);
+		});
+
+		this.watchForTrigger(telemetryTrigger);
 	}
 
 	/**
@@ -55,15 +72,22 @@ export class TelemetryController {
 		const t = Math.min(Math.max(elapsed / this.durationSec, 0), 1);
 
 		// Linear interpolation (lerp) helper
-		const lerp = (start, end, t) => start * (1 - t) + end * t;
+		// const lerp = (start, end, t) => start * (1 - t) + end * t;
+
+		const lerpAndDecimal = (start, end, t) =>
+			roundToDecimals(lerp(start, end, t), 2);
 
 		const newAlt = {
-			miles: lerp(this.initialAlt.miles, this.endAlt.miles, t),
-			feet: lerp(this.initialAlt.feet, this.endAlt.feet, t)
+			miles: lerpAndDecimal(this.initialAlt.miles, this.endAlt.miles, t),
+			feet: lerpAndDecimal(this.initialAlt.feet, this.endAlt.feet, t)
 		};
 
-		const newVelocity = lerp(this.initialState.velocity, this.endState.velocity, t);
-		const newFuel = lerp(this.initialState.fuel, this.endState.fuel, t);
+		const newVelocity = lerpAndDecimal(
+			this.initialState.velocity,
+			this.endState.velocity,
+			t
+		);
+		const newFuel = lerpAndDecimal(this.initialState.fuel, this.endState.fuel, t);
 
 		/**
 		 * @type {Telemetry}
@@ -109,6 +133,7 @@ export class TelemetryController {
 								? secondsFromGet(data.interpolationStartGET)
 								: data.interpolationStartGET;
 					}
+					this.tickWatcher;
 				} else if (data.type === 'stop') {
 					this.shouldInterpolate = false;
 				} else {

@@ -314,8 +314,8 @@ export class BasePhase {
 		 */
 		const triggerPayload = {
 			type: 'start',
-			durationSec: data.durationSec ?? this.getPhaseDuration(),
-			interpolationStartGET: data.interpolationStartGET ?? this.phaseMeta.startGET
+			durationSec: data?.durationSec ?? this.getPhaseDuration(),
+			interpolationStartGET: data?.interpolationStartGET ?? this.phaseMeta.startGET
 		};
 
 		phaseEmitter.emit('telemetry', triggerPayload);

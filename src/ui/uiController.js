@@ -102,7 +102,7 @@ export class UIController {
 		const interval = this.ffInterval ?? undefined;
 		await this.clockControls.handleFastForward(target, interval);
 		this.clearHudTranscript();
-		this.hud.clearPrompt();
+		this.hud.clearFF();
 	}
 
 	initUI() {
@@ -281,7 +281,11 @@ export class UIController {
 
 	disableFF() {
 		this.fastForward.disabled = true;
-		this.hud.clearPrompt();
+		this.hud.clearFF();
+	}
+
+	clearPromptBuffer() {
+		this.hud.clearPromptBuffer();
 	}
 
 	showInstructionModal(message) {}

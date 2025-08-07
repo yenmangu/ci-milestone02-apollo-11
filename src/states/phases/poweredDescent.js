@@ -6,6 +6,7 @@
  * @typedef {import('../../types/uiTypes.js').SegmentKey} SegmentKey
  */
 
+import { PhaseIds } from '../../types/timelineTypes.js';
 import {
 	getFromSeconds,
 	getCountdownString,
@@ -19,10 +20,13 @@ export class PoweredDescent extends BasePhase {
 		this.keypadState = null;
 		this.burnInProgress = undefined;
 		this.emptyString = '00000';
+		this.ullagePrompt = false;
+		this.failureTriggered = false;
 	}
 
-	onEnter() {
+	async onEnter() {
 		this.dskyController.setInitialState();
+
 		this.watchUntilComplete(
 			action => this.handleActionEvent(action),
 			cue => this.handleCueEvent(cue),
@@ -35,6 +39,25 @@ export class PoweredDescent extends BasePhase {
 				}
 			}
 		);
+		// Finally await the burn telemetry interpolation,
+		// once event driven arcitechture set up
+		await this.handleCsmBurn();
+	}
+
+	async handleCsmBurn() {
+		const firstCueGetSeconds = secondsFromGet(this.phaseMeta.allCues[0].get);
+		let duration = firstCueGetSeconds - secondsFromGet(this.phaseMeta.startGET);
+		duration = duration - 1;
+		this.triggerInterpolation({
+			interpolationStartGET: this.phaseMeta.startGET,
+			durationSec: duration
+		});
+		this.uiController.hud.renderPrompt('Descent Orbit Burn in process');
+
+		const finished = await this.waitForInterpolationFinish();
+		if (finished) {
+			this.uiController.hud.clearPrompt(false);
+		}
 	}
 
 	/**
@@ -59,6 +82,7 @@ export class PoweredDescent extends BasePhase {
 
 	startPreIgnition() {
 		this.dskyController.keyRelLight(false);
+		this.uiController.clearPromptBuffer();
 		this.setFF(undefined, '102:32:18');
 		this.uiController.clearHudTranscript();
 		this.uiController.updateHUD({
@@ -95,6 +119,7 @@ export class PoweredDescent extends BasePhase {
 		}
 
 		if (cue.key === 'O_V00_N62') {
+			this.dskyController.lockKeypad();
 			this.startCountdown();
 		}
 	}
@@ -169,12 +194,12 @@ export class PoweredDescent extends BasePhase {
 				p_3: '+'
 			});
 		}
-		this.ullagePrompt = false;
 
 		if (secondsRemaining <= 7.5 && secondsRemaining > 6.5) {
 			// Start ullage burn
 			if (!this.ullagePrompt) {
 				this.uiController.hud.renderPrompt('Ullage burn started.');
+				this.ullagePrompt = true;
 			}
 		}
 		if (secondsRemaining < 5.5) {
@@ -186,7 +211,9 @@ export class PoweredDescent extends BasePhase {
 			}
 		}
 
-		if (secondsRemaining <= 0) {
+		if (secondsRemaining <= 0 && this.proceedAccepted) {
+			this.simulationState.fsm.transitionTo(PhaseIds.P_63);
+			this.uiController.hud.clearPrompt();
 			if (!this.proceedAccepted) {
 				// failure
 			}
@@ -213,12 +240,14 @@ export class PoweredDescent extends BasePhase {
 	 * @param {Action} action
 	 */
 	triggerCueFailure(cue, action) {
+		if (this.failureTriggered) return;
 		if (this.simulationState.devMode) {
 			this.log(`Cue Failure triggered for ${cue.key}`, {
 				actionKey: action.action,
 				failsAfterGET: action.failsAfter.get,
 				context: action.failsAfter.context
 			});
+			this.failureTriggered = true;
 		}
 
 		this.simulationState.triggerInterrupt(action.failsAfter.name);

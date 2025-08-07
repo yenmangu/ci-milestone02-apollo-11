@@ -15,14 +15,28 @@ export class HudRenderer {
 	constructor(hudMap) {
 		/** @type {HudMap} */ this.hudMap = hudMap;
 		this.currentPrompt = null;
+		/** @type {HTMLElement | null} */ this.hudFF = null;
+		this.getHudFF();
 	}
+
+	getHudFF() {
+		const ff = document.getElementById('hud-ff');
+		if (ff) {
+			this.hudFF = ff;
+		} else {
+			console.warn('Hud FF not found');
+		}
+	}
+
 	renderCue(cueText) {
 		this.hudMap.transcript.innerText = cueText;
 	}
+
 	renderPrompt(prompt) {
-		this.currentPrompt = prompt;
-		this.updateHudBasedOnType('prompt', prompt);
+		if (this.currentPrompt) this.currentPrompt = prompt;
+		this.hudMap.prompt.innerHTML = `${prompt}`;
 	}
+
 	/**
 	 *
 	 */
@@ -73,7 +87,7 @@ export class HudRenderer {
 	setFFPrompt() {
 		console.log('Setting FF prompt');
 
-		this.hudMap.prompt.innerHTML = '';
+		this.hudFF.innerHTML = '';
 		const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 		icon.classList.add('icon', 'ff');
 		icon.setAttribute('width', '16');
@@ -83,17 +97,33 @@ export class HudRenderer {
 		icon.appendChild(use);
 
 		const ffIcon = createSvgUse();
-		this.clearPrompt();
+		this.clearFF();
 		ffIcon.classList.add('ff');
 
 		ffIcon.classList.add('ff-flash');
-		this.hudMap.prompt.appendChild(ffIcon);
+		this.hudFF.appendChild(ffIcon);
+	}
+
+	clearFF() {
+		this.hudFF.innerHTML = '';
 	}
 
 	clearPrompt(resume = true) {
 		console.log('Clearing prompt');
+		if (resume) {
+			this.hudMap.prompt.innerHTML = this.currentPrompt;
+		} else {
+			this.clearPromptBuffer();
+			this.clearPromptHud();
+		}
+	}
 
-		this.hudMap.prompt.innerHTML = this.currentPrompt;
+	clearPromptHud() {
+		this.hudMap.prompt.innerHTML = '';
+	}
+
+	clearPromptBuffer() {
+		this.currentPrompt = '';
 	}
 
 	clearTranscript() {

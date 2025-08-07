@@ -80,53 +80,58 @@
 								 data-running="false"
 								 class="hidden">
 					<div class="hud-frame">
-						<div class="hud-container crt">
-							<div class="hud-row time-phase">
-								<div class="hud-item phase">
-									<dl>
-										<dt>Phase</dt>
-										<dd><span id="hud-phase_name"></span></dd>
-									</dl>
+						<div class="hud-container hud-top">
+							<div class="crt">
+								<div class="hud-row time-phase">
+									<div class="hud-item phase">
+										<dl>
+											<dt>Phase</dt>
+											<dd><span id="hud-phase_name"></span></dd>
+										</dl>
+									</div>
 								</div>
-							</div>
-							<div class="hud-row time-phase">
-								<div class="hud-item time">
-									<dl>
-										<dt>Mission Time</dt>
-										<dd><span id="hud-get_stamp"></span></dd>
-									</dl>
+								<div class="hud-row time-phase">
+									<div class="hud-item time">
+										<dl>
+											<dt>Mission Time</dt>
+											<dd><span id="hud-get_stamp"></span></dd>
+										</dl>
+									</div>
 								</div>
-							</div>
-							<div class="hud-row telemetry">
-								<div class="hud-item altitude">
-									<dl>
-										<dt>Altitude </dt>
-										<dd>
-											<span id="hud-lunar_altitude"></span>&nbsp; <span id="hud-altitude_units"></span>
-										</dd>
-									</dl>
+								<div class="hud-row telemetry">
+									<div class="hud-item altitude">
+										<dl>
+											<dt>Altitude </dt>
+											<dd>
+												<span id="hud-lunar_altitude"></span>&nbsp; <span id="hud-altitude_units"></span>
+											</dd>
+										</dl>
+									</div>
+									<div class="hud-item velocity">
+										<dl>
+											<dt>Velocity </dt>
+											<dd><span id="hud-velocity_fps"></span></dd>
+										</dl>
+									</div>
+									<div class="hud-item fuel">
+										<dl>
+											<dt>Fuel</dt>
+											<dd><span id="hud-fuel_percent"></span></dd>
+										</dl>
+									</div>
 								</div>
-								<div class="hud-item velocity">
-									<dl>
-										<dt>Velocity </dt>
-										<dd><span id="hud-velocity_fps"></span></dd>
-									</dl>
+								<div class="hud-row">
+									<div class="transcript"><span id="hud-transcript"></span></div>
 								</div>
-								<div class="hud-item fuel">
-									<dl>
-										<dt>Fuel</dt>
-										<dd><span id="hud-fuel_percent"></span></dd>
-									</dl>
+								<div class="hud-row">
+									<div class="instructions">
+										<span id="hud-prompt"></span>
+										<span id="hud-ff"></span>
+									</div>
 								</div>
-							</div>
-							<div class="hud-row">
-								<div class="transcript"><span id="hud-transcript"></span></div>
-							</div>
-							<div class="hud-row">
-								<div class="instructions"><span id="hud-prompt"></span></div>
 							</div>
 						</div>
-						<div class="hud-bottom">
+						<div class="hud-container hud-bottom">
 							<div id="hud-description"
 									 class="scrollable description crt"></div>
 						</div>

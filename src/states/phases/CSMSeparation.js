@@ -13,16 +13,6 @@ import { BasePhase } from './basePhase.js';
 export class CSMSeparation extends BasePhase {
 	constructor(simState, phaseMeta) {
 		super(simState, phaseMeta);
-		// /** @type {((val:any)=> void) | null} */ this.resolveAction = null;
-		// /** @type {((val:any)=> void) | null} */ this.resolveKeypad = null;
-		// /** @type {Promise<void>} */ this.readyToTransition = Promise.all([
-		// 	new Promise(resolve => {
-		// 		this.resolveAction = resolve;
-		// 	}),
-		// 	new Promise(resolve => {
-		// 		this.resolveKeypad = resolve;
-		// 	})
-		// ]).then(() => this.onReadyToTransition());
 	}
 
 	onEnter() {
@@ -52,6 +42,7 @@ export class CSMSeparation extends BasePhase {
 
 		if (action.actionKey === 'CSM_PRO') {
 			this.onReadyToTransition();
+			this.dskyController.lockKeypad();
 		}
 	}
 

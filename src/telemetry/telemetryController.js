@@ -15,8 +15,16 @@ export class TelemetryController {
 	 * @param {Telemetry} initialState
 	 * @param {Telemetry} endState
 	 * @param {(telemetry: Telemetry)=> void} updateDisplay
+	 * @param {boolean} [useCustomState]
+	 * @param {{initialState: Telemetry, endState: Telemetry} | {}} [customState]
 	 */
-	constructor(initialState, endState, updateDisplay) {
+	constructor(
+		initialState,
+		endState,
+		updateDisplay,
+		useCustomState = false,
+		customState = {}
+	) {
 		/** @type {Telemetry} */ this.initialState = initialState;
 		/** @type {Telemetry} */ this.endState = endState;
 		this.updateDisplay = updateDisplay;
@@ -25,8 +33,10 @@ export class TelemetryController {
 		/** @type {boolean} */ this.shouldInterpolate = false;
 		/** @type {number} */ this.durationSec = 0;
 		/** @type {number} */ this.interpolationStartGET = null;
+		this.useCustomState = useCustomState;
 
-		/** @type {((value?: any) => void) | null} */ this.resolveInterpolation = null;
+		/** @type {((value?: any) => void | boolean) | null} */ this.resolveInterpolation =
+			null;
 		// this.tickWatcher = tickEmitter.on('tick', tickPayload => {
 		// 	this.handleTick(tickPayload);
 		// });
@@ -81,9 +91,14 @@ export class TelemetryController {
 	/**
 	 *
 	 * @param {TickPayload} tickPayload
+	 * @param {{initialState: Telemetry, endState: Telemetry} | null} [customState]
 	 */
-	interpolateTelemetry(tickPayload) {
+	interpolateTelemetry(tickPayload, customState = null) {
 		if (!this.shouldInterpolate) return;
+		if (customState !== null) {
+			this.initialState = customState.initialState;
+			this.endState = customState.endState;
+		}
 
 		const currentGET = tickPayload.getSeconds;
 
@@ -172,11 +187,11 @@ export class TelemetryController {
 
 	/**
 	 *
-	 * @returns {Promise<void>}
+	 * @returns {Promise<void | boolean>}
 	 */
 	waitForInterpolationToEnd() {
 		return new Promise(resolve => {
-			this.resolveInterpolation = resolve;
+			this.resolveInterpolation = () => resolve(true);
 		});
 	}
 

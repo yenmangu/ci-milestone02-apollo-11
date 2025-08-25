@@ -118,7 +118,7 @@ export class BasePhase {
 		};
 		this.uiState = uiState;
 		this.uiController.updateHUD(uiState);
-		this.uiController.clearHudTranscript();
+		// this.uiController.clearHudTranscript();
 	}
 
 	getNonTimeActions() {
@@ -306,8 +306,7 @@ export class BasePhase {
 	 * @param {{
 	 * type?: 'start',
 	 * interpolationStartGET?: string|number,
-	 * durationSec?: number,
-	 * async?: boolean
+	 * durationSec?: number
 	 * } | null} [data]
 	 */
 	triggerInterpolation(data = null) {
@@ -324,6 +323,11 @@ export class BasePhase {
 			interpolationStartGET: data?.interpolationStartGET ?? this.phaseMeta.startGET
 		};
 		phaseEmitter.emit('telemetry', triggerPayload);
+	}
+
+	async waitForInterpolationFinish() {
+		const result = await this.telemetryController.waitForInterpolationToEnd();
+		return result;
 	}
 
 	stopInterpolation() {

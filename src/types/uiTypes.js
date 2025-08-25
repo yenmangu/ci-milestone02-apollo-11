@@ -144,6 +144,19 @@ export const segmentKeys = [
  */
 
 /**
+ * @typedef {Object} RegisterTypeMap
+ * @property {string | number} [prog]
+ * @property {string | number} [verb]
+ * @property {string | number} [noun]
+ * @property {string} [p_1]
+ * @property {string | number} [r_1]
+ * @property {string} [p_2]
+ * @property {string | number} [r_2]
+ * @property {string} [p_3]
+ * @property {string | number} [r_3]
+ */
+
+/**
  * @typedef {Record.<string, HTMLElement>} SegmentDisplayMap
  */
 

@@ -1,9 +1,198 @@
 {
-	"phases": [{
+	"phases": [
+		{
+			"phase_name": "Simulation Briefing",
+			"phase_id": "intro",
+			"start_get": "000:00:00",
+			"description": [
+				"Orientation before simulation begins.",
+				"Hint: If you enter an invalid DSKY command, the 'OPR ERR' light will alight.",
+				"Press 'CLR' to reset or cancel any input.",
+				"Hint: Pause or resume the simulation at any time with the play/pause button"
+			],
+			"initial_state": {
+				"velocity": 0,
+				"v_units": "fps",
+				"altitude": {
+					"miles": 0,
+					"feet": 0
+				},
+				"fuel": 100
+			},
+			"end_state": {
+				"velocity": 0,
+				"v_units": "fps",
+				"altitude": {
+					"miles": 0,
+					"feet": 0
+				},
+				"fuel": 100
+			},
+			"timeline_cues": [
+				{
+					"get": "000:00:01",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "Welcome to the Apollo 11 Mission Simulation",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:04",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "The Apollo Guidance Computer (AGC) controlled the spacecraft's flight path.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:07",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "It responded to input using the numeric DSKY interface.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:10",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "Astronauts entered programs using VERB and NOUN commands.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:13",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "The VERB would usually indicate that the astronaughts wanted to <em>do</em> something.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:17",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "The NOUN would represent <em>what</em> action, or data the astronauts wanted.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:20",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "A standard input directive would be written as VxxNxxE",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:23",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "Where 'Vxx' indicated which VERB command, 'Nxx' indicated which NOUN and 'E' signified 'Entr'",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:27",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "All DSKY input commands will be given in the same format.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:30",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "They KEY-REL light will flash if control needs to be handed back to the AGC.",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:33",
+					"hud": true,
+					"dsky": false,
+					"data": {
+						"text": "Use the controls below to explore the guidance computer (DSKY)",
+						"speaker": "Mission"
+					}
+				},
+				{
+					"get": "000:00:36",
+					"hud": true,
+					"dsky": true,
+					"data": {
+						"verb": "37",
+						"noun": "99",
+						"program": "99",
+						"speaker": "AGC/DSKY",
+						"text": "When ready, enter V37N99E (ENTR) followed by KEY-REL to begin simulation"
+					},
+					"input": true,
+					"requires_action": "BEGIN_SIM"
+				},
+				{
+					"get": "000:00:38",
+					"hud": true,
+					"data": {
+						"speaker": "AGC/DSKY",
+						"text": "Press the 'Fast Forward' <span class='ff-icon'></span> button to fast-forward to the first Phase of the lunar landing."
+					},
+					"input": true,
+					"requires_action": "BEGIN_SIM"
+				},
+				{
+					"get": "00:00:40",
+					"dsky": false,
+					"hud": true,
+					"input": false,
+					"output": false,
+					"data": {
+						"speaker": "Mission",
+						"text": "This button will be available when it is appropriate to skip large chunks of time."
+					}
+				},
+				{
+					"get": "00:00:42",
+					"dsky": false,
+					"hud": true,
+					"input": false,
+					"output": false,
+					"data": {
+						"speaker": "Mission",
+						"text": "It will be displayed as a prompt below when available"
+					}
+				}
+			],
+			"non_time_specific_actions": [
+				{
+					"action": "BEGIN_SIM",
+					"description": "Begin the mission",
+					"verb": "37",
+					"noun": "99",
+					"program": "99"
+				}
+			],
+			"fail_states": []
+		},
+		{
 			"phase_name": "Lunar Orbit (CSM Separation)",
 			"phase_id": "csm_separation",
 			"start_get": "100:40:00",
-			"description": ["Eagle separates from Columbia in lunar orbit."],
+			"description": [
+				"Eagle separates from Columbia in lunar orbit."
+			],
 			"initial_state": {
 				"velocity": 5320,
 				"v_units": "fps",
@@ -23,7 +212,6 @@
 				"fuel": 100
 			},
 			"timeline_cues": [
-
 				{
 					"get": "100:40:01",
 					"key": "startFF",
@@ -82,11 +270,39 @@
 					"data": {
 						"speaker": "Columbia",
 						"text": "Thanks."
-					}
+					},
+					"requires_action": "CSM"
+				},
+				{
+					"key": "pro",
+					"get": "100:40:39",
+					"transcript": true,
+					"dsky": false,
+					"hud": false,
+					"input": false,
+					"output": false,
+					"data": {
+						"speaker": "Mission",
+						"text": "Press the PRO key when the keypad is unlocked to finish the phase and initiate the CSM burn."
+					},
+					"requires_action": "CSM_PRO"
 				}
 			],
 			"fail_states": [],
-			"non_time_specific_actions": []
+			"non_time_specific_actions": [
+				{
+					"action": "CSM_PRO",
+					"verb": "37",
+					"noun": "63",
+					"program": "63",
+					"description": "Initiate P63 - Braking Phase",
+					"fails_after": {
+						"get": "102:27:59",
+						"name": "NO_CSM",
+						"context": "PRO not entered to start CSM burn"
+					}
+				}
+			]
 		},
 		{
 			"phase_name": "Powered Descent Initiation (PDI)",
@@ -113,12 +329,13 @@
 				"velocity": 5500,
 				"v_units": "fps",
 				"altitude": {
-					"miles": 9.47,
-					"feet": 49906
+					"miles": 9.44,
+					"feet": 49971
 				},
 				"fuel": 95
 			},
-			"timeline_cues": [{
+			"timeline_cues": [
+				{
 					"get": "102:28:08",
 					"transcript": true,
 					"dsky": false,
@@ -352,7 +569,8 @@
 					}
 				}
 			],
-			"non_time_specific_actions": [{
+			"non_time_specific_actions": [
+				{
 					"action": "V37N63",
 					"verb": "37",
 					"noun": "63",
@@ -375,13 +593,19 @@
 			"phase_name": "Braking Phase (P63)",
 			"phase_id": "p_63",
 			"start_get": "102:33:09",
-			"description": "Initial braking under P63 program following ignition",
+			"description": [
+				"Initial braking under P63 program following ignition",
+				"The DSKY data registers now display the following:",
+				"R1: Absolute Velocity",
+				"R2: Altitude rate in feet per second",
+				"R3: Current altitude from lunar surface"
+			],
 			"initial_state": {
 				"velocity": 5500,
 				"v_units": "fps",
 				"altitude": {
-					"miles": 9.47,
-					"feet": 49906
+					"miles": 9.46,
+					"feet": 49971
 				},
 				"fuel": 95
 			},
@@ -394,14 +618,15 @@
 				},
 				"fuel": 64
 			},
-			"timeline_cues": [{
+			"timeline_cues": [
+				{
 					"get": "102:33:10",
 					"hud": true,
 					"dsky": false,
 					"semantic": true,
 					"data": {
 						"speaker": "Mission",
-						"Text": "Braking Phase (P63) started"
+						"text": "Braking Phase (P63) started"
 					}
 				},
 				{
@@ -437,7 +662,7 @@
 					"output": false,
 					"data": {
 						"speaker": "Eagle (Aldrin)",
-						"text": "'s holding."
+						"text": "(Garbled)'s holding."
 					}
 				},
 				{
@@ -765,103 +990,6 @@
 					}
 				},
 				{
-					"get": "102:33:11",
-					"transcript": true,
-					"dsky": false,
-					"hud": false,
-					"input": false,
-					"output": false,
-					"data": {
-						"speaker": "Eagle (Armstrong)",
-						"text": "IGNITION. 10 percent."
-					}
-				},
-				{
-					"get": "102:33:18",
-					"transcript": true,
-					"dsky": false,
-					"hud": false,
-					"input": false,
-					"output": false,
-					"data": {
-						"speaker": "Eagle (Aldrin)",
-						"text": "Just about on time."
-					}
-				},
-				{
-					"get": "102:33:22",
-					"transcript": true,
-					"dsky": false,
-					"hud": false,
-					"input": false,
-					"output": false,
-					"data": {
-						"speaker": "Eagle (Armstrong)",
-						"text": "You got the OVERRIDEs ON?"
-					}
-				},
-				{
-					"get": "102:33:25",
-					"transcript": true,
-					"dsky": false,
-					"hud": false,
-					"input": false,
-					"output": false,
-					"data": {
-						"speaker": "Eagle (Aldrin)",
-						"text": "OVERRIDE is ON. 24. FLASH. THROTTLE, up."
-					}
-				},
-				{
-					"get": "102:33:38",
-					"transcript": true,
-					"dsky": false,
-					"hud": false,
-					"input": false,
-					"output": false,
-					"data": {
-						"speaker": "Eagle (Armstrong)",
-						"text": "Looks good. Okay."
-					}
-				},
-				{
-					"get": "102:33:43",
-					"transcript": true,
-					"dsky": false,
-					"hud": false,
-					"input": false,
-					"output": false,
-					"data": {
-						"speaker": "Mission Control (Duke)",
-						"text": "Columbia, Houston. We've lost them. Tell them to go aft OMNI. Over."
-					}
-				},
-				{
-					"get": "102:33:40",
-					"transcript": true,
-					"dsky": false,
-					"hud": false,
-					"input": false,
-					"output": false,
-					"data": {
-						"speaker": "Eagle (Aldrin)",
-						"text": "Thrust looks good. We're on profile."
-					}
-				},
-				{
-					"get": "102:35:00",
-					"transcript": true,
-					"dsky": false,
-					"hud": true,
-					"input": false,
-					"output": false,
-					"context": "telemetry_readout",
-					"data": {
-						"speaker": "Public Affairs",
-						"text": "Altitude now about 35,000 feet."
-					}
-				},
-				{
 					"get": "102:36:30",
 					"transcript": true,
 					"dsky": false,
@@ -908,7 +1036,8 @@
 				},
 				"fuel": 15
 			},
-			"timeline_cues": [{
+			"timeline_cues": [
+				{
 					"get": "102:41:32",
 					"hud": true,
 					"semantic": true,
@@ -1125,14 +1254,18 @@
 				},
 				"fuel": 5
 			},
-			"timeline_cues": [{
+			"timeline_cues": [
+				{
 					"get": "102:43:22",
 					"hud": true,
 					"dsky": false,
 					"semantic": true,
 					"data": {
 						"speaker": "Mission",
-						"text": ["Terminal Descent (P66) started", "Manual control engaged - Armstrong in command"]
+						"text": [
+							"Terminal Descent (P66) started",
+							"Manual control engaged - Armstrong in command"
+						]
 					}
 				},
 				{
@@ -1591,164 +1724,15 @@
 			],
 			"non_time_specific_actions": [],
 			"fail_states": []
-		},
-		{
-			"phase_name": "Simulation Briefing",
-			"phase_id": "intro",
-			"start_get": "000:00:00",
-			"description": [
-				"Orientation before simulation begins.",
-				"Hint: If you enter an invalid DSKY command, the 'OPR ERR' light will alight.",
-				"Press 'CLR' to reset or cancel any input.", "Hint: Pause or resume the simulation at any time with the play/pause button"
-			],
-			"initial_state": {
-				"velocity": 0,
-				"v_units": "fps",
-				"altitude": {
-					"miles": 0,
-					"feet": 0
-				},
-				"fuel": 100
-			},
-			"end_state": {
-				"velocity": 0,
-				"v_units": "fps",
-				"altitude": {
-					"miles": 0,
-					"feet": 0
-				},
-				"fuel": 100
-			},
-			"timeline_cues": [{
-					"get": "000:00:01",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "Welcome to the Apollo 11 Mission Simulation",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:04",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "The Apollo Guidance Computer (AGC) controlled the spacecraft's flight path.",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:07",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "It responded to input using the numeric DSKY interface.",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:10",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "Astronauts entered programs using VERB and NOUN commands.",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:13",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "The VERB would usually indicate that the astronaughts wanted to <em>do</em> something.",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:17",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "The NOUN would represent <em>what</em> action, or data the astronauts wanted.",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:20",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "A standard input directive would be written as VxxNxxE",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:23",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "Where 'Vxx' indicated which VERB command, 'Nxx' indicated which NOUN and 'E' signified 'Entr'",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:27",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "All DSKY input commands will be given in the same format.",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:30",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "They KEY-REL light will flash if control needs to be handed back to the AGC.",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:33",
-					"hud": true,
-					"dsky": false,
-					"data": {
-						"text": "Use the controls below to explore the guidance computer (DSKY)",
-						"speaker": "Mission"
-					}
-				},
-				{
-					"get": "000:00:36",
-					"hud": true,
-					"dsky": true,
-					"data": {
-						"verb": "37",
-						"noun": "99",
-						"program": "99",
-						"speaker": "AGC/DSKY",
-						"text": "When ready, enter V37N99E (ENTR) followed by KEY-REL to begin simulation"
-					},
-					"input": true,
-					"requires_action": "BEGIN_SIM"
-				}
-			],
-			"non_time_specific_actions": [{
-				"action": "BEGIN_SIM",
-				"description": "Begin the mission",
-				"verb": "37",
-				"noun": "99",
-				"program": "99"
-
-			}],
-			"fail_states": []
 		}
 	],
 	"metadata": {
 		"time_scale": 1,
 		"historical_context": {
 			"time_format": "GET (Ground Elapsed Time)",
-			"sources": ["Apollo 11 Flight Journal (NASA)"],
+			"sources": [
+				"Apollo 11 Flight Journal (NASA)"
+			],
 			"key_events": {
 				"pdi_actual": "102:45:00 GET",
 				"1202_alarm": "104:01:26 GET",

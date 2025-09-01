@@ -81,12 +81,21 @@ export class PhaseFSM {
 	 * @param {TickPayload} tick
 	 */
 	handleTick(tick) {
+		// Keep display string in sync
 		this.simulationState.currentGet = tick.getString;
-		if (
-			this.currentPhaseInstance &&
-			typeof this.currentPhaseInstance.tick === 'function'
-		) {
-			this.currentPhaseInstance.tick(tick);
-		}
+
+		// Update time snapshot
+		this.simulationState.updateCurrentTime(tick);
+
+		const phase = this.currentPhaseInstance;
+
+		// Guard against unavailable phase or method
+		if (!phase || typeof phase.tick !== 'function') return;
+
+		// Make latest tick available to phase instance before delegation
+		phase.lastTickPayload = tick;
+
+		// Delegate
+		phase.tick(tick);
 	}
 }

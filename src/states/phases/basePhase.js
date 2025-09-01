@@ -65,6 +65,9 @@ export class BasePhase {
 			compareGET(a.get, b.get)
 		);
 
+		const { getSeconds } = this.simulationState.getCurrentTime();
+		this.currentGETSeconds = getSeconds;
+
 		this.actionCues = this.getActionBoundCues();
 		this.expiringCues = this.getExpiringCues();
 		this.nonTimeActions = this.getNonTimeActions();

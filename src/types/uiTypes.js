@@ -154,6 +154,8 @@ export const segmentKeys = [
  * @property {string | number} [r_2]
  * @property {string} [p_3]
  * @property {string | number} [r_3]
+ * @property {string | number} [r1_left]
+ * @property {string | number} [r1_right]
  */
 
 /**

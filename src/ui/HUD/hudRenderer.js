@@ -84,6 +84,14 @@ export class HudRenderer {
 		this.hudMap[type].innerHTML = data;
 	}
 
+	/**
+	 *
+	 * @param {string} string
+	 */
+	updatePrompt(string) {
+		this.hudMap.prompt.innerHTML = string;
+	}
+
 	setFFPrompt() {
 		console.log('Setting FF prompt');
 

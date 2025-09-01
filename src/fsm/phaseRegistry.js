@@ -6,6 +6,7 @@ import { CSMSeparation } from '../states/phases/CSMSeparation.js';
 import { Intro } from '../states/phases/intro.js';
 import { P_63 } from '../states/phases/p_63.js';
 import { P_64 } from '../states/phases/p_64.js';
+import { P_65 } from '../states/phases/p_65.js';
 import { P_66 } from '../states/phases/p_66.js';
 import { PoweredDescent } from '../states/phases/poweredDescent.js';
 import { PhaseIds } from '../types/timelineTypes.js';
@@ -18,6 +19,7 @@ export const phaseRegistry = {
 	[PhaseIds.PDI]: PoweredDescent,
 	[PhaseIds.P_63]: P_63,
 	[PhaseIds.P_64]: P_64,
+	[PhaseIds.P_65]: P_65,
 	[PhaseIds.P_66]: P_66,
 	[PhaseIds.INTRO]: Intro
 };

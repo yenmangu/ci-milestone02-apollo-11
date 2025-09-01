@@ -329,8 +329,8 @@
 				"velocity": 5500,
 				"v_units": "fps",
 				"altitude": {
-					"miles": 9.44,
-					"feet": 49971
+					"miles": 9.46,
+					"feet": 49949
 				},
 				"fuel": 95
 			},
@@ -605,7 +605,7 @@
 				"v_units": "fps",
 				"altitude": {
 					"miles": 9.46,
-					"feet": 49971
+					"feet": 49949
 				},
 				"fuel": 95
 			},
@@ -1017,7 +1017,17 @@
 			"phase_name": "Approach Phase (P64)",
 			"phase_id": "p_64",
 			"start_get": "102:41:32",
-			"description": "Pitch-over begins under P64 guidance. Forward visibility improves; landing site assessment and targeting.",
+			"description": [
+				"P64 guidance begins with the pitch-over manoeuvre.",
+				"As the LM tips forward, the crew can see the landing area for the first time.",
+				"The DSKY now shows:",
+				"R1-left: LPD (Landing Point Designator) – the angle on the scale etched into the LM’s window that points to where the computer predicts touchdown.",
+				"R1-right: Redesignation countdown – the time remaining for the crew to choose a new landing point.",
+				"R2: Rate of descent, shown in feet per second.",
+				"R3: Current altitude above the lunar surface.",
+				"The LPD scale on the window let the commander line up the computer’s predicted landing point with real features on the Moon.",
+				"Once the countdown reached zero, the predicted landing point was locked and could no longer be shifted."
+			],
 			"initial_state": {
 				"velocity": 2150,
 				"v_units": "fps",
@@ -1034,7 +1044,7 @@
 					"miles": 0.1,
 					"feet": 650
 				},
-				"fuel": 15
+				"fuel": 25
 			},
 			"timeline_cues": [
 				{
@@ -1231,19 +1241,102 @@
 			"fail_states": []
 		},
 		{
-			"phase_name": "Terminal Descent (P66)",
+			"phase_name": "Terminal Descent (P65)",
+			"phase_id": "p_65",
+			"start_get": "102:43:12",
+			"end_get": "102:43:22",
+			"description": [
+				"P65 takes over after the approach phase.",
+				"The computer now flies the final braking and descent while the crew monitors the numbers.",
+				"The landing point is locked — no more redesignation.",
+				"The DSKY shows altitude and descent rate so the commander can judge the final approach.",
+				"At low altitude the program will hand over to P66 for the last part of the landing, or the commander can select P66 early if needed."
+			],
+			"initial_state": {
+				"velocity": 900,
+				"v_units": "fps",
+				"altitude": {
+					"miles": 0.10,
+					"feet": 650
+				},
+				"fuel": 25
+			},
+			"end_state": {
+				"velocity": 700,
+				"v_units": "fps",
+				"altitude": {
+					"miles": 0.06,
+					"feet": 300
+				},
+				"fuel": 18
+			},
+			"timeline_cues": [
+				{
+					"get": "102:43:12",
+					"hud": true,
+					"semantic": true,
+					"data": {
+						"speaker": "Mission",
+						"text": "Terminal Descent (P65) started."
+					}
+				},
+				{
+					"get": "102:43:13",
+					"hud": true,
+					"semantic": true,
+					"data": {
+						"speaker": "Mission",
+						"text": "Landing point locked. Redesignation closed."
+					}
+				},
+				{
+					"get": "102:43:14",
+					"transcript": true,
+					"dsky": false,
+					"hud": false,
+					"input": false,
+					"output": false,
+					"data": {
+						"speaker": "Mission Control (Duke)",
+						"text": "P65, terminal descent."
+					}
+				},
+				{
+					"get": "102:43:18",
+					"hud": true,
+					"semantic": true,
+					"data": {
+						"speaker": "Mission",
+						"text": "Guidance continuing automatic terminal descent."
+					}
+				},
+				{
+					"get": "102:43:21",
+					"hud": true,
+					"semantic": true,
+					"data": {
+						"speaker": "Mission",
+						"text": "Prepare for final landing program (P66)."
+					}
+				}
+			],
+			"non_time_specific_actions": [],
+			"fail_states": []
+		},
+		{
+			"phase_name": "Final Landing (P66)",
 			"start_get": "102:43:22",
 			"end_get": "104:17:41",
 			"phase_id": "p_66",
 			"description": "Manual control begins as Armstrong assumes command using P66. Fine-tuned descent and landing site navigation.",
 			"initial_state": {
-				"velocity": 1500,
+				"velocity": 700,
 				"v_units": "fps",
 				"altitude": {
-					"miles": 0.12,
-					"feet": 650
+					"miles": 0.06,
+					"feet": 300
 				},
-				"fuel": 48
+				"fuel": 18
 			},
 			"end_state": {
 				"velocity": 0,

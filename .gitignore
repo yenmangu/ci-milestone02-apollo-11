@@ -22,3 +22,10 @@ ci-appollo-11.code*
 LOG.md
 coverage
 CHECKLIST.md
+
+
+
+.vscode/launch.json
+.vscode/settings.json
+/.vscode/launch.json
+validateTimelineContinuity.js

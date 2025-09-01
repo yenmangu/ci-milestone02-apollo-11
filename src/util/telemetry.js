@@ -176,3 +176,22 @@ export function createRedesignationCounter(startSec, windowSec = 99) {
 		return remain;
 	};
 }
+
+/**
+ * Calculate horizontal velocity (ft/s) from total speed and vertical rate.
+ * Guards against floating-point noise when v_total ≈ v_vertical.
+ *
+ * @param {number} velocity Total speed (ft/s)
+ * @param {number} altRateFps Vertical rate (ft/s, signed; negative = descending)
+ *
+ * @returns {number} Horizontal speed (ft/s, unsigned)
+ */
+export function toHorizontalFeetPerSecond(velocity, altRateFps) {
+	const vT = Number.isFinite(velocity) ? velocity : 0;
+	const vV = Number.isFinite(altRateFps) ? altRateFps : 0;
+	// Subtract a tiny epsilon to absorb floating point rounding when vT ≈ vV
+	// Protects against NaN errors
+	const v2 = vT * vT - vV * vV - 1e-9;
+	const horizVelFps = v2 > 0 ? Math.sqrt(v2) : 0;
+	return horizVelFps;
+}

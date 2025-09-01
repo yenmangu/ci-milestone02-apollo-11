@@ -6,6 +6,7 @@
  * @typedef {import('../types/keypadTypes.js').KeypadState} KeypadState
  * @typedef {import('../game/clockControls.js').ClockControls} ClockControls
  * @typedef {import('../types/runtimeTypes.js').ActionEvent} ActionEvent
+ * @typedef {import('../types/clockTypes.js').TickPayload} TickPayload
  */
 
 import {
@@ -13,6 +14,7 @@ import {
 	pushButtonEmitter,
 	startEmitter
 } from '../event/eventBus.js';
+import { secondsFromGet } from '../util/GET.js';
 
 /**
  *
@@ -20,6 +22,8 @@ import {
  * @property {string} currentGet - Mission time in 'HH:MM:SS' Ground Elapsed Time
  * @property {string} currentPhaseId - Id of active phaseId
  * @property {import("../types/runtimeTypes.js").RuntimePhase} currentPhase
+ *
+ * @property {TickPayload} currentTime
  *
  * @property {Set<string>} playedCues
  * @property {Set<string>} completedActions
@@ -32,6 +36,9 @@ import {
  * @property {UIController | null} [ui]
  * @property {(ui: UIController) => void} [setUI]
  * @property {() => UIController} [getUI]
+ *
+ * @property {(tick: TickPayload) => void} [updateCurrentTime]
+ * @property {() => TickPayload} [getCurrentTime]
  *
  * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} playCue
  * - Play a cue (updates playedCues and handles side effects)
@@ -93,6 +100,7 @@ function createSimulationState({
 	hooks,
 	ui
 }) {
+	const startSeconds = secondsFromGet(initialGET);
 	const state = {
 		currentPhaseId: initialPhaseId,
 		currentGet: initialGET,
@@ -102,6 +110,11 @@ function createSimulationState({
 		completedActions: new Set(),
 		showTelemetry: true,
 		ui,
+		/** @type {TickPayload} */ currentTime: {
+			getSeconds: startSeconds,
+			elapsedSeconds: 0,
+			getString: initialGET
+		},
 
 		setFSM(fsmInstance) {
 			this.fsm = fsmInstance;
@@ -119,6 +132,19 @@ function createSimulationState({
 			if (this.ui) {
 				return this.ui;
 			}
+		},
+
+		/**
+		 *
+		 * @param {TickPayload} tick
+		 */
+		updateCurrentTime(tick) {
+			this.currentTime.getSeconds = tick.getSeconds;
+			this.currentTime.getString = tick.getString;
+			this.currentTime.elapsedSeconds = tick.elapsedSeconds;
+		},
+		getCurrentTime() {
+			return { ...this.currentTime };
 		},
 
 		onCuePlayed: hooks?.onCuePlayed,
@@ -146,7 +172,7 @@ function createSimulationState({
 			console.log('Current GET: ', this.currentGet);
 
 			this.onCuePlayed?.(cue);
-			if (this.ui && typeof ui.routeCue === 'function') {
+			if (this.ui?.routeCue && typeof this.ui.routeCue === 'function') {
 				this.ui.routeCue(cue);
 			}
 			this.log?.(`Cue dispatched:  ${cue.key}`, cue);

@@ -172,3 +172,41 @@ export function makeV06N64(
 		r_3: pad5(altitudeFeet)
 	};
 }
+
+/**
+ * Build DSKY payload for V06 N60 (P65).
+ *
+ * R1: Horizontal velocity (ft/s) -> unsigned 5 chars (e.g. "00123")
+ * R2: Altitude rate (ft/s)       -> signed, 5 chars (e.g. "-0022")
+ * R3: Altitude (feet AGL)        -> unsigned 5 chars (e.g. "00491")
+ *
+ * Notes:
+ * - R1 is shown as a magnitude (no sign column).
+ * - R2 uses p_2 for the sign and r_2 for the 5-digit magnitude.
+ * - R3 is rendered unsigned to mirror your N64 convention.
+ *
+ * @param {Object} params
+ * @param {number} params.velocityFps
+ * @param {number} params.altRateFps
+ * @param {number} params.altitudeFeet
+ * @param {Object} opts
+ * @param {boolean} [opts.positiveSignBlank=false]
+ *
+ * @returns {DskyRegisters}
+ */
+export function makeV06N60({ velocityFps, altRateFps, altitudeFeet }, opts = {}) {
+	const { positiveSignBlank = false } = opts;
+
+	return {
+		verb: '06',
+		noun: '60',
+		prog: '65',
+
+		p_1: ' ',
+		r_1: encodeMagnitude(velocityFps),
+		p_2: signChar(altRateFps, positiveSignBlank),
+		r_2: rateMag5(altRateFps),
+		p_3: ' ',
+		r_3: pad5(altitudeFeet)
+	};
+}

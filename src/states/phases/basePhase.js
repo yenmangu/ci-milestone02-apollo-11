@@ -167,7 +167,7 @@ export class BasePhase {
 	/**
 	 *
 	 * @param {string} requiresAction
-	 * @returns {RuntimeAction}
+	 * @returns {RuntimeAction | undefined}
 	 */
 	getActionByKey(requiresAction) {
 		return this.nonTimeActions.find(action => action.action === requiresAction);
@@ -228,12 +228,14 @@ export class BasePhase {
 		this.currentGETSeconds = tickPayload.getSeconds;
 
 		let easedPartial = {};
-		if (this.simulationState.showTelemetry && this.telemetrySmoother) {
+		if (this.telemetrySmoother) {
 			easedPartial =
 				this.telemetrySmoother.tick({
 					getSeconds: tickPayload.getSeconds
 				}) || {};
+		}
 
+		if (this.simulationState.showTelemetry && this.telemetrySmoother) {
 			const merged = this.getMergedEased(easedPartial);
 			this.setUiData({
 				...normalisedToRaw(merged),
@@ -241,6 +243,7 @@ export class BasePhase {
 				phaseName: this.phaseMeta.phaseName,
 				[EASED_MARK]: true
 			});
+			this.uiController.hud.updateMissionClock(tickPayload.getString);
 		}
 
 		const prev = this.previousGETSeconds;
@@ -258,14 +261,6 @@ export class BasePhase {
 			) {
 				this.simulationState.playCue(cue);
 			}
-		}
-
-		// Determine if telemetry should be displayed
-		if (this.simulationState?.showTelemetry) {
-			this.uiController.updateHUD(this.uiState);
-
-			// Update Mission Clock
-			this.uiController.hud.updateMissionClock(tickPayload.getString);
 		}
 
 		// Safely access the subclass methods
@@ -364,10 +359,7 @@ export class BasePhase {
 	 */
 	hasActionTimedOut(failsAfterSeconds) {
 		// console.log('[DEBUG BasePhase] hasActionTimedOut invoked');
-
-		if (this.currentGETSeconds >= failsAfterSeconds) {
-			return true;
-		}
+		return this.currentGETSeconds >= failsAfterSeconds;
 	}
 
 	hasCueTimedOut(cue) {}

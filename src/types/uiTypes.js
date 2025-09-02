@@ -49,6 +49,11 @@ export const hudKeyMap = {
  */
 
 /**
+ * @type {unique symbol}
+ */
+export const EASED_MARK = Symbol('easedPayload');
+
+/**
  * @typedef {Object} UIState
  * @property {Altitude} [altitude]
  * @property {number} [velocity]
@@ -58,6 +63,10 @@ export const hudKeyMap = {
  * @property {string} [getStamp]
  * @property {string} [prompt]
  * @property {string} [phaseName]
+ */
+
+/**
+ * @typedef {UIState & {[EASED_MARK]?: true}} UIStateExtended
  */
 
 /**

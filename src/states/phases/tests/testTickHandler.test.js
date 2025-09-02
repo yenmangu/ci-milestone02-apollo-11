@@ -7,7 +7,7 @@ import { PhaseIds } from '../../../types/timelineTypes.js';
 import { BasePhase } from '../basePhase.js';
 
 /** @type {import('../../../types/clockTypes.js').TickPayload} */ const fakeTick = {
-	elapsed: 1000,
+	elapsedSeconds: 1000,
 	getSeconds: 3600,
 	getString: '01:00:00'
 };

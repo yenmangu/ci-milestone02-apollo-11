@@ -29,6 +29,7 @@ import { phaseRegistry } from './fsm/phaseRegistry.js';
 import { PhaseIds } from './types/timelineTypes.js';
 import { secondsFromGet } from './util/GET.js';
 import { startEmitter, tickEmitter } from './event/eventBus.js';
+import { createTelemetrySmoother } from './telemetry/telemetryPipeline.js';
 import { queryDom } from './ui/simulationUI.js';
 import { UIController } from './ui/uiController.js';
 import { ClockControls } from './game/clockControls.js';
@@ -36,11 +37,14 @@ import {
 	getClockControls,
 	registerClockControls
 } from './game/clockControlsService.js';
+import { normaliseRaw } from './telemetry/normalise.js';
 
 // just for now
 let dev = true;
 
-let devStartPhase = PhaseIds.PDI;
+let devStartPhase = PhaseIds.CSM_SEPARATION;
+devStartPhase = PhaseIds.PDI;
+devStartPhase = PhaseIds.P_64;
 // devStartPhase = null;
 export async function initProgram() {
 	/** @type {DevController} */ let devController;
@@ -106,6 +110,14 @@ export async function initProgram() {
 			// Expose to global window object for browser testing
 			win.dev = devController;
 		}
+		const smoother = createTelemetrySmoother({ devMode: dev });
+		simState.telemetrySmoother = smoother;
+
+		if (firstPhase?.initialState) {
+			simState.telemetrySmoother.ingest(normaliseRaw(firstPhase.initialState));
+			simState.telemetrySmoother.snapToTargets();
+		}
+
 		simState.showTelemetry = false;
 		// inits ALL UI controllers frmo this one call
 		ui.initUI();

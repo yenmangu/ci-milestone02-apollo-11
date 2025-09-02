@@ -6,19 +6,28 @@
  * @typedef {import('../../types/runtimeTypes.js').NonTimeAction} RuntimeAction
  * @typedef {import('../../types/runtimeTypes.js').ActionEvent} ActionEvent
  * @typedef {import('../../types/uiTypes.js').UIState} UIState
+ * @typedef {import('../../types/uiTypes.js').UIStateExtended} UIStateExtended
  * @typedef {import('../simulationState.js').UIController} UIController
  * @typedef {import('../../ui/DSKY/dskyController.js').DskyController} DSKY
  * @typedef {import('../../types/keypadTypes.js').KeypadState} KeypadState
+ * @typedef {import('../../types/runtimeTypes.js').RuntimePhaseState} Telemetry
+ * @typedef {import('../../telemetry/telemetrySmoother.js').TelemetrySmoother} TelemetrySmoother
  */
 
 import { compareGET, secondsFromGet } from '../../util/GET.js';
 import { watchUntilComplete } from '../../util/watchUntilComplete.js';
 import { phaseEmitter, pushButtonEmitter } from '../../event/eventBus.js';
 import { TelemetryController } from '../../telemetry/telemetryController.js';
+import { normalisedToRaw, normaliseRaw } from '../../telemetry/normalise.js';
 
 /**
  * @typedef {import("../../types/clockTypes.js").TickPayload} TickPayload
  */
+
+import { EASED_MARK } from '../../types/uiTypes.js';
+const ALT = 'altitudeFeet';
+const VEL = 'velocityFps';
+const FUEL = 'fuel';
 
 export class BasePhase {
 	/**
@@ -55,6 +64,8 @@ export class BasePhase {
 		this.pushButtonEmitter = pushButtonEmitter;
 		this.keyRel = false;
 		/** @type {TelemetryController | null} */ this.telemetryController = null;
+		/** @type {TelemetrySmoother | null} */ this.telemetrySmoother =
+			this.simulationState?.telemetrySmoother ?? null;
 	}
 
 	enter() {
@@ -76,6 +87,13 @@ export class BasePhase {
 		this.setUiData();
 		this.uiController.disableFF();
 		console.log('[DEBUG] PhaseMeta: ', this.phaseMeta);
+		if (
+			this.telemetrySmoother &&
+			this.telemetrySmoother.lastTickGetSeconds == null
+		) {
+			this.telemetrySmoother.ingest(normaliseRaw(this.phaseMeta.initialState));
+			this.telemetrySmoother.snapToTargets();
+		}
 		this.telemetryController = new TelemetryController(
 			this.phaseMeta.initialState,
 			this.phaseMeta.endState,
@@ -97,9 +115,20 @@ export class BasePhase {
 
 	/**
 	 *
-	 * @param {UIState} [data]
+	 * @param {UIStateExtended} [data]
 	 */
 	setUiData(data = {}) {
+		if (this.telemetrySmoother && !data[EASED_MARK]) {
+			const { initialState } = this.phaseMeta;
+			const rawLike = {
+				velocity: data.velocity ?? initialState.velocity,
+				altitude: data.altitude ?? initialState.altitude,
+				fuel: data.fuel ?? initialState.fuel,
+				vUnits: data.vUnits ?? initialState.vUnits
+			};
+			this.telemetrySmoother.ingest(normaliseRaw(rawLike));
+		}
+
 		this.uiController.updateDescription(this.phaseMeta.description);
 
 		if (!this.simulationState.showTelemetry) {
@@ -198,6 +227,22 @@ export class BasePhase {
 		this.lastTickPayload = tickPayload;
 		this.currentGETSeconds = tickPayload.getSeconds;
 
+		let easedPartial = {};
+		if (this.simulationState.showTelemetry && this.telemetrySmoother) {
+			easedPartial =
+				this.telemetrySmoother.tick({
+					getSeconds: tickPayload.getSeconds
+				}) || {};
+
+			const merged = this.getMergedEased(easedPartial);
+			this.setUiData({
+				...normalisedToRaw(merged),
+				getStamp: tickPayload.getString,
+				phaseName: this.phaseMeta.phaseName,
+				[EASED_MARK]: true
+			});
+		}
+
 		const prev = this.previousGETSeconds;
 		const current = this.currentGETSeconds;
 
@@ -229,6 +274,60 @@ export class BasePhase {
 		}
 		// Check any fails after conditions
 		this.checkFailsAfter();
+	}
+
+	/**
+	 *
+	 * @param {{altitudeFeet?: number, velocityFps?: number, fuel?: number}} easedPartial
+	 * @returns {{altitudeFeet: number, velocityFps:number, fuel: number}}
+	 */
+	getMergedEased(easedPartial) {
+		const fallback = normaliseRaw(this.phaseMeta.initialState);
+		return {
+			altitudeFeet: easedPartial.altitudeFeet ?? fallback.altitudeFeet,
+			velocityFps: easedPartial.velocityFps ?? fallback.velocityFps,
+			fuel: easedPartial.fuel ?? fallback.fuel
+		};
+	}
+
+	/**
+	 *
+	 * @param {{altitudeFeet: number, velocityFps: number, fuel: number, vUnits: string}} eased
+	 * @returns {Telemetry}
+	 */
+	formatUiFromEased(eased) {
+		const feet = eased.altitudeFeet;
+		const miles = feet / 5280;
+		return {
+			altitude: {
+				miles,
+				feet
+			},
+			velocity: eased.velocityFps,
+			vUnits: eased.vUnits ?? 'fps',
+			fuel: eased.fuel
+		};
+	}
+
+	getEasedChannel(key, fallback) {
+		const s = this.telemetrySmoother.stateByKey.get(key);
+		if (s && typeof s.value === 'number') return s.value;
+
+		const t = this.telemetrySmoother.targetsByKey.get(key);
+		if (typeof t === 'number') return t;
+
+		return fallback;
+	}
+
+	getEasedSnapshot() {
+		const { altitudeFeet, velocityFps, fuel } = normaliseRaw(
+			this.phaseMeta.initialState
+		);
+		return {
+			altitudeFeet: this.getEasedChannel(ALT, altitudeFeet),
+			velocityFps: this.getEasedChannel(VEL, velocityFps),
+			fuel: this.getEasedChannel(FUEL, fuel)
+		};
 	}
 
 	checkFailsAfter() {

@@ -56,7 +56,7 @@ export class TelemetrySmoother {
 	}
 
 	/**
-	 * Tick the smoother and return eased values
+	 * Tick the smoother and return eased values.
 	 * Channels without current target are skipped
 	 *
 	 * @param {{elapsedSeconds?: number, getSeconds: number}} tick

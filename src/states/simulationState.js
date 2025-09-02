@@ -14,6 +14,7 @@ import {
 	pushButtonEmitter,
 	startEmitter
 } from '../event/eventBus.js';
+import { TelemetrySmoother } from '../telemetry/telemetrySmoother.js';
 import { secondsFromGet } from '../util/GET.js';
 
 /**
@@ -58,6 +59,8 @@ import { secondsFromGet } from '../util/GET.js';
  * @property {boolean} [devMode]
  *
  * @property {(cue: import("../types/runtimeTypes.js").RuntimeCue) => void} onCuePlayed
+ *
+ * @property {TelemetrySmoother | null} telemetrySmoother
  */
 
 /**
@@ -115,6 +118,8 @@ function createSimulationState({
 			elapsedSeconds: 0,
 			getString: initialGET
 		},
+		/** @type {TelemetrySmoother} */
+		telemetrySmoother: null,
 
 		setFSM(fsmInstance) {
 			this.fsm = fsmInstance;

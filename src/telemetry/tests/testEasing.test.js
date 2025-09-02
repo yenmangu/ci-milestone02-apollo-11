@@ -1,5 +1,4 @@
 import { TelemetrySmoother } from '../telemetrySmoother.js';
-import { normaliseRaw } from '../normalise.js';
 import { jest } from '@jest/globals';
 
 /** @type {import("../telemetrySmoother.js").SmootherConfig} */
